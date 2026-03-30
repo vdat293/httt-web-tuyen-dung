@@ -72,10 +72,14 @@ export default function JobDetail() {
           {/* Header Card */}
           <div className="card p-6">
             <div className="flex gap-4 mb-5">
-              <div className="w-14 h-14 rounded-lg border border-line bg-bgSection flex items-center justify-center flex-shrink-0">
-                <span className="text-brand-500 font-bold text-xl">
-                  {job.employerId?.name?.charAt(0)?.toUpperCase() || 'C'}
-                </span>
+              <div className="w-14 h-14 rounded-lg border border-line bg-white flex items-center justify-center flex-shrink-0 overflow-hidden">
+                {job.employerId?.companyLogo ? (
+                  <img src={job.employerId.companyLogo} alt={job.employerId?.name || 'Logo'} className="w-full h-full object-contain p-1" />
+                ) : (
+                  <span className="text-brand-500 font-bold text-xl">
+                    {job.employerId?.name?.charAt(0)?.toUpperCase() || 'C'}
+                  </span>
+                )}
               </div>
               <div className="flex-1">
                 <div className="flex items-start justify-between gap-3">
@@ -159,10 +163,14 @@ export default function JobDetail() {
                     to={`/jobs/${relatedJob._id}`}
                     className="flex gap-4 p-3 rounded-lg border border-line hover:bg-bgLight transition-colors group"
                   >
-                    <div className="w-12 h-12 rounded bg-white border border-line flex items-center justify-center flex-shrink-0">
-                      <span className="text-brand-500 font-bold text-sm">
-                        {relatedJob.employerId?.name?.charAt(0)?.toUpperCase() || 'C'}
-                      </span>
+                    <div className="w-12 h-12 rounded bg-white border border-line flex items-center justify-center flex-shrink-0 overflow-hidden">
+                      {relatedJob.employerId?.companyLogo ? (
+                        <img src={relatedJob.employerId.companyLogo} alt={relatedJob.employerId?.name || 'Logo'} className="w-full h-full object-contain p-1" />
+                      ) : (
+                        <span className="text-brand-500 font-bold text-sm">
+                          {relatedJob.employerId?.name?.charAt(0)?.toUpperCase() || 'C'}
+                        </span>
+                      )}
                     </div>
                     <div className="flex-1 min-w-0">
                       <h3 className="text-sm font-semibold text-heading group-hover:text-brand-500 transition-colors truncate">

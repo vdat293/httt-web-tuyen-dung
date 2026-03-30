@@ -25,16 +25,16 @@ const seed = async () => {
     // 1. CREATE 10 EMPLOYERS AND 3 CANDIDATES
     // ==========================================
     const empData = [
-      { email: 'kidsplaza@example.com', name: 'Công ty Cổ phần Kids Plaza', phone: '0912345671' },
-      { email: 'thegioididong@example.com', name: 'Công ty CP Đầu tư Thế Giới Di Động', phone: '0912345672' },
-      { email: 'fptshop@example.com', name: 'Công ty Cổ phần Bán lẻ Kỹ thuật số FPT (FPT Shop)', phone: '0912345673' },
-      { email: 'vng@example.com', name: 'Công ty Cổ phần VNG', phone: '0912345674' },
-      { email: 'viettel@example.com', name: 'Tập đoàn Công nghiệp - Viễn thông Quân đội (Viettel)', phone: '0912345675' },
-      { email: 'shopee@example.com', name: 'Công ty TNHH Shopee', phone: '0912345676' },
-      { email: 'tiki@example.com', name: 'Công ty Cổ phần TiKi', phone: '0912345677' },
-      { email: 'vinmec@example.com', name: 'Hệ thống Y tế Vinmec', phone: '0912345678' },
-      { email: 'techcombank@example.com', name: 'Ngân hàng TMCP Kỹ Thương Việt Nam (Techcombank)', phone: '0912345679' },
-      { email: 'vnpt@example.com', name: 'Tập đoàn Bưu chính Viễn thông Việt Nam (VNPT)', phone: '0912345670' },
+      { email: 'kidsplaza@example.com', name: 'Công ty Cổ phần Kids Plaza', phone: '0912345671', companyLogo: 'https://www.kidsplaza.vn/blog/wp-content/uploads/2016/02/viber-image-2019-05-16-08.59.45.jpg' },
+      { email: 'thegioididong@example.com', name: 'Công ty CP Đầu tư Thế Giới Di Động', phone: '0912345672', companyLogo: 'https://cdn.haitrieu.com/wp-content/uploads/2021/11/Logo-The-Gioi-Di-Dong-MWG.png' },
+      { email: 'fptshop@example.com', name: 'Công ty Cổ phần Bán lẻ Kỹ thuật số FPT (FPT Shop)', phone: '0912345673', companyLogo: 'https://biztech.vn/wp-content/uploads/2021/04/logo-fpt.png' },
+      { email: 'vng@example.com', name: 'Công ty Cổ phần VNG', phone: '0912345674', companyLogo: 'https://photo2.tinhte.vn/data/attachment-files/2025/12/8914358_22.jpg' },
+      { email: 'viettel@example.com', name: 'Tập đoàn Công nghiệp - Viễn thông Quân đội (Viettel)', phone: '0912345675', companyLogo: 'https://inhoangkien.vn/wp-content/uploads/2022/11/Logo-Tap-doan-vien-thong-Viettel-Moi-02-01-1024x640.jpg' },
+      { email: 'shopee@example.com', name: 'Công ty TNHH Shopee', phone: '0912345676', companyLogo: 'https://images.seeklogo.com/logo-png/53/2/shopee-logo-png_seeklogo-530807.png' },
+      { email: 'tiki@example.com', name: 'Công ty Cổ phần TiKi', phone: '0912345677', companyLogo: 'https://chongiatot.com.vn/wp-content/uploads/2025/07/ma-giam-gia-tiki-logo.png' },
+      { email: 'vinmec@example.com', name: 'Hệ thống Y tế Vinmec', phone: '0912345678', companyLogo: 'https://congtyquatang.com.vn/wp-content/uploads/2026/03/logo-vinmec-vector-scaled.png' },
+      { email: 'techcombank@example.com', name: 'Ngân hàng TMCP Kỹ Thương Việt Nam (Techcombank)', phone: '0912345679', companyLogo: 'https://inkythuatso.com/uploads/images/2021/09/logo-techcombank-inkythuatso-10-15-11-46.jpg' },
+      { email: 'vnpt@example.com', name: 'Tập đoàn Bưu chính Viễn thông Việt Nam (VNPT)', phone: '0912345670', companyLogo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjAT6-Z5apYFiLNyUjK8Inr-I-8RKzXa_4wQ&s' },
     ];
 
     const employers = await Promise.all(empData.map(e => 
@@ -44,6 +44,7 @@ const seed = async () => {
         role: 'employer',
         name: e.name,
         phone: e.phone,
+        companyLogo: e.companyLogo,
       })
     ));
 

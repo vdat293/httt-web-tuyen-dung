@@ -134,11 +134,19 @@ export default function Home() {
                 className="card p-4 block group transition-shadow duration-200 hover:shadow-card-hover"
               >
                 <div className="flex gap-3">
-                  {/* Company Logo Placeholder */}
-                  <div className="w-12 h-12 rounded-lg border border-line bg-bgSection flex items-center justify-center flex-shrink-0">
-                    <span className="text-brand-500 font-bold text-sm">
-                      {job.employerId?.name?.charAt(0)?.toUpperCase() || 'C'}
-                    </span>
+                  {/* Company Logo Container */}
+                  <div className="w-12 h-12 rounded-lg border border-line bg-white flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    {job.employerId?.companyLogo ? (
+                      <img 
+                        src={job.employerId.companyLogo} 
+                        alt={job.employerId?.name || 'Company Logo'} 
+                        className="w-full h-full object-contain p-1"
+                      />
+                    ) : (
+                      <span className="text-brand-500 font-bold text-sm">
+                        {job.employerId?.name?.charAt(0)?.toUpperCase() || 'C'}
+                      </span>
+                    )}
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="text-sm font-semibold text-heading group-hover:text-brand-500 transition-colors line-clamp-2 leading-snug">

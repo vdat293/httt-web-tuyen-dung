@@ -1,6 +1,7 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { useState } from 'react';
+import logo from '../public/imgs/logo_genbygem.png';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -17,19 +18,16 @@ export default function Navbar() {
 
   const linkClass = (path) =>
     `px-3 py-2 text-sm font-medium rounded-md transition-colors ${
-      isActive(path) ? 'text-brand-500 bg-brand-50' : 'text-body hover:text-brand-500'
+      isActive(path) ? 'text-brand-500 bg-brand-50' : 'text-gray-700 hover:text-brand-500 hover:bg-gray-200/60'
     }`;
 
   return (
-    <nav className="sticky top-0 z-50 bg-white border-b border-line">
+    <nav className="sticky top-0 z-50 border-b border-gray-200" style={{ backgroundColor: '#F0F2F5' }}>
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <div className="flex items-center justify-between h-14">
           {/* Logo */}
-          <Link to="/" className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-brand-500 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-sm">R</span>
-            </div>
-            <span className="text-lg font-bold text-brand-500 hidden sm:block">RecruitPro</span>
+          <Link to="/" className="flex items-center h-full -ml-4 sm:-ml-6 pr-4">
+            <img src={logo} alt="8386recruit Logo" className="h-14 w-auto object-cover" />
           </Link>
 
           {/* Desktop Nav */}
@@ -37,7 +35,7 @@ export default function Navbar() {
             {!user ? (
               <>
                 <Link to="/" className={linkClass('/')}>Việc làm</Link>
-                <div className="w-px h-5 bg-border mx-2"></div>
+                <div className="w-px h-5 bg-gray-300 mx-2"></div>
                 <Link to="/login" className="btn-outline !py-1.5 !px-4 text-sm">Đăng nhập</Link>
                 <Link to="/register" className="btn-primary !py-1.5 !px-4 text-sm ml-2">Đăng ký</Link>
               </>
@@ -59,13 +57,13 @@ export default function Navbar() {
                     <Link to="/candidate/interviews" className={linkClass('/candidate/interviews')}>Phỏng vấn</Link>
                   </>
                 )}
-                <div className="w-px h-5 bg-border mx-2"></div>
+                <div className="w-px h-5 bg-gray-300 mx-2"></div>
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center text-sm font-semibold">
                     {user.name?.charAt(0)?.toUpperCase()}
                   </div>
-                  <span className="text-sm font-medium text-heading hidden lg:block">{user.name}</span>
-                  <button onClick={handleLogout} className="text-sm text-meta hover:text-red-500 transition-colors ml-1">
+                  <span className="text-sm font-medium text-gray-800 hidden lg:block">{user.name}</span>
+                  <button onClick={handleLogout} className="text-sm text-gray-500 hover:text-red-500 transition-colors ml-1">
                     Đăng xuất
                   </button>
                 </div>
@@ -74,7 +72,7 @@ export default function Navbar() {
           </div>
 
           {/* Mobile toggle */}
-          <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden p-2 rounded-md hover:bg-gray-100">
+          <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden p-2 rounded-md hover:bg-gray-200 text-gray-700">
             <svg width="20" height="20" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
               {menuOpen ? (
                 <path strokeLinecap="round" d="M6 18L18 6M6 6l12 12" />
@@ -87,7 +85,7 @@ export default function Navbar() {
 
         {/* Mobile Menu */}
         {menuOpen && (
-          <div className="md:hidden py-3 border-t border-line animate-fade-in">
+          <div className="md:hidden py-3 border-t border-gray-200 animate-fade-in">
             <div className="flex flex-col gap-1">
               {!user ? (
                 <>
@@ -115,12 +113,12 @@ export default function Navbar() {
                       <Link to="/candidate/interviews" className={linkClass('/candidate/interviews')} onClick={() => setMenuOpen(false)}>Phỏng vấn</Link>
                     </>
                   )}
-                  <div className="flex items-center justify-between border-t border-line mt-2 pt-3">
+                  <div className="flex items-center justify-between border-t border-gray-200 mt-2 pt-3">
                     <div className="flex items-center gap-2">
                       <div className="w-8 h-8 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center text-sm font-semibold">
                         {user.name?.charAt(0)?.toUpperCase()}
                       </div>
-                      <span className="text-sm font-medium text-heading">{user.name}</span>
+                      <span className="text-sm font-medium text-gray-800">{user.name}</span>
                     </div>
                     <button onClick={handleLogout} className="text-sm text-red-500 font-medium">Đăng xuất</button>
                   </div>

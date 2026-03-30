@@ -22,7 +22,7 @@ const getJobs = async (req, res, next) => {
     else filter.status = 'open'; // default to open jobs
 
     const jobs = await Job.find(filter)
-      .populate('employerId', 'name email')
+      .populate('employerId', 'name email companyLogo')
       .sort({ createdAt: -1 });
 
     res.json(jobs);
@@ -33,7 +33,7 @@ const getJobs = async (req, res, next) => {
 
 const getJob = async (req, res, next) => {
   try {
-    const job = await Job.findById(req.params.id).populate('employerId', 'name email phone');
+    const job = await Job.findById(req.params.id).populate('employerId', 'name email phone companyLogo');
 
     if (!job) {
       return res.status(404).json({ message: 'Job not found' });
@@ -47,7 +47,7 @@ const getJob = async (req, res, next) => {
       _id: { $ne: job._id },
       status: 'open',
     })
-      .populate('employerId', 'name')
+      .populate('employerId', 'name companyLogo')
       .limit(4)
       .sort({ createdAt: -1 });
 

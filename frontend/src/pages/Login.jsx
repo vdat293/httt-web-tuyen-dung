@@ -34,7 +34,7 @@ export default function Login() {
             <div className="w-10 h-10 bg-brand-500 rounded-lg flex items-center justify-center">
               <span className="text-white font-bold text-lg">R</span>
             </div>
-            <span className="text-2xl font-bold text-brand-500">RecruitPro</span>
+            <span className="text-2xl font-bold text-brand-500">8386recruit</span>
           </Link>
         </div>
 
