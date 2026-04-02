@@ -3,29 +3,77 @@ const Application = require('../models/Application');
 
 const getJobs = async (req, res, next) => {
   try {
-    const { title, location, skills, jobType, status } = req.query;
+    const {
+      q,
+      location,
+      jobType,
+      experience,
+      salaryMin,
+      salaryMax,
+      skills,
+      sort = 'createdAt',
+      order = 'desc',
+      page = 1,
+      limit = 10,
+    } = req.query;
+
     const filter = {};
 
-    if (title) {
+    if (q) {
       filter.$or = [
-        { title: { $regex: title, $options: 'i' } },
-        { description: { $regex: title, $options: 'i' } },
+        { title: { $regex: q, $options: 'i' } },
+        { description: { $regex: q, $options: 'i' } },
       ];
     }
     if (location) filter.location = { $regex: location, $options: 'i' };
-    if (skills) {
-      const skillList = skills.split(',').map((s) => s.trim());
-      filter.skills = { $in: skillList };
-    }
     if (jobType) filter.jobType = jobType;
-    if (status) filter.status = status;
-    else filter.status = 'open'; // default to open jobs
+    if (experience) filter.experience = experience;
+    if (skills) {
+      const skillList = skills.split(',').map((s) => s.trim()).filter(Boolean);
+      if (skillList.length) filter.skills = { $in: skillList };
+    }
+    if (salaryMin || salaryMax) {
+      filter['salary.min'] = {};
+      if (salaryMin) filter['salary.min'].$gte = Number(salaryMin);
+      if (salaryMax) filter['salary.min'].$lte = Number(salaryMax);
+    }
+    filter.status = 'open';
 
-    const jobs = await Job.find(filter)
-      .populate('employerId', 'name email companyLogo')
-      .sort({ createdAt: -1 });
+    const pageNum = Math.max(1, Number(page));
+    const limitNum = Math.min(50, Math.max(1, Number(limit)));
+    const skip = (pageNum - 1) * limitNum;
+    const sortOrder = order === 'asc' ? 1 : -1;
+    const sortObj = { [sort]: sortOrder };
 
-    res.json(jobs);
+    const [jobs, total] = await Promise.all([
+      Job.find(filter)
+        .populate('employerId', 'name email companyLogo')
+        .sort(sortObj)
+        .skip(skip)
+        .limit(limitNum),
+      Job.countDocuments(filter),
+    ]);
+
+    res.json({
+      jobs,
+      total,
+      page: pageNum,
+      totalPages: Math.ceil(total / limitNum),
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const incrementViews = async (req, res, next) => {
+  try {
+    const job = await Job.findByIdAndUpdate(
+      req.params.id,
+      { $inc: { views: 1 } },
+      { new: true }
+    );
+    if (!job) return res.status(404).json({ message: 'Job not found' });
+    res.json({ views: job.views });
   } catch (error) {
     next(error);
   }
@@ -59,7 +107,15 @@ const getJob = async (req, res, next) => {
 
 const createJob = async (req, res, next) => {
   try {
-    const { title, description, requirements, benefits, salary, location, jobType, skills } = req.body;
+    const { title, description, requirements, benefits, salary, location, jobType, experience, level, skills } = req.body;
+
+    // Support both old string salary and new {min,max} format
+    let salaryData = salary;
+    if (typeof salary === 'object') {
+      salaryData = salary;
+    } else {
+      salaryData = { min: 0, max: 0 };
+    }
 
     const job = await Job.create({
       employerId: req.user._id,
@@ -67,9 +123,11 @@ const createJob = async (req, res, next) => {
       description,
       requirements,
       benefits: benefits || '',
-      salary,
+      salary: salaryData,
       location,
       jobType,
+      experience: experience || 'fresher',
+      level: level || '',
       skills: skills || [],
     });
 
@@ -132,4 +190,4 @@ const getMyJobs = async (req, res, next) => {
   }
 };
 
-module.exports = { getJobs, getJob, createJob, updateJob, deleteJob, getMyJobs };
+module.exports = { getJobs, getJob, createJob, updateJob, deleteJob, getMyJobs, incrementViews };

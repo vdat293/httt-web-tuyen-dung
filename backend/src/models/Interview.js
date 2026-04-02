@@ -29,6 +29,10 @@ const interviewSchema = new mongoose.Schema(
       enum: ['passed', 'failed', null],
       default: null,
     },
+    reminderSent: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );

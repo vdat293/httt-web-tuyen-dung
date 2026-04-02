@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['employer', 'candidate'],
+      enum: ['employer', 'candidate', 'admin'],
       required: [true, 'Role is required'],
     },
     name: {
@@ -34,6 +34,65 @@ const userSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
+    // Candidate fields
+    avatar: {
+      type: String,
+      trim: true,
+    },
+    skills: {
+      type: [String],
+      default: [],
+    },
+    experience: {
+      type: String,
+      trim: true,
+    },
+    education: {
+      type: String,
+      trim: true,
+    },
+    bio: {
+      type: String,
+      trim: true,
+    },
+    resumeUrl: {
+      type: String,
+      trim: true,
+    },
+    // Employer fields
+    companyName: {
+      type: String,
+      trim: true,
+    },
+    companySize: {
+      type: String,
+      trim: true,
+    },
+    industry: {
+      type: String,
+      trim: true,
+    },
+    website: {
+      type: String,
+      trim: true,
+    },
+    description: {
+      type: String,
+      trim: true,
+    },
+    // Admin management
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
+    // Authentication & Security
+    emailVerified: {
+      type: Boolean,
+      default: false,
+    },
+    verificationToken: String,
+    resetPasswordToken: String,
+    resetPasswordExpires: Date,
   },
   { timestamps: true }
 );

@@ -26,9 +26,8 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     const { data } = await authAPI.register(userData);
-    localStorage.setItem('token', data.token);
-    localStorage.setItem('user', JSON.stringify(data.user));
-    setUser(data.user);
+    // Tính năng xác thực email: backend không trả về token lúc đăng ký
+    // Người dùng cần xác thực OTP mới có thể đăng nhập.
     return data;
   };
 

@@ -1,5 +1,6 @@
 const Application = require('../models/Application');
 const Job = require('../models/Job');
+const { createNotification } = require('./notificationController');
 const { parseCVWithLLM } = require('../services/cvParser');
 const fs = require('fs');
 const path = require('path');
@@ -118,6 +119,16 @@ const createApplication = async (req, res, next) => {
       .populate('jobId', 'title location')
       .populate('candidateId', 'name email');
 
+    // Notify employer of new application
+    await createNotification({
+      user: job.employerId,
+      type: 'application_received',
+      title: 'Đơn ứng tuyển mới',
+      message: `${populated.candidateId.name} đã ứng tuyển vị trí "${job.title}"`,
+      data: { jobId, applicationId: application._id },
+      io: req.io,
+    });
+
     res.status(201).json(populated);
   } catch (error) {
     next(error);
@@ -142,6 +153,22 @@ const updateApplicationStatus = async (req, res, next) => {
 
     application.status = status;
     await application.save();
+
+    const statusLabels = {
+      reviewed: 'đã xem',
+      interview: 'được mời phỏng vấn',
+      accepted: 'đã được chấp nhận',
+      rejected: 'đã bị từ chối',
+    };
+
+    await createNotification({
+      user: application.candidateId,
+      type: 'application_status_changed',
+      title: 'Cập nhật trạng thái ứng tuyển',
+      message: `Đơn ứng tuyển vị trí "${application.jobId.title}" đã ${statusLabels[status] || 'được cập nhật'}`,
+      data: { jobId: application.jobId._id, applicationId: application._id },
+      io: req.io,
+    });
 
     res.json(application);
   } catch (error) {

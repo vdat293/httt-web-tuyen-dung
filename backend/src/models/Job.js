@@ -25,8 +25,8 @@ const jobSchema = new mongoose.Schema(
       required: false,
     },
     salary: {
-      type: String,
-      default: 'Negotiable',
+      min: { type: Number, default: 0 },
+      max: { type: Number, default: 0 },
     },
     location: {
       type: String,
@@ -38,14 +38,31 @@ const jobSchema = new mongoose.Schema(
       enum: ['full-time', 'part-time', 'contract', 'internship', 'remote'],
       default: 'full-time',
     },
+    experience: {
+      type: String,
+      enum: ['intern', 'fresher', 'junior', 'senior', 'manager'],
+      default: 'fresher',
+    },
+    level: {
+      type: String,
+      default: '',
+    },
     skills: {
       type: [String],
       default: [],
     },
+    views: {
+      type: Number,
+      default: 0,
+    },
     status: {
       type: String,
-      enum: ['open', 'closed'],
+      enum: ['open', 'closed', 'rejected'],
       default: 'open',
+    },
+    rejectReason: {
+      type: String,
+      default: '',
     },
   },
   { timestamps: true }

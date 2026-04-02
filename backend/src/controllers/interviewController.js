@@ -1,6 +1,7 @@
 const Interview = require('../models/Interview');
 const Application = require('../models/Application');
 const Job = require('../models/Job');
+const { createNotification } = require('./notificationController');
 
 const getInterviews = async (req, res, next) => {
   try {
@@ -66,6 +67,20 @@ const createInterview = async (req, res, next) => {
       ],
     });
 
+    // Notify candidate of new interview
+    const scheduledTime = new Date(scheduledAt).toLocaleString('vi-VN', {
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit',
+    });
+    await createNotification({
+      user: application.candidateId,
+      type: 'interview_scheduled',
+      title: 'Lịch phỏng vấn mới',
+      message: `Bạn có lịch phỏng vấn vị trí "${application.jobId.title}" vào ${scheduledTime}`,
+      data: { interviewId: interview._id, applicationId },
+      io: req.io,
+    });
+
     res.status(201).json(populated);
   } catch (error) {
     next(error);
@@ -102,6 +117,30 @@ const updateInterview = async (req, res, next) => {
       const application = await Application.findById(interview.applicationId._id);
       application.status = result === 'passed' ? 'accepted' : 'rejected';
       await application.save();
+
+      // Notify candidate of final result
+      await createNotification({
+        user: interview.applicationId.candidateId,
+        type: 'application_status_changed',
+        title: result === 'passed' ? 'Chúc mừng! Bạn đã vượt qua phỏng vấn' : 'Kết quả phỏng vấn',
+        message: result === 'passed'
+          ? `Chúc mừng bạn đã vượt qua phỏng vấn vị trí "${interview.applicationId.jobId.title}"`
+          : `Kết quả phỏng vấn vị trí "${interview.applicationId.jobId.title}" đã được cập nhật`,
+        data: { applicationId: interview.applicationId._id },
+        io: req.io,
+      });
+    }
+
+    // If time/location changed, notify candidate
+    if ((scheduledAt && status !== 'completed') || location) {
+      await createNotification({
+        user: interview.applicationId.candidateId,
+        type: 'interview_scheduled',
+        title: 'Cập nhật lịch phỏng vấn',
+        message: `Lịch phỏng vấn vị trí "${interview.applicationId.jobId.title}" vừa được cập nhật`,
+        data: { interviewId: interview._id },
+        io: req.io,
+      });
     }
 
     const updated = await Interview.findById(interview._id).populate({

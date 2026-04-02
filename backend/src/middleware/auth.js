@@ -20,6 +20,10 @@ const protect = async (req, res, next) => {
       return res.status(401).json({ message: 'User not found' });
     }
 
+    if (!req.user.isActive) {
+      return res.status(403).json({ message: 'Tài khoản đã bị vô hiệu hóa' });
+    }
+
     next();
   } catch (error) {
     res.status(401).json({ message: 'Not authorized, token failed' });

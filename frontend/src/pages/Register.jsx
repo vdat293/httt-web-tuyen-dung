@@ -16,7 +16,7 @@ export default function Register() {
     setLoading(true);
     try {
       const data = await register(form);
-      navigate(data.user.role === 'employer' ? '/employer/dashboard' : '/jobs');
+      navigate('/verify-email', { state: { email: form.email } });
     } catch (err) {
       setError(err.response?.data?.message || 'Đăng ký thất bại');
     } finally {

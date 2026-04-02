@@ -1,11 +1,21 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { jobsAPI, applicationsAPI } from '../api';
+import SaveJobButton from '../components/SaveJobButton';
 import { useAuth } from '../contexts/AuthContext';
 import { useToast } from '../components/Toast';
 import Layout from '../components/Layout';
 import LoadingSkeleton from '../components/LoadingSkeleton';
 import StatusBadge from '../components/StatusBadge';
+
+function formatSalary(salary) {
+  if (!salary) return 'Thỏa thuận';
+  if (typeof salary === 'string') return salary;
+  if (salary.min === 0 && salary.max === 0) return 'Thỏa thuận';
+  const fmt = (n) => (n >= 1000000 ? `${(n / 1000000).toFixed(0)}M` : n);
+  if (salary.max > 0) return `${fmt(salary.min)} - ${fmt(salary.max)}`;
+  return `Từ ${fmt(salary.min)}`;
+}
 
 export default function JobDetail() {
   const { id } = useParams();
@@ -87,7 +97,10 @@ export default function JobDetail() {
                     <h1 className="text-xl font-bold text-heading">{job.title}</h1>
                     <p className="text-sm text-meta mt-0.5">{job.employerId?.name}</p>
                   </div>
-                  <StatusBadge status={job.status} />
+                  <div className="flex items-center gap-2 flex-shrink-0">
+                    <SaveJobButton jobId={job._id} />
+                    <StatusBadge status={job.status} />
+                  </div>
                 </div>
               </div>
             </div>
@@ -99,7 +112,7 @@ export default function JobDetail() {
               </div>
               <div className="bg-bgSection rounded-lg px-3 py-2.5">
                 <div className="text-xs text-meta">Mức lương</div>
-                <div className="text-sm font-medium text-brand-500 mt-0.5">{job.salary || 'Thỏa thuận'}</div>
+                <div className="text-sm font-medium text-brand-500 mt-0.5">{formatSalary(job.salary)}</div>
               </div>
               <div className="bg-bgSection rounded-lg px-3 py-2.5">
                 <div className="text-xs text-meta">Loại hình</div>
@@ -178,7 +191,7 @@ export default function JobDetail() {
                       </h3>
                       <p className="text-xs text-meta mt-1 truncate">{relatedJob.employerId?.name}</p>
                       <div className="flex flex-wrap gap-2 mt-1.5">
-                        <span className="text-xs font-semibold text-brand-500">{relatedJob.salary}</span>
+                        <span className="text-xs font-semibold text-brand-500">{formatSalary(relatedJob.salary)}</span>
                         <span className="text-xs text-meta">• {relatedJob.location}</span>
                       </div>
                     </div>

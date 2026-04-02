@@ -19,7 +19,11 @@ export default function Login() {
       const data = await login(email, password);
       navigate(data.user.role === 'employer' ? '/employer/dashboard' : '/jobs');
     } catch (err) {
-      setError(err.response?.data?.message || 'Đăng nhập thất bại');
+      if (err.response?.data?.needsVerification) {
+        navigate('/verify-email', { state: { email: err.response.data.email } });
+      } else {
+        setError(err.response?.data?.message || 'Đăng nhập thất bại');
+      }
     } finally {
       setLoading(false);
     }
@@ -84,7 +88,13 @@ export default function Login() {
               </div>
             </div>
 
-            <button type="submit" disabled={loading} className="btn-primary w-full mt-2">
+            <div className="flex justify-end mb-4">
+              <Link to="/forgot-password" className="text-sm font-medium text-brand-500 hover:text-brand-600">
+                Quên mật khẩu?
+              </Link>
+            </div>
+
+            <button type="submit" disabled={loading} className="btn-primary w-full">
               {loading ? 'Đang xử lý...' : 'Đăng nhập'}
             </button>
           </form>

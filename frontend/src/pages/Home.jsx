@@ -1,35 +1,44 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { jobsAPI } from '../api';
 import Layout from '../components/Layout';
 import LoadingSkeleton from '../components/LoadingSkeleton';
 import EmptyState from '../components/EmptyState';
-import StatusBadge from '../components/StatusBadge';
+import JobCard from '../components/JobCard';
 
 export default function Home() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filters, setFilters] = useState({ title: '', location: '' });
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalJobs, setTotalJobs] = useState(0);
+  const navigate = useNavigate();
 
-  useEffect(() => { loadJobs(); }, []);
+  useEffect(() => { loadJobs(page); }, [page]);
 
-  const loadJobs = async () => {
+  const loadJobs = async (currentPage) => {
     setLoading(true);
     try {
-      const { data } = await jobsAPI.getAll({});
-      setJobs(data);
+      const { data } = await jobsAPI.getAll({ page: currentPage, limit: 9 });
+      if (data && data.jobs) {
+        setJobs(data.jobs);
+        setTotalPages(data.totalPages);
+        setTotalJobs(data.total);
+      } else {
+        setJobs(Array.isArray(data) ? data : []);
+        setTotalJobs(Array.isArray(data) ? data.length : 0);
+      }
     } catch (err) { console.error(err); }
     finally { setLoading(false); }
   };
 
-  const handleSearch = async (e) => {
+  const handleSearch = (e) => {
     e.preventDefault();
-    setLoading(true);
-    try {
-      const { data } = await jobsAPI.getAll(filters);
-      setJobs(data);
-    } catch (err) { console.error(err); }
-    finally { setLoading(false); }
+    const params = new URLSearchParams();
+    if (filters.title) params.set('q', filters.title);
+    if (filters.location) params.set('location', filters.location);
+    navigate(`/jobs?${params.toString()}`);
   };
 
   return (
@@ -89,7 +98,7 @@ export default function Home() {
           {/* Stats bar */}
           <div className="flex items-center justify-center gap-6 sm:gap-10 mt-8 text-white/80 text-sm">
             <div className="text-center">
-              <span className="text-xl sm:text-2xl font-bold text-white block">{jobs.length}</span>
+              <span className="text-xl sm:text-2xl font-bold text-white block">{totalJobs > 0 ? totalJobs : jobs.length}</span>
               <span className="text-xs">Việc làm</span>
             </div>
             <div className="w-px h-8 bg-white/20"></div>
@@ -110,9 +119,9 @@ export default function Home() {
       <Layout>
         <div className="flex items-center justify-between mb-5">
           <div>
-            <h2 className="section-title">Việc làm tốt nhất</h2>
+            <h2 className="section-title">Việc làm tốt nhất hôm nay</h2>
             <p className="text-sm text-meta mt-0.5">
-              {loading ? 'Đang tải...' : `${jobs.length} việc làm được tìm thấy`}
+              {loading ? 'Đang tải...' : `${totalJobs > 0 ? totalJobs : jobs.length} việc làm được tìm thấy`}
             </p>
           </div>
         </div>
@@ -126,54 +135,57 @@ export default function Home() {
             description="Thử thay đổi từ khóa tìm kiếm để tìm việc làm phù hợp."
           />
         ) : (
-          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {jobs.map((job) => (
-              <Link
-                key={job._id}
-                to={`/jobs/${job._id}`}
-                className="card p-4 block group transition-shadow duration-200 hover:shadow-card-hover"
-              >
-                <div className="flex gap-3">
-                  {/* Company Logo Container */}
-                  <div className="w-12 h-12 rounded-lg border border-line bg-white flex items-center justify-center flex-shrink-0 overflow-hidden">
-                    {job.employerId?.companyLogo ? (
-                      <img 
-                        src={job.employerId.companyLogo} 
-                        alt={job.employerId?.name || 'Company Logo'} 
-                        className="w-full h-full object-contain p-1"
-                      />
-                    ) : (
-                      <span className="text-brand-500 font-bold text-sm">
-                        {job.employerId?.name?.charAt(0)?.toUpperCase() || 'C'}
-                      </span>
-                    )}
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-semibold text-heading group-hover:text-brand-500 transition-colors line-clamp-2 leading-snug">
-                      {job.title}
-                    </h3>
-                    <p className="text-xs text-meta mt-0.5 truncate">{job.employerId?.name}</p>
-                  </div>
-                </div>
-                <div className="flex flex-wrap items-center gap-2 mt-3">
-                  <span className="tag tag-green">{job.salary || 'Thỏa thuận'}</span>
-                  <span className="tag tag-gray">{job.location}</span>
-                </div>
-                {job.skills && job.skills.length > 0 && (
-                  <div className="flex flex-wrap gap-1.5 mt-2">
-                    {job.skills.slice(0, 3).map((skill) => (
-                      <span key={skill} className="text-xs text-meta bg-bgSection px-2 py-0.5 rounded">
-                        {skill}
-                      </span>
-                    ))}
-                    {job.skills.length > 3 && (
-                      <span className="text-xs text-meta">+{job.skills.length - 3}</span>
-                    )}
-                  </div>
-                )}
-              </Link>
-            ))}
-          </div>
+          <>
+            <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {jobs.map((job) => (
+                <JobCard key={job._id} job={job} />
+              ))}
+            </div>
+
+            {totalPages > 1 && (
+              <div className="flex flex-wrap items-center justify-center gap-1.5 mt-8">
+                <button
+                  onClick={() => setPage((p) => Math.max(1, p - 1))}
+                  disabled={page === 1}
+                  className="btn-ghost !px-3 !py-1.5 disabled:opacity-40"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+
+                {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => {
+                  if (p === 1 || p === totalPages || (p >= page - 1 && p <= page + 1)) {
+                    return (
+                      <button
+                        key={p}
+                        onClick={() => setPage(p)}
+                        className={`w-9 h-9 text-sm font-medium rounded-lg transition-colors ${
+                          page === p ? 'bg-brand-500 text-white' : 'text-meta hover:bg-gray-100'
+                        }`}
+                      >
+                        {p}
+                      </button>
+                    );
+                  }
+                  if (p === page - 2 || p === page + 2) {
+                    return <span key={p} className="px-2 py-1.5 text-sm text-meta">...</span>;
+                  }
+                  return null;
+                })}
+
+                <button
+                  onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+                  disabled={page === totalPages}
+                  className="btn-ghost !px-3 !py-1.5 disabled:opacity-40"
+                >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              </div>
+            )}
+          </>
         )}
       </Layout>
     </>
