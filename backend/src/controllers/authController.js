@@ -1,10 +1,19 @@
 const jwt = require('jsonwebtoken');
+const crypto = require('crypto');
 const User = require('../models/User');
+const RefreshToken = require('../models/RefreshToken');
 const OTPCode = require('../models/OTPCode');
 const { sendEmail, templates } = require('../services/emailService');
 
-const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+const REFRESH_TOKEN_EXPIRY_DAYS = 7;
+const ACCESS_TOKEN_EXPIRY     = '15m';
+
+const generateAccessToken = (id) => {
+  return jwt.sign({ id }, process.env.JWT_SECRET, { expiresIn: ACCESS_TOKEN_EXPIRY });
+};
+
+const generateRefreshToken = () => {
+  return crypto.randomBytes(64).toString('hex');
 };
 
 const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString();
@@ -117,7 +126,20 @@ const login = async (req, res, next) => {
       });
     }
 
-    const token = generateToken(user._id);
+    const accessToken  = generateAccessToken(user._id);
+    const refreshToken = generateRefreshToken();
+
+    // Lưu refresh token vào DB
+    await RefreshToken.create({
+      token: refreshToken,
+      userId: user._id,
+      expiresAt: new Date(Date.now() + REFRESH_TOKEN_EXPIRY_DAYS * 24 * 60 * 60 * 1000),
+      userAgent: req.get('user-agent') || '',
+    });
+
+    // Cập nhật lastActiveAt
+    user.lastActiveAt = new Date();
+    await user.save();
 
     res.json({
       user: {
@@ -131,7 +153,8 @@ const login = async (req, res, next) => {
         isActive: user.isActive,
         createdAt: user.createdAt,
       },
-      token,
+      accessToken,
+      refreshToken,
     });
   } catch (error) {
     next(error);
@@ -192,4 +215,80 @@ const getMe = async (req, res) => {
   res.json(req.user);
 };
 
-module.exports = { register, login, getMe, verifyEmail, resendVerifyEmail, forgotPassword, resetPassword };
+// ─── Refresh Token ──────────────────────────────────────────────────────────
+const refreshToken = async (req, res, next) => {
+  try {
+    const { refreshToken: token } = req.body;
+    if (!token) {
+      return res.status(400).json({ message: 'Refresh token is required' });
+    }
+
+    const storedToken = await RefreshToken.findOne({ token, isRevoked: false });
+    if (!storedToken) {
+      return res.status(401).json({ message: 'Invalid refresh token' });
+    }
+    if (storedToken.expiresAt < new Date()) {
+      storedToken.isRevoked = true;
+      await storedToken.save();
+      return res.status(401).json({ message: 'Refresh token expired' });
+    }
+
+    // Tạo access token mới
+    const newAccessToken  = generateAccessToken(storedToken.userId);
+    const newRefreshToken = generateRefreshToken();
+
+    // Revoke token cũ (rotation)
+    storedToken.isRevoked = true;
+    await storedToken.save();
+
+    // Lưu refresh token mới
+    await RefreshToken.create({
+      token: newRefreshToken,
+      userId: storedToken.userId,
+      expiresAt: new Date(Date.now() + REFRESH_TOKEN_EXPIRY_DAYS * 24 * 60 * 60 * 1000),
+    });
+
+    res.json({
+      accessToken: newAccessToken,
+      refreshToken: newRefreshToken,
+    });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ─── Logout ─────────────────────────────────────────────────────────────────
+const logout = async (req, res, next) => {
+  try {
+    const { refreshToken: token } = req.body;
+    if (token) {
+      await RefreshToken.revokeToken(token);
+    }
+    res.json({ message: 'Đăng xuất thành công' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+// ─── Revoke tất cả refresh tokens của user ───────────────────────────────────
+const revokeAllTokens = async (req, res, next) => {
+  try {
+    await RefreshToken.revokeAllForUser(req.user._id);
+    res.json({ message: 'Đã thu hồi tất cả phiên đăng nhập' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = {
+  register,
+  login,
+  getMe,
+  verifyEmail,
+  resendVerifyEmail,
+  forgotPassword,
+  resetPassword,
+  refreshToken,
+  logout,
+  revokeAllTokens,
+};

@@ -1,6 +1,7 @@
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { useToast } from './Toast';
 import logo from '../public/imgs/logo_genbygem.png';
 import NotificationDropdown from './NotificationDropdown';
 
@@ -9,6 +10,18 @@ export default function Navbar() {
   const navigate = useNavigate();
   const location = useLocation();
   const [menuOpen, setMenuOpen] = useState(false);
+  const { addToast } = useToast();
+
+  // ─── Lắng nghe session expired để hiện toast ────────────────────────
+  useEffect(() => {
+    const handleSessionExpired = () => {
+      if (location.pathname !== '/login') {
+        addToast('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.', 'warning', 5000);
+      }
+    };
+    window.addEventListener('session-expired', handleSessionExpired);
+    return () => window.removeEventListener('session-expired', handleSessionExpired);
+  }, [location.pathname, addToast]);
 
   const handleLogout = () => {
     logout();

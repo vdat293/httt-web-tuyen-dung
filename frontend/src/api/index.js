@@ -2,33 +2,112 @@ import axios from 'axios';
 
 const API_URL = '/api';
 
+// ─── Khởi tạo axios ─────────────────────────────────────────────────────────
 const api = axios.create({
   baseURL: API_URL,
   headers: { 'Content-Type': 'application/json' },
 });
 
-// Request interceptor to add token
-api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-  return config;
-});
+// ─── State cho refresh token ─────────────────────────────────────────────────
+let isRefreshing = false;
+let failedQueue = [];
 
-// Response interceptor to handle errors
+const processQueue = (error, token = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  failedQueue = [];
+};
+
+// ─── Request interceptor: thêm token ─────────────────────────────────────────
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('accessToken');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// ─── Response interceptor: xử lý lỗi 401 + auto-refresh ────────────────────
 api.interceptors.response.use(
   (response) => response,
-  (error) => {
-    if (error.response?.status === 401) {
-      localStorage.removeItem('token');
-      localStorage.removeItem('user');
-      window.location.href = '/login';
+  async (error) => {
+    const originalRequest = error.config;
+
+    // Nếu lỗi 401 và chưa thử refresh, và không phải request /refresh
+    if (
+      error.response?.status === 401 &&
+      error.response?.data?.code === 'TOKEN_EXPIRED' &&
+      !originalRequest._retry &&
+      !originalRequest.url.includes('/auth/refresh')
+    ) {
+      if (isRefreshing) {
+        // Đang trong quá trình refresh → queue request lại
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+          .then((token) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return api(originalRequest);
+          })
+          .catch((err) => Promise.reject(err));
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        const refreshToken = localStorage.getItem('refreshToken');
+        if (!refreshToken) {
+          throw new Error('No refresh token');
+        }
+
+        const { data } = await axios.post(`${API_URL}/auth/refresh`, { refreshToken });
+
+        localStorage.setItem('accessToken', data.accessToken);
+        localStorage.setItem('refreshToken', data.refreshToken);
+
+        processQueue(null, data.accessToken);
+
+        originalRequest.headers.Authorization = `Bearer ${data.accessToken}`;
+        return api(originalRequest);
+      } catch (refreshError) {
+        processQueue(refreshError, null);
+
+        // Refresh thất bại → clear hết token + thông báo
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
+        localStorage.removeItem('user');
+
+        // Gửi sự kiện để các component lắng nghe
+        window.dispatchEvent(new CustomEvent('session-expired'));
+
+        return Promise.reject(refreshError);
+      } finally {
+        isRefreshing = false;
+      }
     }
+
+    // Các lỗi 401 khác (NO_TOKEN, USER_NOT_FOUND, INVALID_TOKEN)
+    if (error.response?.status === 401 && error.response?.data?.code !== 'TOKEN_EXPIRED') {
+      localStorage.removeItem('accessToken');
+      localStorage.removeItem('refreshToken');
+      localStorage.removeItem('user');
+      window.dispatchEvent(new CustomEvent('session-expired'));
+    }
+
     return Promise.reject(error);
   }
 );
 
+// ─── API functions ────────────────────────────────────────────────────────────
 export const authAPI = {
   register: (data) => api.post('/auth/register', data),
   login: (data) => api.post('/auth/login', data),
@@ -37,6 +116,9 @@ export const authAPI = {
   resendVerifyEmail: (data) => api.post('/auth/resend-verify-email', data),
   forgotPassword: (data) => api.post('/auth/forgot-password', data),
   resetPassword: (data) => api.post('/auth/reset-password', data),
+  logout: (refreshToken) => api.post('/auth/logout', { refreshToken }),
+  revokeAllTokens: () => api.post('/auth/revoke-all-tokens'),
+  refresh: (refreshToken) => api.post('/auth/refresh', { refreshToken }),
 };
 
 export const jobsAPI = {
@@ -72,7 +154,6 @@ export const reportsAPI = {
   getJobStats: (id) => api.get(`/reports/jobs/${id}`),
 };
 
-// Saved Jobs
 export const savedJobsAPI = {
   getAll: () => api.get('/saved-jobs'),
   save: (jobId) => api.post(`/saved-jobs/${jobId}`),
@@ -80,7 +161,6 @@ export const savedJobsAPI = {
   isSaved: (jobId) => api.get(`/saved-jobs/${jobId}/is-saved`),
 };
 
-// Profile
 export const profileAPI = {
   get: () => api.get('/profile'),
   update: (data) => api.put('/profile', data),
@@ -92,7 +172,6 @@ export const profileAPI = {
     api.put('/profile/password', { currentPassword, newPassword }),
 };
 
-// Notifications
 export const notificationsAPI = {
   getAll: (params) => api.get('/notifications', { params }),
   markRead: (id) => api.put(`/notifications/${id}/read`),
@@ -101,7 +180,6 @@ export const notificationsAPI = {
   getUnreadCount: () => api.get('/notifications/unread-count'),
 };
 
-// Admin
 export const adminAPI = {
   getDashboard: () => api.get('/admin/dashboard'),
   getUsers: (params) => api.get('/admin/users', { params }),

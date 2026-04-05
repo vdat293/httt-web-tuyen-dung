@@ -85,6 +85,11 @@ const userSchema = new mongoose.Schema(
       type: Boolean,
       default: true,
     },
+    // Activity tracking
+    lastActiveAt: {
+      type: Date,
+      default: null,
+    },
     // Authentication & Security
     emailVerified: {
       type: Boolean,
