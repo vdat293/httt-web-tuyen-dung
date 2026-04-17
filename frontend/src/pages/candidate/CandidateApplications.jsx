@@ -38,9 +38,15 @@ export default function CandidateApplications() {
                       {app.jobId?.title?.charAt(0)?.toUpperCase() || '?'}
                     </div>
                     <div className="min-w-0">
-                      <h3 className="text-sm font-semibold text-heading truncate">{app.jobId?.title}</h3>
-                      <p className="text-xs text-meta mt-0.5">{app.jobId?.location} · {app.jobId?.salary}</p>
-                      <p className="text-xs text-meta mt-0.5">Nộp: {new Date(app.appliedAt).toLocaleDateString('vi-VN')}</p>
+                      <h3 className="text-sm font-semibold text-heading truncate">
+                        {app.jobId?.title || 'Công việc không còn tồn tại'}
+                      </h3>
+                      <p className="text-xs text-meta mt-0.5">
+                        {app.jobId ? `${app.jobId.location} · ${app.jobId.salary.min.toLocaleString()} - ${app.jobId.salary.max.toLocaleString()} VNĐ` : 'N/A'}
+                      </p>
+                      <p className="text-xs text-meta mt-0.5">
+                        Nộp: {app.appliedAt ? new Date(app.appliedAt).toLocaleDateString('vi-VN') : 'N/A'}
+                      </p>
                       {app.cvUrl && <a href={app.cvUrl} target="_blank" rel="noreferrer" className="text-xs text-blue-500 hover:underline mt-0.5 inline-block">Xem CV</a>}
                     </div>
                   </div>

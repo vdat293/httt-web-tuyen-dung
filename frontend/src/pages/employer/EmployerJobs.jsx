@@ -12,7 +12,7 @@ export default function EmployerJobs() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const { addToast } = useToast();
-  const [form, setForm] = useState({ title: '', description: '', requirements: '', salary: '', location: '', jobType: 'full-time', skills: '' });
+  const [form, setForm] = useState({ title: '', description: '', requirements: '', salaryMin: '', salaryMax: '', location: '', jobType: 'full-time', skills: '' });
   const [editingId, setEditingId] = useState(null);
 
   useEffect(() => { loadJobs(); }, []);
@@ -25,18 +25,37 @@ export default function EmployerJobs() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const payload = { ...form, skills: form.skills.split(',').map(s => s.trim()).filter(Boolean) };
+      const payload = { 
+        ...form, 
+        salary: { 
+          min: Number(form.salaryMin), 
+          max: Number(form.salaryMax) 
+        },
+        skills: form.skills.split(',').map(s => s.trim()).filter(Boolean) 
+      };
+      delete payload.salaryMin;
+      delete payload.salaryMax;
+
       if (editingId) { await jobsAPI.update(editingId, payload); addToast('Cập nhật thành công'); }
       else { await jobsAPI.create(payload); addToast('Tạo tin thành công'); }
       setShowForm(false); setEditingId(null);
-      setForm({ title: '', description: '', requirements: '', salary: '', location: '', jobType: 'full-time', skills: '' });
+      setForm({ title: '', description: '', requirements: '', salaryMin: '', salaryMax: '', location: '', jobType: 'full-time', skills: '' });
       loadJobs();
     } catch (err) { addToast(err.response?.data?.message || 'Lỗi', 'error'); }
   };
 
   const handleEdit = (job) => {
     setEditingId(job._id);
-    setForm({ title: job.title, description: job.description, requirements: job.requirements, salary: job.salary, location: job.location, jobType: job.jobType, skills: job.skills?.join(', ') || '' });
+    setForm({ 
+      title: job.title, 
+      description: job.description, 
+      requirements: job.requirements, 
+      salaryMin: job.salary?.min || '', 
+      salaryMax: job.salary?.max || '', 
+      location: job.location, 
+      jobType: job.jobType, 
+      skills: job.skills?.join(', ') || '' 
+    });
     setShowForm(true);
   };
 
@@ -58,7 +77,7 @@ export default function EmployerJobs() {
     <Layout>
       <div className="flex items-center justify-between mb-5">
         <h1 className="section-title">Tin tuyển dụng</h1>
-        <button onClick={() => { setShowForm(true); setEditingId(null); setForm({ title: '', description: '', requirements: '', salary: '', location: '', jobType: 'full-time', skills: '' }); }} className="btn-primary text-sm">
+        <button onClick={() => { setShowForm(true); setEditingId(null); setForm({ title: '', description: '', requirements: '', salaryMin: '', salaryMax: '', location: '', jobType: 'full-time', skills: '' }); }} className="btn-primary text-sm">
           + Tạo tin mới
         </button>
       </div>
@@ -81,8 +100,12 @@ export default function EmployerJobs() {
                   <input value={form.location} onChange={e => setForm({...form, location: e.target.value})} className="input-field" required />
                 </div>
                 <div className="form-group !mb-0">
-                  <label>Mức lương</label>
-                  <input value={form.salary} onChange={e => setForm({...form, salary: e.target.value})} className="input-field" />
+                  <label>Lương tối thiểu (VNĐ)</label>
+                  <input type="number" value={form.salaryMin} onChange={e => setForm({...form, salaryMin: e.target.value})} className="input-field" placeholder="Ví dụ: 10000000" />
+                </div>
+                <div className="form-group !mb-0">
+                  <label>Lương tối đa (VNĐ)</label>
+                  <input type="number" value={form.salaryMax} onChange={e => setForm({...form, salaryMax: e.target.value})} className="input-field" placeholder="Ví dụ: 20000000" />
                 </div>
                 <div className="form-group !mb-0">
                   <label>Loại hình</label>
@@ -127,7 +150,9 @@ export default function EmployerJobs() {
               </div>
               <div className="flex-1 min-w-0">
                 <h3 className="text-sm font-semibold text-heading truncate">{job.title}</h3>
-                <p className="text-xs text-meta mt-0.5">{job.location} · {job.jobType} · {job.salary}</p>
+                <p className="text-xs text-meta mt-0.5">
+                  {job.location} · {job.jobType} · {job.salary ? `${job.salary.min.toLocaleString()} - ${job.salary.max.toLocaleString()} VNĐ` : 'Thỏa thuận'}
+                </p>
                 {job.skills?.length > 0 && (
                   <div className="flex flex-wrap gap-1 mt-1.5">
                     {job.skills.slice(0, 4).map(s => <span key={s} className="text-xs bg-bgSection text-meta px-1.5 py-0.5 rounded">{s}</span>)}
