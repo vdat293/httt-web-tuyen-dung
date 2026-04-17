@@ -61,9 +61,11 @@ export default function Home() {
   // ─── Dropdown states ───────────────────────────────────────────────
   const [showCategoryPanel, setShowCategoryPanel] = useState(false);
   const [activeCategory, setActiveCategory] = useState(0);
-  const [showLocationDropdown, setShowLocationDropdown] = useState(false);
+  const [showSearchLocDropdown, setShowSearchLocDropdown] = useState(false);
+  const [showFilterLocDropdown, setShowFilterLocDropdown] = useState(false);
   const searchBoxRef = useRef(null);
-  const locationRef = useRef(null);
+  const searchLocRef = useRef(null);
+  const filterLocRef = useRef(null);
   const panelTimeoutRef = useRef(null);
 
   useEffect(() => { loadJobs(page); }, [page]);
@@ -74,8 +76,11 @@ export default function Home() {
       if (searchBoxRef.current && !searchBoxRef.current.contains(e.target)) {
         setShowCategoryPanel(false);
       }
-      if (locationRef.current && !locationRef.current.contains(e.target)) {
-        setShowLocationDropdown(false);
+      if (searchLocRef.current && !searchLocRef.current.contains(e.target)) {
+        setShowSearchLocDropdown(false);
+      }
+      if (filterLocRef.current && !filterLocRef.current.contains(e.target)) {
+        setShowFilterLocDropdown(false);
       }
     };
     document.addEventListener('mousedown', handleClickOutside);
@@ -127,7 +132,8 @@ export default function Home() {
 
   const handleLocationSelect = (loc) => {
     setFilters({ ...filters, location: loc === 'Tất cả địa điểm' ? '' : loc });
-    setShowLocationDropdown(false);
+    setShowSearchLocDropdown(false);
+    setShowFilterLocDropdown(false);
   };
 
   const handleSearchInputFocus = () => {
@@ -185,24 +191,24 @@ export default function Home() {
                 </div>
 
                 {/* Location Input */}
-                <div className="search-input-group search-input-location" ref={locationRef}>
+                <div className="search-input-group search-input-location" ref={searchLocRef}>
                   <svg className="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
                   </svg>
                   <button
                     type="button"
-                    onClick={() => setShowLocationDropdown(!showLocationDropdown)}
+                    onClick={() => setShowSearchLocDropdown(!showSearchLocDropdown)}
                     className="search-input search-location-btn"
                   >
                     <span>{filters.location || 'Địa điểm'}</span>
-                    <svg className="location-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ transform: showLocationDropdown ? 'rotate(180deg)' : 'rotate(0)' }}>
+                    <svg className="location-chevron" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ transform: showSearchLocDropdown ? 'rotate(180deg)' : 'rotate(0)' }}>
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
 
                   {/* Location Dropdown */}
-                  {showLocationDropdown && (
+                  {showSearchLocDropdown && (
                     <div className="location-dropdown">
                       {LOCATIONS.map((loc) => (
                         <button
@@ -343,18 +349,18 @@ export default function Home() {
                 <span>Lọc theo:</span>
                 
                 {/* Inline Location Select */}
-                <div className="relative" ref={locationRef}>
+                <div className="relative" ref={filterLocRef}>
                   <button 
-                    onClick={() => setShowLocationDropdown(!showLocationDropdown)}
+                    onClick={() => setShowFilterLocDropdown(!showFilterLocDropdown)}
                     className="flex items-center gap-1 font-semibold text-heading hover:text-brand-500 transition-colors"
                   >
-                    {filters.location || 'Địa điểm'}
-                    <svg className={`w-3.5 h-3.5 transition-transform duration-200 ${showLocationDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    Địa điểm
+                    <svg className={`w-3.5 h-3.5 transition-transform duration-200 ${showFilterLocDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
 
-                  {showLocationDropdown && (
+                  {showFilterLocDropdown && (
                     <div className="location-dropdown">
                       {LOCATIONS.map((loc) => (
                         <button
