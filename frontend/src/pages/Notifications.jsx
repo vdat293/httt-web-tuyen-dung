@@ -10,6 +10,7 @@ const TYPE_CONFIG = {
   interview_scheduled: { icon: '📅', color: 'text-purple-500 bg-purple-50', label: 'Phỏng vấn' },
   interview_reminder: { icon: '⏰', color: 'text-yellow-500 bg-yellow-50', label: 'Nhắc nhở' },
   job_approved: { icon: '✅', color: 'text-green-500 bg-green-50', label: 'Duyệt tin' },
+  job_rejected: { icon: '❌', color: 'text-red-500 bg-red-50', label: 'Từ chối tin' },
 };
 
 function formatDate(dateStr) {
@@ -26,7 +27,7 @@ export default function Notifications() {
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [markingAll, setMarkingAll] = useState(false);
-  const { setUnread } = useSocket();
+  const { setUnread, decrementUnread } = useSocket();
   const { addToast } = useToast();
 
   useEffect(() => { loadNotifications(); }, [filter, page]);
@@ -47,6 +48,8 @@ export default function Notifications() {
     try {
       const { data } = await notificationsAPI.markRead(id);
       setNotifications((prev) => prev.map((n) => n._id === id ? data : n));
+      // Đồng bộ giảm badge
+      decrementUnread();
     } catch (_) {}
   };
 

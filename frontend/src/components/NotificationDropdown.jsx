@@ -10,6 +10,7 @@ const TYPE_CONFIG = {
   interview_scheduled: { icon: '📅', color: 'text-purple-500 bg-purple-50', label: 'Phỏng vấn' },
   interview_reminder: { icon: '⏰', color: 'text-yellow-500 bg-yellow-50', label: 'Nhắc nhở' },
   job_approved: { icon: '✅', color: 'text-green-500 bg-green-50', label: 'Duyệt tin' },
+  job_rejected: { icon: '❌', color: 'text-red-500 bg-red-50', label: 'Từ chối tin' },
 };
 
 function timeAgo(dateStr) {
@@ -30,7 +31,7 @@ export default function NotificationDropdown() {
   const [markingAll, setMarkingAll] = useState(false);
   const dropdownRef = useRef(null);
   const navigate = useNavigate();
-  const { decrementUnread } = useSocket();
+  const { setUnread, decrementUnread } = useSocket();
   const { addToast } = useToast();
 
   // Close on outside click
@@ -63,7 +64,8 @@ export default function NotificationDropdown() {
     try {
       await notificationsAPI.markAllRead();
       setNotifications((prev) => prev.map((n) => ({ ...n, isRead: true })));
-      decrementUnread(notifications.filter((n) => !n.isRead).length);
+      // Đặt về 0 vì đã đọc hết tất cả
+      setUnread(0);
     } catch (err) {
       addToast('Không thể đánh dấu đã đọc', 'error');
     } finally {

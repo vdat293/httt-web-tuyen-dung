@@ -1,6 +1,7 @@
 import { createContext, useContext, useEffect, useState } from 'react';
 import { io } from 'socket.io-client';
 import { useAuth } from './AuthContext';
+import { notificationsAPI } from '../api';
 
 const SocketContext = createContext(null);
 
@@ -19,7 +20,12 @@ export const SocketProvider = ({ children }) => {
       return;
     }
 
-    const token = localStorage.getItem('token');
+    // Lấy số thông báo chưa đọc ban đầu từ server
+    notificationsAPI.getUnreadCount()
+      .then(({ data }) => setUnreadCount(data.count || 0))
+      .catch(() => {}); // Bỏ qua lỗi, không crash app
+
+    const token = localStorage.getItem('accessToken');
     const socketInstance = io(import.meta.env.VITE_API_URL || '', {
       auth: { token },
       transports: ['websocket', 'polling'],
@@ -33,6 +39,7 @@ export const SocketProvider = ({ children }) => {
       console.log('🔌 [Socket] Disconnected');
     });
 
+    // Khi có thông báo mới: tăng bộ đếm badge + hiện toast nhỏ
     socketInstance.on('new_notification', (notification) => {
       console.log('🔔 [Socket] New notification:', notification);
       setUnreadCount((prev) => prev + 1);

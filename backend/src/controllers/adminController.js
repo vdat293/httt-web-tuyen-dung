@@ -4,6 +4,7 @@ const Application = require('../models/Application');
 const Interview = require('../models/Interview');
 const SavedJob = require('../models/SavedJob');
 const OTPCode = require('../models/OTPCode');
+const { createNotification } = require('./notificationController');
 
 // ── Dashboard ────────────────────────────────────────────────────────
 
@@ -229,6 +230,17 @@ const approveJob = async (req, res, next) => {
 
     job.status = 'open';
     await job.save();
+
+    // Thông báo cho nhà tuyển dụng tin đã được duyệt
+    await createNotification({
+      user: job.employerId,
+      type: 'job_approved',
+      title: 'Tin tuyển dụng đã được duyệt',
+      message: `Tin tuyển dụng "${job.title}" của bạn đã được quản trị viên duyệt và đang hiển thị công khai`,
+      data: { jobId: job._id },
+      io: req.io,
+    });
+
     res.json({ message: 'Job approved', job });
   } catch (error) {
     next(error);
@@ -244,6 +256,17 @@ const rejectJob = async (req, res, next) => {
     job.status = 'rejected';
     job.rejectReason = reason || '';
     await job.save();
+
+    // Thông báo cho nhà tuyển dụng tin bị từ chối
+    await createNotification({
+      user: job.employerId,
+      type: 'job_rejected',
+      title: 'Tin tuyển dụng bị từ chối',
+      message: `Tin tuyển dụng "${job.title}" đã bị từ chối${reason ? `: ${reason}` : ''}`,
+      data: { jobId: job._id },
+      io: req.io,
+    });
+
     res.json({ message: 'Job rejected', job });
   } catch (error) {
     next(error);
