@@ -8,30 +8,31 @@ import JobCard from '../components/JobCard';
 
 // ─── Dữ liệu ngành nghề & từ khóa gợi ý (TopCV style) ────────────────────
 const JOB_CATEGORIES = [
-  {
-    name: 'Công nghệ thông tin',
-    keywords: ['Lập trình viên', 'Frontend Developer', 'Backend Developer', 'Fullstack Developer', 'DevOps Engineer', 'Mobile Developer', 'QA/Tester'],
-  },
-  {
-    name: 'Kinh doanh/Bán hàng',
-    keywords: ['Nhân viên kinh doanh', 'Nhân viên bán hàng', 'Nhân viên tư vấn', 'Sales Admin', 'Sales Online', 'Sales Manager'],
-  },
-  {
-    name: 'Marketing/PR/Quảng cáo',
-    keywords: ['Content Marketing', 'Digital Marketing', 'SEO Specialist', 'Social Media', 'Graphic Designer', 'Brand Manager'],
-  },
-  {
-    name: 'Nhân sự/Hành chính',
-    keywords: ['HR Manager', 'Tuyển dụng', 'Hành chính văn phòng', 'Thư ký', 'Lễ tân', 'C&B Specialist'],
-  },
-  {
-    name: 'Tài chính/Kế toán',
-    keywords: ['Kế toán tổng hợp', 'Kế toán thuế', 'Kế toán trưởng', 'Tài chính doanh nghiệp', 'Kiểm toán', 'Business Analyst'],
-  },
-  {
-    name: 'Thiết kế/Sáng tạo',
-    keywords: ['UI/UX Designer', 'Graphic Designer', 'Motion Designer', 'Product Designer', '3D Artist', 'Video Editor'],
-  },
+  { name: 'Kinh doanh/Bán hàng', keywords: ['Nhân viên kinh doanh', 'Nhân viên bán hàng', 'Nhân viên tư vấn', 'Sales Admin', 'Sales Online', 'Sales Manager'] },
+  { name: 'Marketing/PR/Quảng cáo', keywords: ['Content Marketing', 'Digital Marketing', 'SEO Specialist', 'Social Media', 'Graphic Designer', 'Brand Manager'] },
+  { name: 'Chăm sóc khách hàng (Customer Service)', keywords: ['Chăm sóc khách hàng', 'Telesales', 'Trực page'] },
+  { name: 'Nhân sự/Hành chính/Pháp chế', keywords: ['HR Manager', 'Tuyển dụng', 'Hành chính văn phòng', 'Thư ký', 'Lễ tân', 'C&B Specialist'] },
+  { name: 'Công nghệ Thông tin', keywords: ['Lập trình viên', 'Frontend Developer', 'Backend Developer', 'Fullstack Developer', 'DevOps Engineer', 'Mobile Developer', 'QA/Tester'] },
+  { name: 'Lao động phổ thông', keywords: ['Giao hàng', 'Bảo vệ', 'Tạp vụ'] },
+  { name: 'Tài chính/Ngân hàng/Bảo hiểm', keywords: ['Tín dụng', 'Giao dịch viên', 'Đại lý bảo hiểm'] },
+  { name: 'Bất động sản', keywords: ['Môi giới bất động sản', 'Chuyên viên tư vấn'] },
+  { name: 'Xây dựng', keywords: ['Kỹ sư xây dựng', 'Giám sát thi công', 'Họa viên kiến trúc'] },
+  { name: 'Kế toán/Kiểm toán/Thuế', keywords: ['Kế toán tổng hợp', 'Kế toán thuế', 'Kế toán trưởng', 'Kiểm toán viên'] },
+  { name: 'Sản xuất', keywords: ['Kỹ sư sản xuất', 'QA/QC', 'Quản đốc'] },
+  { name: 'Giáo dục/Đào tạo', keywords: ['Giáo viên', 'Trợ giảng', 'Quản lý đào tạo'] },
+  { name: 'Bán lẻ/Dịch vụ đời sống', keywords: ['Cửa hàng trưởng', 'Nhân viên cửa hàng'] },
+  { name: 'Phim và truyền hình/Báo chí/Xuất bản', keywords: ['Phóng viên', 'Biên tập viên', 'Quay phim'] },
+  { name: 'Điện/Điện tử/Viễn thông', keywords: ['Kỹ sư điện', 'Thiết kế mạch', 'Bảo trì'] },
+  { name: 'Logistics/Thu mua/Kho/Vận tải', keywords: ['Xuất nhập khẩu', 'Quản lý kho', 'Purchasing'] },
+  { name: 'Tư vấn chuyên môn', keywords: ['Cố vấn', 'Chuyên gia'] },
+  { name: 'Dược/Y tế/Sức khoẻ/Công nghệ sinh học', keywords: ['Dược sĩ', 'Điều dưỡng', 'Bác sĩ'] },
+  { name: 'Thiết kế', keywords: ['UI/UX Designer', 'Graphic Designer', 'Product Designer', 'Motion Designer', '3D Artist', 'Video Editor'] },
+  { name: 'Nhà hàng/Khách sạn/Du lịch', keywords: ['Quản lý nhà hàng', 'Lễ tân khách sạn', 'Hướng dẫn viên'] },
+  { name: 'Năng lượng/Môi trường/Nông nghiệp', keywords: ['Kỹ sư nông nghiệp', 'Kỹ sư môi trường'] },
+  { name: 'Tài xế', keywords: ['Tài xế xe tải', 'Tài xế công nghệ'] },
+  { name: 'Biên phiên dịch', keywords: ['Phiên dịch tiếng Nhật', 'Biên dịch tiếng Anh'] },
+  { name: 'Luật', keywords: ['Luật sư', 'Pháp chế', 'Trợ lý luật sư'] },
+  { name: 'Nhóm nghề khác', keywords: ['Các ngành nghề khác'] }
 ];
 
 const POPULAR_KEYWORDS = [
@@ -52,7 +53,7 @@ const LOCATIONS = [
 export default function Home() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({ title: '', location: '' });
+  const [filters, setFilters] = useState({ title: '', location: '', category: '' });
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalJobs, setTotalJobs] = useState(0);
@@ -63,9 +64,12 @@ export default function Home() {
   const [activeCategory, setActiveCategory] = useState(0);
   const [showSearchLocDropdown, setShowSearchLocDropdown] = useState(false);
   const [showFilterLocDropdown, setShowFilterLocDropdown] = useState(false);
+  const [showSearchCategoryDropdown, setShowSearchCategoryDropdown] = useState(false);
+  const [sidebarPage, setSidebarPage] = useState(1);
   const searchBoxRef = useRef(null);
   const searchLocRef = useRef(null);
   const filterLocRef = useRef(null);
+  const searchCategoryRef = useRef(null);
   const panelTimeoutRef = useRef(null);
 
   useEffect(() => { loadJobs(page); }, [page]);
@@ -82,6 +86,9 @@ export default function Home() {
       if (filterLocRef.current && !filterLocRef.current.contains(e.target)) {
         setShowFilterLocDropdown(false);
       }
+      if (searchCategoryRef.current && !searchCategoryRef.current.contains(e.target)) {
+        setShowSearchCategoryDropdown(false);
+      }
     };
     document.addEventListener('mousedown', handleClickOutside);
     return () => document.removeEventListener('mousedown', handleClickOutside);
@@ -94,7 +101,8 @@ export default function Home() {
         page: currentPage, 
         limit: 9,
         q: filters.title || undefined,
-        location: filters.location || undefined
+        location: filters.location || undefined,
+        category: filters.category || undefined
       });
       if (data && data.jobs) {
         setJobs(data.jobs);
@@ -118,6 +126,7 @@ export default function Home() {
     const params = new URLSearchParams();
     if (filters.title) params.set('q', filters.title);
     if (filters.location && filters.location !== 'Tất cả địa điểm') params.set('location', filters.location);
+    if (filters.category && filters.category !== 'Tất cả ngành nghề') params.set('category', filters.category);
     navigate(`/jobs?${params.toString()}`);
   };
 
@@ -127,6 +136,7 @@ export default function Home() {
     const params = new URLSearchParams();
     params.set('q', keyword);
     if (filters.location && filters.location !== 'Tất cả địa điểm') params.set('location', filters.location);
+    if (filters.category && filters.category !== 'Tất cả ngành nghề') params.set('category', filters.category);
     navigate(`/jobs?${params.toString()}`);
   };
 
@@ -134,6 +144,19 @@ export default function Home() {
     setFilters({ ...filters, location: loc === 'Tất cả địa điểm' ? '' : loc });
     setShowSearchLocDropdown(false);
     setShowFilterLocDropdown(false);
+  };
+
+  const handleCategorySelect = (cat) => {
+    const newCategory = cat === 'Tất cả ngành nghề' ? '' : cat;
+    setFilters({ ...filters, category: newCategory });
+    setShowSearchCategoryDropdown(false);
+    
+    // Auto submit search like TopCV
+    const params = new URLSearchParams();
+    if (filters.title) params.set('q', filters.title);
+    if (filters.location && filters.location !== 'Tất cả địa điểm') params.set('location', filters.location);
+    if (newCategory) params.set('category', newCategory);
+    navigate(`/jobs?${params.toString()}`);
   };
 
   const handleSearchInputFocus = () => {
@@ -150,6 +173,13 @@ export default function Home() {
   const handlePanelMouseEnter = () => {
     clearTimeout(panelTimeoutRef.current);
   };
+
+  const ITEMS_PER_PAGE = 6;
+  const totalSidebarPages = Math.ceil(JOB_CATEGORIES.length / ITEMS_PER_PAGE);
+  const currentSidebarCategories = JOB_CATEGORIES.slice(
+    (sidebarPage - 1) * ITEMS_PER_PAGE,
+    sidebarPage * ITEMS_PER_PAGE
+  );
 
   return (
     <>
@@ -170,8 +200,8 @@ export default function Home() {
             Kết nối hàng nghìn nhà tuyển dụng và ứng viên. Tích hợp AI phân tích CV tự động.
           </p>
 
-          {/* ═══════ Search Bar (TopCV Style) ═══════ */}
-          <div className="max-w-4xl mx-auto relative" ref={searchBoxRef}>
+          {/* ═══════ Search Bar & Content ═══════ */}
+          <div className="max-w-5xl lg:max-w-6xl mx-auto relative" ref={searchBoxRef}>
             <form onSubmit={handleSearch}>
               <div className="search-bar-wrapper">
                 {/* Keyword Input */}
@@ -189,6 +219,8 @@ export default function Home() {
                     autoComplete="off"
                   />
                 </div>
+
+                {/* Category Input removed to match required layout */}
 
                 {/* Location Input */}
                 <div className="search-input-group search-input-location" ref={searchLocRef}>
@@ -317,23 +349,99 @@ export default function Home() {
             )}
           </div>
 
-          {/* Stats bar */}
-          <div className="flex items-center justify-center gap-6 sm:gap-10 mt-8 text-white/80 text-sm">
-            <div className="text-center">
-              <span className="text-xl sm:text-2xl font-bold text-white block">{totalJobs > 0 ? totalJobs : jobs.length}</span>
-              <span className="text-xs">Việc làm</span>
+            {/* ═══════ Hero Content (Sidebar + Banners) ═══════ */}
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 mt-3">
+              <div className="hidden lg:flex flex-col bg-white rounded-xl shadow-sm text-heading overflow-hidden border border-line h-[300px]">
+                <div className="flex flex-col py-1.5 overflow-y-auto scrollbar-hide flex-1">
+                  {currentSidebarCategories.map((cat) => (
+                    <button
+                      key={cat.name}
+                      onClick={() => handleCategorySelect(cat.name)}
+                      className="flex items-center justify-between px-4 py-[10px] text-[13.5px] hover:bg-gray-50 hover:text-brand-500 transition-colors group"
+                    >
+                      <span className="font-medium truncate text-left">{cat.name}</span>
+                      <svg className="w-3.5 h-3.5 opacity-30 group-hover:opacity-100 transition-opacity" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+                      </svg>
+                    </button>
+                  ))}
+                </div>
+                {/* Pagination Footer */}
+                <div className="mt-auto border-t border-line flex items-center justify-between px-4 py-3 bg-white shrink-0">
+                  <span className="text-[13px] text-meta font-medium">{sidebarPage}/{totalSidebarPages}</span>
+                  <div className="flex gap-2">
+                    <button 
+                      onClick={() => setSidebarPage(p => Math.max(1, p - 1))}
+                      disabled={sidebarPage === 1}
+                      className="w-7 h-7 rounded-full border border-line flex items-center justify-center text-meta hover:bg-gray-50 cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed"
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" /></svg>
+                    </button>
+                    <button 
+                      onClick={() => setSidebarPage(p => Math.min(totalSidebarPages, p + 1))}
+                      disabled={sidebarPage === totalSidebarPages}
+                      className={`w-7 h-7 rounded-full flex items-center justify-center cursor-pointer transition-colors ${sidebarPage === totalSidebarPages ? 'border border-line text-meta disabled:opacity-30 disabled:cursor-not-allowed' : 'border border-brand-500 text-brand-500 hover:bg-brand-50'}`}
+                    >
+                      <svg className="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" /></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* Right Banners Area */}
+              <div className="col-span-1 lg:col-span-3 flex flex-col gap-4 h-[300px]">
+                {/* Main Dark Banner */}
+                <div className="flex-1 bg-gradient-to-r from-[#17252A] to-[#1F373E] rounded-xl overflow-hidden relative border border-white/10 shadow-sm flex items-center p-6 lg:p-8">
+                  {/* Play Button Overlay */}
+                  <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
+                    <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30">
+                      <svg className="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
+                    </div>
+                  </div>
+                  
+                  {/* Content */}
+                  <div className="relative z-10 max-w-[60%]">
+                    <h2 className="text-2xl lg:text-3xl font-bold text-white mb-2 leading-tight">Tiếp lợi thế,<br/>nối thành công</h2>
+                    <p className="text-[14px] text-white/70">TopCV - Hệ sinh thái nhân sự<br/>tiên phong ứng dụng công nghệ<br/>tại Việt Nam</p>
+                  </div>
+                  
+                  {/* Decorative / Background effect */}
+                  <div className="absolute right-0 top-0 bottom-0 w-1/2 flex items-center justify-end overflow-hidden">
+                    <img src="https://images.unsplash.com/photo-1573164713988-8665fc963095?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Banner" className="w-full h-full object-cover mix-blend-overlay opacity-30 mask-image-gradient" style={{ WebkitMaskImage: 'linear-gradient(to right, transparent, black)' }} />
+                  </div>
+                </div>
+
+                {/* Market Stats Banner */}
+                <div className="shrink-0 bg-gradient-to-r from-brand-600 to-brand-500 rounded-xl px-5 py-4 border border-white/20 shadow-sm text-white flex items-center justify-between">
+                  <div className="flex items-center gap-4">
+                    <div className="bg-black/10 p-2.5 rounded-lg shrink-0">
+                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-2 mb-1.5">
+                        <h3 className="font-semibold text-[15px]">Thị trường việc làm hôm nay</h3>
+                        <span className="text-[12px] text-white/80 bg-black/10 px-2 py-0.5 rounded-full">17/04/2026</span>
+                      </div>
+                      <div className="flex flex-wrap items-center gap-4 text-[13.5px]">
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-white/90">Việc làm đang tuyển</span>
+                          <span className="font-bold text-[15px]">{totalJobs > 0 ? (totalJobs * 15).toLocaleString() : '64.876'}</span>
+                          <svg className="w-3.5 h-3.5 text-green-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
+                        </div>
+                        <div className="w-px h-3.5 bg-white/30 hidden sm:block"></div>
+                        <div className="flex items-center gap-1.5">
+                          <span className="text-white/90">Việc làm mới hôm nay</span>
+                          <span className="font-bold text-[15px]">5.078</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="hidden md:flex shrink-0 items-end -my-4 h-[72px]">
+                    <img src="https://static.topcv.vn/v4/image/welcome/toppy-ai.png" alt="Toppy AI" className="h-full object-contain drop-shadow-md pb-1" />
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="w-px h-8 bg-white/20"></div>
-            <div className="text-center">
-              <span className="text-xl sm:text-2xl font-bold text-white block">500+</span>
-              <span className="text-xs">Công ty</span>
-            </div>
-            <div className="w-px h-8 bg-white/20"></div>
-            <div className="text-center">
-              <span className="text-xl sm:text-2xl font-bold text-white block">AI</span>
-              <span className="text-xs">Parse CV</span>
-            </div>
-          </div>
         </div>
       </div>
 
