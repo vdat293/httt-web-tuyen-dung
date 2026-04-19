@@ -11,6 +11,7 @@ const getJobs = async (req, res, next) => {
       experience,
       salaryMin,
       salaryMax,
+      category,
       skills,
       sort = 'createdAt',
       order = 'desc',
@@ -27,16 +28,28 @@ const getJobs = async (req, res, next) => {
       ];
     }
     if (location) filter.location = { $regex: location, $options: 'i' };
+    if (category) {
+      filter.category = category;
+    }
     if (jobType) filter.jobType = jobType;
     if (experience) filter.experience = experience;
     if (skills) {
       const skillList = skills.split(',').map((s) => s.trim()).filter(Boolean);
       if (skillList.length) filter.skills = { $in: skillList };
     }
-    if (salaryMin || salaryMax) {
-      filter['salary.min'] = {};
-      if (salaryMin) filter['salary.min'].$gte = Number(salaryMin);
-      if (salaryMax) filter['salary.min'].$lte = Number(salaryMax);
+    if (salaryMin !== undefined || salaryMax !== undefined) {
+      const min = Number(salaryMin);
+      const max = Number(salaryMax);
+
+      if (min === -1 || max === -1) {
+        // Special case for "Negotiation" if needed, 
+        // but for now let's just handle it as a range check if values are -1
+        // Usually, negotiation jobs might have salary.min = 0 or something.
+      } else {
+        // Overlap logic: jobMin <= filterMax AND jobMax >= filterMin
+        if (!isNaN(max) && max > 0) filter['salary.min'] = { ...filter['salary.min'], $lte: max };
+        if (!isNaN(min) && min > 0) filter['salary.max'] = { ...filter['salary.max'], $gte: min };
+      }
     }
     filter.status = 'open';
 

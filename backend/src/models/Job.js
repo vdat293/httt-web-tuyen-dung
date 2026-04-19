@@ -60,6 +60,10 @@ const jobSchema = new mongoose.Schema(
       enum: ['open', 'closed', 'rejected'],
       default: 'open',
     },
+    category: {
+      type: String,
+      default: '',
+    },
     rejectReason: {
       type: String,
       default: '',

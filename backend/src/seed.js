@@ -24,34 +24,34 @@ const seed = async () => {
       { email: 'kidsplaza@example.com', name: 'Công ty Cổ phần Kids Plaza', phone: '0912345671', companyLogo: 'https://vcdn.tikicdn.com/ts/seller/f6/bb/e4/f05e3f3cfbcc1bc4102c77d5ec9268ed.jpg' },
       { email: 'thegioididong@example.com', name: 'Công ty CP Đầu tư Thế Giới Di Động', phone: '0912345672', companyLogo: 'https://cdn.haitrieu.com/wp-content/uploads/2021/11/Logo-The-Gioi-Di-Dong-MWG.png' },
       { email: 'fptshop@example.com', name: 'Công ty Cổ phần Bán lẻ Kỹ thuật số FPT (FPT Shop)', phone: '0912345673', companyLogo: 'https://biztech.vn/wp-content/uploads/2021/04/logo-fpt.png' },
-      { email: 'vng@example.com', name: 'Công ty Cổ phần VNG', phone: '0912345674', companyLogo: 'https://cdn.haitrieu.com/wp-content/uploads/2022/01/Logo-VNG.png' },
-      { email: 'viettel@example.com', name: 'Tập đoàn Công nghiệp - Viễn thông Quân đội (Viettel)', phone: '0912345675', companyLogo: 'https://vtmc.vn/images/Logo_Viettel.png' },
+      { email: 'vng@example.com', name: 'Công ty Cổ phần VNG', phone: '0912345674', companyLogo: 'https://storage.googleapis.com/hust-files/images/vng_logoorange_19.5k.png' },
+      { email: 'viettel@example.com', name: 'Tập đoàn Công nghiệp - Viễn thông Quân đội (Viettel)', phone: '0912345675', companyLogo: 'https://cafef1.mediacdn.vn/LOGO/VIETTEL.png' },
       { email: 'shopee@example.com', name: 'Công ty TNHH Shopee', phone: '0912345676', companyLogo: 'https://images.seeklogo.com/logo-png/53/2/shopee-logo-png_seeklogo-530807.png' },
       { email: 'tiki@example.com', name: 'Công ty Cổ phần TiKi', phone: '0912345677', companyLogo: 'https://chongiatot.com.vn/wp-content/uploads/2025/07/ma-giam-gia-tiki-logo.png' },
       { email: 'vinmec@example.com', name: 'Hệ thống Y tế Vinmec', phone: '0912345678', companyLogo: 'https://congtyquatang.com.vn/wp-content/uploads/2026/03/logo-vinmec-vector-scaled.png' },
       { email: 'techcombank@example.com', name: 'Ngân hàng TMCP Kỹ Thương Việt Nam (Techcombank)', phone: '0912345679', companyLogo: 'https://inkythuatso.com/uploads/images/2021/09/logo-techcombank-inkythuatso-10-15-11-46.jpg' },
       { email: 'vnpt@example.com', name: 'Tập đoàn Bưu chính Viễn thông Việt Nam (VNPT)', phone: '0912345670', companyLogo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSjAT6-Z5apYFiLNyUjK8Inr-I-8RKzXa_4wQ&s' },
       // Mới thêm
-      { email: 'vingroup@example.com', name: 'Tập đoàn Vingroup', phone: '0912345681', companyLogo: 'https://vinhomes.vn/assets/images/logo_vingroup.png' },
-      { email: 'masan@example.com', name: 'Công ty Cổ phần Tập đoàn Masan', phone: '0912345682', companyLogo: 'https://masangroup.com/wp-content/uploads/2022/10/Masan-Logo-01.png' },
-      { email: 'highlands@example.com', name: 'Highlands Coffee', phone: '0912345683', companyLogo: 'https://www.highlandscoffee.com.vn/vnt_upload/weblink/1638367980_highlands-logo.png' },
-      { email: 'vnairlines@example.com', name: 'Vietnam Airlines', phone: '0912345684', companyLogo: 'https://www.vietnamairlines.com/~/media/Images/HeroImage/Logo/vna-logo-vn.png' },
-      { email: 'vietcombank@example.com', name: 'Ngân hàng TMCP Ngoại Thương VN (Vietcombank)', phone: '0912345685', companyLogo: 'https://portal.vietcombank.com.vn/en-us/about/cr/PublishingImages/Logo%20VCB.png' },
+      { email: 'vingroup@example.com', name: 'Tập đoàn Vingroup', phone: '0912345681', companyLogo: 'https://upload.wikimedia.org/wikipedia/vi/thumb/9/98/Vingroup_logo.svg/1280px-Vingroup_logo.svg.png' },
+      { email: 'masan@example.com', name: 'Công ty Cổ phần Tập đoàn Masan', phone: '0912345682', companyLogo: 'https://echeck.numbala.com/uploads/khachhang/cong-ty-co-phan-tap-doan-masan-1714471295-gix9w.jpg' },
+      { email: 'highlands@example.com', name: 'Highlands Coffee', phone: '0912345683', companyLogo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWfJUWKecfedJtsuTOPzmzy51L7szK8FDYfw&s' },
+      { email: 'vnairlines@example.com', name: 'Vietnam Airlines', phone: '0912345684', companyLogo: 'https://spirit.vietnamairlines.com/wp-content/uploads/2025/04/1-12.jpg' },
+      { email: 'vietcombank@example.com', name: 'Ngân hàng TMCP Ngoại Thương VN (Vietcombank)', phone: '0912345685', companyLogo: 'https://upload.wikimedia.org/wikipedia/vi/thumb/9/9d/Vietcombank_Logo.svg/1280px-Vietcombank_Logo.svg.png' },
       { email: 'uniqlo@example.com', name: 'Uniqlo Việt Nam', phone: '0912345686', companyLogo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/UNIQLO_logo.svg/1024px-UNIQLO_logo.svg.png' },
-      { email: 'cgv@example.com', name: 'CGV Cinemas Việt Nam', phone: '0912345687', companyLogo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/CGV_logo.svg/2560px-CGV_logo.svg.png' },
-      { email: 'momo@example.com', name: 'Công ty Cổ phần Dịch vụ Di Động Trực tuyến (Momo)', phone: '0912345688', companyLogo: 'https://upload.wikimedia.org/wikipedia/vi/f/fe/MoMo_Logo.png' },
-      { email: 'bitis@example.com', name: 'Biti\'s Việt Nam', phone: '0912345689', companyLogo: 'https://bitis.com.vn/images/logo.png' },
+      { email: 'cgv@example.com', name: 'CGV Cinemas Việt Nam', phone: '0912345687', companyLogo: 'https://yt3.googleusercontent.com/EsOy6vbf5_IS4JhUU8ocwYgxovm1b55CkXy2wjhRE1KMLIX-m5h189rJgX2opfZxHmIp5Ok3=s900-c-k-c0x00ffffff-no-rj' },
+      { email: 'momo@example.com', name: 'Công ty Cổ phần Dịch vụ Di Động Trực tuyến (Momo)', phone: '0912345688', companyLogo: 'https://careerviet.vn/_next/image?url=https%3A%2F%2Fimages.careerviet.vn%2Femployer_folders%2Flot9%2F221789%2F95340imgpsh_fullsize.jpg&w=3840&q=75' },
+      { email: 'bitis@example.com', name: 'Biti\'s Việt Nam', phone: '0912345689', companyLogo: 'https://upload.wikimedia.org/wikipedia/vi/3/37/Bitis_logo.svg' },
       { email: 'hm@example.com', name: 'H&M Việt Nam', phone: '0912345690', companyLogo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/H%26M-Logo.svg/1024px-H%26M-Logo.svg.png' },
       { email: 'pnj@example.com', name: 'Công ty CP Vàng Bạc Đá Quý Phú Nhuận (PNJ)', phone: '0912345691', companyLogo: 'https://cdn.pnj.io/images/logo/pnj.com.vn.png' },
-      { email: 'kiotviet@example.com', name: 'KiotViet (Công ty Cổ phần Phần mềm Citigo)', phone: '0912345692', companyLogo: 'https://www.kiotviet.vn/wp-content/themes/kiotviet/assets/images/logo.png' },
-      { email: 'ghtk@example.com', name: 'Giao Hàng Tiết Kiệm (GHTK)', phone: '0912345693', companyLogo: 'https://images.careerbuilder.vn/employer_folders/lot9/244309/7811613ghtk-logo.png' },
-      { email: 'begroup@example.com', name: 'Công ty Cổ phần Be Group', phone: '0912345694', companyLogo: 'https://be.com.vn/wp-content/uploads/2021/04/Be_Logo_Yellow.png' },
-      { email: 'fptsoftware@example.com', name: 'FPT Software', phone: '0912345695', companyLogo: 'https://fptsoftware.com/-/media/project/fpt-software/fso/common/fpt-software-logo.png' },
-      { email: 'sungroup@example.com', name: 'Tập đoàn Sun Group', phone: '0912345696', companyLogo: 'https://sungroup.com.vn/wp-content/uploads/2020/09/Logo-Sun-Group.png' },
-      { email: 'cfit@example.com', name: 'California Fitness & Yoga', phone: '0912345697', companyLogo: 'https://cali.vn/storage/app/media/2021/Logo/Cali_Logo_Red.png' },
-      { email: 'goldengate@example.com', name: 'Golden Gate Restaurant Group', phone: '0912345698', companyLogo: 'https://sss.phongkham.com/wp-content/uploads/2022/10/Golden-Gate-Logo.png' },
-      { email: 'lalamove@example.com', name: 'Lalamove Việt Nam', phone: '0912345699', companyLogo: 'https://www.lalamove.com/hubfs/Lalamove%20Website%202020/Lalamove_Logo_Orange.png' },
-      { email: 'vinhomes@example.com', name: 'Công ty Cổ phần Vinhomes', phone: '0912345600', companyLogo: 'https://vinhomes.vn/assets/images/logo_light.svg' },
+      { email: 'kiotviet@example.com', name: 'KiotViet (Công ty Cổ phần Phần mềm Citigo)', phone: '0912345692', companyLogo: 'https://cdn1.vieclam24h.vn/upload/files_cua_nguoi_dung/logo/2016/07/19/logo-kiotviet-01.png' },
+      { email: 'ghtk@example.com', name: 'Giao Hàng Tiết Kiệm (GHTK)', phone: '0912345693', companyLogo: 'https://cdn2.fptshop.com.vn/unsafe/1920x0/filters:format(webp):quality(75)/dang_ky_giao_hang_tiet_kiem_thumb_629f7f41a9.jpg' },
+      { email: 'begroup@example.com', name: 'Công ty Cổ phần Be Group', phone: '0912345694', companyLogo: 'https://www.begroupholding.vn/wp-content/uploads/2022/06/logo-Be-Group.png' },
+      { email: 'fptsoftware@example.com', name: 'FPT Software', phone: '0912345695', companyLogo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIssk-xHtpznKE4uSablwrY55M5mnKThYcBQ&s' },
+      { email: 'sungroup@example.com', name: 'Tập đoàn Sun Group', phone: '0912345696', companyLogo: 'https://duan-sungroup.com/wp-content/uploads/2020/02/logo-sungroup-2020.jpg' },
+      { email: 'cfit@example.com', name: 'California Fitness & Yoga', phone: '0912345697', companyLogo: 'https://jcb100wellness.com/wp-content/uploads/2025/12/1-3.png' },
+      { email: 'goldengate@example.com', name: 'Golden Gate Restaurant Group', phone: '0912345698', companyLogo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcROc478zSyywcqZQdSsHiY6Et2Fl_n3xURlWQ&s' },
+      { email: 'lalamove@example.com', name: 'Lalamove Việt Nam', phone: '0912345699', companyLogo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSb6P25XA4HrsIwWwcjhCiG1HbNbtbfqyv11A&s' },
+      { email: 'vinhomes@example.com', name: 'Công ty Cổ phần Vinhomes', phone: '0912345600', companyLogo: 'https://lockernlock.vn/wp-content/uploads/2023/09/Logo-cong-ty-co-phan-Vinhomes.jpg' },
     ];
 
     const employers = await Promise.all(empData.map(e => 
@@ -95,6 +95,8 @@ const seed = async () => {
         salary: { min: 6000000, max: 9000000 },
         location: 'Hồ Chí Minh',
         jobType: 'full-time',
+        experience: 'fresher',
+        category: 'Kinh doanh/Bán hàng',
         skills: ['Giao tiếp', 'Bán hàng', 'Chăm sóc khách hàng']
       },
       {
@@ -106,6 +108,8 @@ const seed = async () => {
         salary: { min: 15000000, max: 20000000 },
         location: 'Bình Dương',
         jobType: 'full-time',
+        experience: 'junior',
+        category: 'Bán lẻ/Dịch vụ đời sống',
         skills: ['Quản lý', 'Leadership', 'Bán lẻ']
       },
       {
@@ -117,6 +121,8 @@ const seed = async () => {
         salary: { min: 25000000, max: 37500000 },
         location: 'Hồ Chí Minh',
         jobType: 'full-time',
+        experience: 'junior',
+        category: 'Công nghệ Thông tin',
         skills: ['ReactJS', 'NextJS', 'TypeScript']
       },
       {
@@ -128,6 +134,8 @@ const seed = async () => {
         salary: { min: 30000000, max: 50000000 },
         location: 'Hồ Chí Minh',
         jobType: 'full-time',
+        experience: 'junior',
+        category: 'Công nghệ Thông tin',
         skills: ['Python', 'Spark', 'Hadoop', 'Kafka']
       },
       {
@@ -139,6 +147,8 @@ const seed = async () => {
         salary: { min: 25000000, max: 35000000 },
         location: 'Hà Nội',
         jobType: 'full-time',
+        experience: 'junior',
+        category: 'Công nghệ Thông tin',
         skills: ['DevOps', 'Kubernetes', 'CI/CD', 'Linux']
       },
       {
@@ -150,6 +160,8 @@ const seed = async () => {
         salary: { min: 35000000, max: 60000000 },
         location: 'Hà Nội',
         jobType: 'full-time',
+        experience: 'senior',
+        category: 'Công nghệ Thông tin',
         skills: ['Java', 'Spring Boot', 'Microservices']
       },
       {
@@ -161,6 +173,8 @@ const seed = async () => {
         salary: { min: 25000000, max: 35000000 },
         location: 'Hồ Chí Minh',
         jobType: 'full-time',
+        experience: 'junior',
+        category: 'Công nghệ Thông tin',
         skills: ['BA', 'Agile', 'E-commerce', 'English']
       },
       {
@@ -172,6 +186,8 @@ const seed = async () => {
         salary: { min: 12000000, max: 18000000 },
         location: 'Hồ Chí Minh',
         jobType: 'full-time',
+        experience: 'junior',
+        category: 'Công nghệ Thông tin',
         skills: ['Manual Test', 'API Testing', 'SQL']
       },
       {
@@ -183,6 +199,8 @@ const seed = async () => {
         salary: { min: 10000000, max: 15000000 },
         location: 'Hà Nội',
         jobType: 'full-time',
+        experience: 'fresher',
+        category: 'Công nghệ Thông tin',
         skills: ['IT Support', 'Network', 'Hardware']
       },
       {
@@ -194,6 +212,8 @@ const seed = async () => {
         salary: { min: 15000000, max: 20000000 },
         location: 'Hà Nội',
         jobType: 'full-time',
+        experience: 'fresher',
+        category: 'Công nghệ Thông tin',
         skills: ['HIS', 'IT Helpdesk', 'System Deployment']
       },
       {
@@ -205,6 +225,8 @@ const seed = async () => {
         salary: { min: 18000000, max: 25000000 },
         location: 'Hồ Chí Minh',
         jobType: 'full-time',
+        experience: 'fresher',
+        category: 'Marketing/PR/Quảng cáo',
         skills: ['Marketing', 'Copywriting', 'Event Management']
       },
       {
@@ -216,6 +238,8 @@ const seed = async () => {
         salary: { min: 15000000, max: 22000000 },
         location: 'Hồ Chí Minh',
         jobType: 'full-time',
+        experience: 'junior',
+        category: 'Nhân sự/Hành chính/Pháp chế',
         skills: ['Tuyển dụng', 'HR', 'Giao tiếp']
       },
       {
@@ -227,6 +251,8 @@ const seed = async () => {
         salary: { min: 12000000, max: 16000000 },
         location: 'Đà Nẵng',
         jobType: 'full-time',
+        experience: 'junior',
+        category: 'Bán lẻ/Dịch vụ đời sống',
         skills: ['F&B', 'Store Manager', 'Leadership']
       },
       {
@@ -238,6 +264,8 @@ const seed = async () => {
         salary: { min: 20000000, max: 30000000 },
         location: 'Hà Nội',
         jobType: 'full-time',
+        experience: 'senior',
+        category: 'Nhà hàng/Khách sạn/Du lịch',
         skills: ['Tiếng Anh', 'Giao tiếp', 'Customer Service']
       },
       {
@@ -249,6 +277,8 @@ const seed = async () => {
         salary: { min: 13000000, max: 18000000 },
         location: 'Nha Trang',
         jobType: 'full-time',
+        experience: 'fresher',
+        category: 'Tài chính/Ngân hàng/Bảo hiểm',
         skills: ['Tài chính', 'Kế toán', 'Giao tiếp']
       },
       {
@@ -260,6 +290,8 @@ const seed = async () => {
         salary: { min: 16000000, max: 20000000 },
         location: 'Hồ Chí Minh',
         jobType: 'full-time',
+        experience: 'intern',
+        category: 'Bán lẻ/Dịch vụ đời sống',
         skills: ['Tiếng Anh', 'Bán lẻ', 'Thời trang']
       },
       {
@@ -271,6 +303,8 @@ const seed = async () => {
         salary: { min: 2000000, max: 5000000 },
         location: 'Biên Hòa',
         jobType: 'part-time',
+        experience: 'intern',
+        category: 'Nhà hàng/Khách sạn/Du lịch',
         skills: ['Part-time', 'Giao tiếp']
       },
       {
@@ -282,6 +316,8 @@ const seed = async () => {
         salary: { min: 20000000, max: 35000000 },
         location: 'Hồ Chí Minh',
         jobType: 'full-time',
+        experience: 'junior',
+        category: 'Công nghệ Thông tin',
         skills: ['SQL', 'PowerBI', 'Data Analysis']
       },
       {
@@ -293,6 +329,8 @@ const seed = async () => {
         salary: { min: 8000000, max: 10000000 },
         location: 'Đồng Nai',
         jobType: 'full-time',
+        experience: 'fresher',
+        category: 'Logistics/Thu mua/Kho/Vận tải',
         skills: ['Quản lý kho', 'Excel']
       },
       {
@@ -304,6 +342,8 @@ const seed = async () => {
         salary: { min: 12000000, max: 18000000 },
         location: 'Hà Nội',
         jobType: 'full-time',
+        experience: 'junior',
+        category: 'Thiết kế',
         skills: ['Design', 'Fashion', 'Sáng tạo']
       },
       {
@@ -315,6 +355,8 @@ const seed = async () => {
         salary: { min: 9000000, max: 20000000 },
         location: 'Đà Nẵng',
         jobType: 'full-time',
+        experience: 'junior',
+        category: 'Kinh doanh/Bán hàng',
         skills: ['Tư vấn', 'Chăm sóc khách hàng']
       },
       {
@@ -326,6 +368,8 @@ const seed = async () => {
         salary: { min: 10000000, max: 25000000 },
         location: 'Hà Nội',
         jobType: 'full-time',
+        experience: 'fresher',
+        category: 'Kinh doanh/Bán hàng',
         skills: ['Telesales', 'Bán hàng', 'Giao tiếp']
       },
       {
@@ -337,6 +381,8 @@ const seed = async () => {
         salary: { min: 15000000, max: 20000000 },
         location: 'Bến Tre',
         jobType: 'full-time',
+        experience: 'junior',
+        category: 'Logistics/Thu mua/Kho/Vận tải',
         skills: ['Logistics', 'Quản lý', 'Điều phối']
       },
       {
@@ -348,6 +394,8 @@ const seed = async () => {
         salary: { min: 40000000, max: 60000000 },
         location: 'Hồ Chí Minh',
         jobType: 'full-time',
+        experience: 'senior',
+        category: 'Công nghệ Thông tin',
         skills: ['Product Management', 'Agile', 'Mobile App']
       },
       {
@@ -359,6 +407,8 @@ const seed = async () => {
         salary: { min: 50000000, max: 70000000 },
         location: 'Đà Nẵng',
         jobType: 'full-time',
+        experience: 'senior',
+        category: 'Công nghệ Thông tin',
         skills: ['iOS', 'Android', 'Swift', 'Kotlin']
       },
       {
@@ -370,6 +420,8 @@ const seed = async () => {
         salary: { min: 25000000, max: 40000000 },
         location: 'Phú Quốc',
         jobType: 'full-time',
+        experience: 'manager',
+        category: 'Kế toán/Kiểm toán/Thuế',
         skills: ['Kế toán', 'Tài chính', 'Thuế']
       },
       {
@@ -381,6 +433,8 @@ const seed = async () => {
         salary: { min: 20000000, max: 40000000 },
         location: 'Cần Thơ',
         jobType: 'full-time',
+        experience: 'fresher',
+        category: 'Bán lẻ/Dịch vụ đời sống',
         skills: ['Fitness', 'Sales', 'Dinh dưỡng']
       },
       {
@@ -392,6 +446,8 @@ const seed = async () => {
         salary: { min: 15000000, max: 20000000 },
         location: 'Hà Nội',
         jobType: 'full-time',
+        experience: 'senior',
+        category: 'Nhà hàng/Khách sạn/Du lịch',
         skills: ['Nấu ăn', 'Quản lý Bếp', 'F&B']
       },
       {
@@ -403,6 +459,8 @@ const seed = async () => {
         salary: { min: 12000000, max: 16000000 },
         location: 'Hồ Chí Minh',
         jobType: 'full-time',
+        experience: 'fresher',
+        category: 'Logistics/Thu mua/Kho/Vận tải',
         skills: ['Logistics', 'Operations', 'Giao tiếp']
       },
       {
@@ -414,6 +472,8 @@ const seed = async () => {
         salary: { min: 5000000, max: 200000000 },
         location: 'Hà Nội',
         jobType: 'full-time',
+        experience: 'fresher',
+        category: 'Bất động sản',
         skills: ['Sales', 'Bất Động Sản', 'Tư vấn']
       }
     ];
