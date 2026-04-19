@@ -50,10 +50,43 @@ const LOCATIONS = [
   'Khác',
 ];
 
+const SALARY_RANGES = [
+  { label: 'Tất cả mức lương', min: 0, max: 0 },
+  { label: 'Dưới 10 triệu', min: 0, max: 10000000 },
+  { label: '10 - 20 triệu', min: 10000000, max: 20000000 },
+  { label: '20 - 30 triệu', min: 20000000, max: 30000000 },
+  { label: 'Trên 30 triệu', min: 30000000, max: 999999999 },
+  { label: 'Thỏa thuận', min: -1, max: -1 },
+];
+
+const EXPERIENCE_LEVELS = [
+  { label: 'Tất cả kinh nghiệm', value: '' },
+  { label: 'Chưa có kinh nghiệm', value: 'intern' },
+  { label: 'Dưới 1 năm', value: 'fresher' },
+  { label: '1 - 3 năm', value: 'junior' },
+  { label: '3 - 5 năm', value: 'senior' },
+  { label: 'Trên 5 năm', value: 'manager' },
+];
+
+const FILTER_TYPES = [
+  { id: 'location', label: 'Địa điểm' },
+  { id: 'salary', label: 'Mức lương' },
+  { id: 'experience', label: 'Kinh nghiệm' },
+  { id: 'category', label: 'Ngành nghề' },
+];
+
 export default function Home() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [filters, setFilters] = useState({ title: '', location: '', category: '' });
+  const [filters, setFilters] = useState({ 
+    title: '', 
+    location: '', 
+    category: '', 
+    salaryMin: 0, 
+    salaryMax: 0, 
+    experience: '' 
+  });
+  const [activeFilterType, setActiveFilterType] = useState('location');
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalJobs, setTotalJobs] = useState(0);
@@ -63,7 +96,7 @@ export default function Home() {
   const [showCategoryPanel, setShowCategoryPanel] = useState(false);
   const [activeCategory, setActiveCategory] = useState(0);
   const [showSearchLocDropdown, setShowSearchLocDropdown] = useState(false);
-  const [showFilterLocDropdown, setShowFilterLocDropdown] = useState(false);
+  const [showFilterTypeDropdown, setShowFilterTypeDropdown] = useState(false);
   const [showSearchCategoryDropdown, setShowSearchCategoryDropdown] = useState(false);
   const [sidebarPage, setSidebarPage] = useState(1);
   const searchBoxRef = useRef(null);
@@ -84,7 +117,7 @@ export default function Home() {
         setShowSearchLocDropdown(false);
       }
       if (filterLocRef.current && !filterLocRef.current.contains(e.target)) {
-        setShowFilterLocDropdown(false);
+        setShowFilterTypeDropdown(false);
       }
       if (searchCategoryRef.current && !searchCategoryRef.current.contains(e.target)) {
         setShowSearchCategoryDropdown(false);
@@ -102,7 +135,10 @@ export default function Home() {
         limit: 9,
         q: filters.title || undefined,
         location: filters.location || undefined,
-        category: filters.category || undefined
+        category: filters.category || undefined,
+        salaryMin: filters.salaryMin > 0 ? filters.salaryMin : (filters.salaryMin === -1 ? -1 : undefined),
+        salaryMax: filters.salaryMax > 0 ? filters.salaryMax : (filters.salaryMax === -1 ? -1 : undefined),
+        experience: filters.experience || undefined
       });
       if (data && data.jobs) {
         setJobs(data.jobs);
@@ -143,7 +179,19 @@ export default function Home() {
   const handleLocationSelect = (loc) => {
     setFilters({ ...filters, location: loc === 'Tất cả địa điểm' ? '' : loc });
     setShowSearchLocDropdown(false);
-    setShowFilterLocDropdown(false);
+    setShowFilterTypeDropdown(false);
+  };
+
+  const handleSalarySelect = (range) => {
+    setFilters({ 
+      ...filters, 
+      salaryMin: range.min, 
+      salaryMax: range.max 
+    });
+  };
+
+  const handleExperienceSelect = (exp) => {
+    setFilters({ ...filters, experience: exp.value });
   };
 
   const handleCategorySelect = (cat) => {
@@ -151,7 +199,9 @@ export default function Home() {
     setFilters({ ...filters, category: newCategory });
     setShowSearchCategoryDropdown(false);
     
-    // Auto submit search like TopCV
+    // Auto submit search like TopCV if using categories
+    if (activeFilterType === 'category') return; // Don't navigate if just filtering on home
+    
     const params = new URLSearchParams();
     if (filters.title) params.set('q', filters.title);
     if (filters.location && filters.location !== 'Tất cả địa điểm') params.set('location', filters.location);
@@ -456,27 +506,37 @@ export default function Home() {
                 </svg>
                 <span>Lọc theo:</span>
                 
-                {/* Inline Location Select */}
+                {/* Primary Filter Type Select */}
                 <div className="relative" ref={filterLocRef}>
                   <button 
-                    onClick={() => setShowFilterLocDropdown(!showFilterLocDropdown)}
-                    className="flex items-center gap-1 font-semibold text-heading hover:text-brand-500 transition-colors"
+                    onClick={() => setShowFilterTypeDropdown(!showFilterTypeDropdown)}
+                    className="flex items-center gap-1 font-semibold text-brand-500 hover:text-brand-600 transition-colors bg-brand-50 px-3 py-1.5 rounded-lg border border-brand-100"
                   >
-                    Địa điểm
-                    <svg className={`w-3.5 h-3.5 transition-transform duration-200 ${showFilterLocDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    {FILTER_TYPES.find(t => t.id === activeFilterType)?.label}
+                    <svg className={`w-3.5 h-3.5 transition-transform duration-200 ${showFilterTypeDropdown ? 'rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
                     </svg>
                   </button>
 
-                  {showFilterLocDropdown && (
+                  {showFilterTypeDropdown && (
                     <div className="location-dropdown">
-                      {LOCATIONS.map((loc) => (
+                      {FILTER_TYPES.map((type) => (
                         <button
-                          key={loc}
-                          onClick={() => handleLocationSelect(loc)}
-                          className={`location-option ${(filters.location === loc || (!filters.location && loc === 'Tất cả địa điểm')) ? 'active' : ''}`}
+                          key={type.id}
+                          onClick={() => {
+                            setActiveFilterType(type.id);
+                            setShowFilterTypeDropdown(false);
+                          }}
+                          className={`location-option ${activeFilterType === type.id ? 'active' : ''}`}
                         >
-                          {loc}
+                          <div className="flex items-center justify-between w-full">
+                            <span>{type.label}</span>
+                            {activeFilterType === type.id && (
+                              <svg className="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
+                              </svg>
+                            )}
+                          </div>
                         </button>
                       ))}
                     </div>
@@ -486,23 +546,71 @@ export default function Home() {
 
               <div className="w-px h-5 bg-line mx-2 hidden sm:block"></div>
 
-              {/* Scrollable Tags */}
+              {/* Dynamic Scrollable Tags */}
               <div className="filter-nav-scroll">
-                <button 
-                  onClick={() => setFilters({ ...filters, location: '' })}
-                  className={`filter-tag ${!filters.location ? 'active' : ''}`}
-                >
-                  Ngẫu Nhiên
-                </button>
-                {['Hà Nội', 'Thành phố Hồ Chí Minh', 'Miền Bắc', 'Miền Nam', 'Đà Nẵng', 'Bình Dương'].map(tag => (
-                  <button 
-                    key={tag}
-                    onClick={() => setFilters({ ...filters, location: tag })}
-                    className={`filter-tag ${filters.location === tag ? 'active' : ''}`}
-                  >
-                    {tag === 'Thành phố Hồ Chí Minh' ? 'TP. Hồ Chí Minh' : tag}
-                  </button>
-                ))}
+                {activeFilterType === 'location' && (
+                  <>
+                    <button 
+                      onClick={() => setFilters({ ...filters, location: '' })}
+                      className={`filter-tag ${!filters.location ? 'active' : ''}`}
+                    >
+                      Ngẫu Nhiên
+                    </button>
+                    {['Hà Nội', 'Hồ Chí Minh', 'Hải Phòng', 'Cần Thơ', 'Đà Nẵng', 'Bình Dương'].map(tag => (
+                      <button 
+                        key={tag}
+                        onClick={() => setFilters({ ...filters, location: tag })}
+                        className={`filter-tag ${filters.location === tag ? 'active' : ''}`}
+                      >
+                        {tag === 'Hồ Chí Minh' ? 'TP. Hồ Chí Minh' : tag}
+                      </button>
+                    ))}
+                  </>
+                )}
+
+                {activeFilterType === 'salary' && (
+                  SALARY_RANGES.map(range => (
+                    <button 
+                      key={range.label}
+                      onClick={() => handleSalarySelect(range)}
+                      className={`filter-tag ${filters.salaryMin === range.min && filters.salaryMax === range.max ? 'active' : ''}`}
+                    >
+                      {range.label}
+                    </button>
+                  ))
+                )}
+
+                {activeFilterType === 'experience' && (
+                  EXPERIENCE_LEVELS.map(exp => (
+                    <button 
+                      key={exp.label}
+                      onClick={() => handleExperienceSelect(exp)}
+                      className={`filter-tag ${filters.experience === exp.value ? 'active' : ''}`}
+                    >
+                      {exp.label}
+                    </button>
+                  ))
+                )}
+
+                {activeFilterType === 'category' && (
+                  <>
+                    <button 
+                      onClick={() => setFilters({ ...filters, category: '' })}
+                      className={`filter-tag ${!filters.category ? 'active' : ''}`}
+                    >
+                      Tất cả
+                    </button>
+                    {JOB_CATEGORIES.slice(0, 8).map(cat => (
+                      <button 
+                        key={cat.name}
+                        onClick={() => handleCategorySelect(cat.name)}
+                        className={`filter-tag ${filters.category === cat.name ? 'active' : ''}`}
+                      >
+                        {cat.name}
+                      </button>
+                    ))}
+                  </>
+                )}
               </div>
             </div>
 

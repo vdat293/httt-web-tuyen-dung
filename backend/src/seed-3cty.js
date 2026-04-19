@@ -52,6 +52,7 @@ const seed = async () => {
       role: 'employer',
       name: 'Công ty Cổ phần VNG',
       phone: '0911111111',
+      companyLogo: 'https://storage.googleapis.com/hust-files/images/vng_logoorange_19.5k.png',
     });
 
     const candidate1 = await User.create({

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useLocation, useNavigate, Link } from 'react-router-dom';
+import { useAuth } from '../contexts/AuthContext';
 import { authAPI } from '../api';
 
 export default function VerifyEmail() {
@@ -9,6 +10,7 @@ export default function VerifyEmail() {
   const [loading, setLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
+  const { verifyEmailLogin } = useAuth();
   const email = location.state?.email || '';
 
   useEffect(() => {
@@ -23,10 +25,10 @@ export default function VerifyEmail() {
     setError('');
     setLoading(true);
     try {
-      await authAPI.verifyEmail({ email, otp });
+      await verifyEmailLogin(email, otp);
       setSuccess('Xác thực thành công! Đang chuyển hướng...');
       setTimeout(() => {
-        navigate('/login');
+        navigate('/');
       }, 1500);
     } catch (err) {
       setError(err.response?.data?.message || 'Mã OTP không hợp lệ');

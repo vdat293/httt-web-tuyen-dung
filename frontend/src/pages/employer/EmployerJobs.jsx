@@ -12,7 +12,7 @@ export default function EmployerJobs() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const { addToast } = useToast();
-  const [form, setForm] = useState({ title: '', description: '', requirements: '', salaryMin: '', salaryMax: '', location: '', jobType: 'full-time', skills: '' });
+  const [form, setForm] = useState({ title: '', description: '', requirements: '', benefits: '', salaryMin: '', salaryMax: '', location: '', jobType: 'full-time', skills: '' });
   const [editingId, setEditingId] = useState(null);
 
   useEffect(() => { loadJobs(); }, []);
@@ -39,7 +39,7 @@ export default function EmployerJobs() {
       if (editingId) { await jobsAPI.update(editingId, payload); addToast('Cập nhật thành công'); }
       else { await jobsAPI.create(payload); addToast('Tạo tin thành công'); }
       setShowForm(false); setEditingId(null);
-      setForm({ title: '', description: '', requirements: '', salaryMin: '', salaryMax: '', location: '', jobType: 'full-time', skills: '' });
+      setForm({ title: '', description: '', requirements: '', benefits: '', salaryMin: '', salaryMax: '', location: '', jobType: 'full-time', skills: '' });
       loadJobs();
     } catch (err) { addToast(err.response?.data?.message || 'Lỗi', 'error'); }
   };
@@ -50,6 +50,7 @@ export default function EmployerJobs() {
       title: job.title, 
       description: job.description, 
       requirements: job.requirements, 
+      benefits: job.benefits || '',
       salaryMin: job.salary?.min || '', 
       salaryMax: job.salary?.max || '', 
       location: job.location, 
@@ -77,7 +78,7 @@ export default function EmployerJobs() {
     <Layout>
       <div className="flex items-center justify-between mb-5">
         <h1 className="section-title">Tin tuyển dụng</h1>
-        <button onClick={() => { setShowForm(true); setEditingId(null); setForm({ title: '', description: '', requirements: '', salaryMin: '', salaryMax: '', location: '', jobType: 'full-time', skills: '' }); }} className="btn-primary text-sm">
+        <button onClick={() => { setShowForm(true); setEditingId(null); setForm({ title: '', description: '', requirements: '', benefits: '', salaryMin: '', salaryMax: '', location: '', jobType: 'full-time', skills: '' }); }} className="btn-primary text-sm">
           + Tạo tin mới
         </button>
       </div>
@@ -129,6 +130,10 @@ export default function EmployerJobs() {
               <div className="form-group !mb-0">
                 <label>Yêu cầu *</label>
                 <textarea value={form.requirements} onChange={e => setForm({...form, requirements: e.target.value})} className="input-field h-24 resize-none" required />
+              </div>
+              <div className="form-group !mb-0">
+                <label>Quyền lợi</label>
+                <textarea value={form.benefits} onChange={e => setForm({...form, benefits: e.target.value})} className="input-field h-24 resize-none" />
               </div>
               <div className="flex gap-2 pt-2">
                 <button type="submit" className="btn-primary flex-1">{editingId ? 'Lưu' : 'Đăng tin'}</button>

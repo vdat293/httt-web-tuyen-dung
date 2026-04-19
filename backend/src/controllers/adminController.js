@@ -172,14 +172,37 @@ const deleteUser = async (req, res, next) => {
 
     // Cascade delete related data
     if (user.role === 'candidate') {
+      const userApps = await Application.find({ candidateId: user._id }).select('_id');
+      const appIds = userApps.map(a => a._id);
+      
+      const Notification = require('../models/Notification');
+      const RefreshToken = require('../models/RefreshToken');
+      
+      await Interview.deleteMany({ applicationId: { $in: appIds } });
       await Application.deleteMany({ candidateId: user._id });
       await SavedJob.deleteMany({ user: user._id });
+      
     } else if (user.role === 'employer') {
       const employerJobs = await Job.find({ employerId: user._id }).select('_id');
       const jobIds = employerJobs.map((j) => j._id);
+      
+      const employerApps = await Application.find({ jobId: { $in: jobIds } }).select('_id');
+      const appIds = employerApps.map(a => a._id);
+      
+      const Notification = require('../models/Notification');
+      const RefreshToken = require('../models/RefreshToken');
+
+      await Interview.deleteMany({ applicationId: { $in: appIds } });
       await Application.deleteMany({ jobId: { $in: jobIds } });
+      await SavedJob.deleteMany({ job: { $in: jobIds } });
       await Job.deleteMany({ employerId: user._id });
     }
+
+    const Notification = require('../models/Notification');
+    const RefreshToken = require('../models/RefreshToken');
+    
+    await Notification.deleteMany({ user: user._id });
+    await RefreshToken.deleteMany({ userId: user._id });
 
     await user.deleteOne();
     res.json({ message: 'User deleted successfully' });
