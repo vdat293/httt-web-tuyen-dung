@@ -494,13 +494,13 @@ export default function Home() {
                 >
                   Ngẫu Nhiên
                 </button>
-                {['Hà Nội', 'Thành phố Hồ Chí Minh', 'Miền Bắc', 'Miền Nam', 'Đà Nẵng', 'Bình Dương'].map(tag => (
+                {['Hà Nội', 'Hồ Chí Minh', 'Hải Phòng', 'Cần Thơ', 'Đà Nẵng', 'Bình Dương'].map(tag => (
                   <button 
                     key={tag}
                     onClick={() => setFilters({ ...filters, location: tag })}
                     className={`filter-tag ${filters.location === tag ? 'active' : ''}`}
                   >
-                    {tag === 'Thành phố Hồ Chí Minh' ? 'TP. Hồ Chí Minh' : tag}
+                    {tag === 'Hồ Chí Minh' ? 'TP. Hồ Chí Minh' : tag}
                   </button>
                 ))}
               </div>

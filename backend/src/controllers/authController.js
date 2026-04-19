@@ -66,10 +66,37 @@ const verifyEmail = async (req, res, next) => {
     const user = await User.findOne({ email });
     if(user) {
       user.emailVerified = true;
+      user.lastActiveAt = new Date();
       await user.save();
     }
     
-    res.json({ message: 'Xác thực email thành công. Bạn có thể đăng nhập ngay.' });
+    // Auto-login user
+    const accessToken  = generateAccessToken(user._id);
+    const refreshToken = generateRefreshToken();
+
+    await RefreshToken.create({
+      token: refreshToken,
+      userId: user._id,
+      expiresAt: new Date(Date.now() + REFRESH_TOKEN_EXPIRY_DAYS * 24 * 60 * 60 * 1000),
+      userAgent: req.get('user-agent') || '',
+    });
+
+    res.json({ 
+      message: 'Xác thực email thành công.',
+      user: {
+        _id: user._id,
+        email: user.email,
+        role: user.role,
+        name: user.name,
+        phone: user.phone,
+        avatar: user.avatar,
+        companyLogo: user.companyLogo,
+        isActive: user.isActive,
+        createdAt: user.createdAt,
+      },
+      accessToken,
+      refreshToken
+    });
   } catch (error) {
     next(error);
   }

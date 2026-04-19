@@ -1,5 +1,6 @@
 const Job = require('../models/Job');
 const Application = require('../models/Application');
+const User = require('../models/User');
 
 const getJobs = async (req, res, next) => {
   try {
@@ -38,6 +39,12 @@ const getJobs = async (req, res, next) => {
       if (salaryMax) filter['salary.min'].$lte = Number(salaryMax);
     }
     filter.status = 'open';
+
+    const inactiveEmployers = await User.find({ role: 'employer', isActive: false }).select('_id');
+    const inactiveIds = inactiveEmployers.map(emp => emp._id);
+    if (inactiveIds.length > 0) {
+      filter.employerId = { $nin: inactiveIds };
+    }
 
     const pageNum = Math.max(1, Number(page));
     const limitNum = Math.min(50, Math.max(1, Number(limit)));
@@ -81,19 +88,23 @@ const incrementViews = async (req, res, next) => {
 
 const getJob = async (req, res, next) => {
   try {
-    const job = await Job.findById(req.params.id).populate('employerId', 'name email phone companyLogo');
+    const job = await Job.findById(req.params.id).populate('employerId', 'name email phone companyLogo isActive');
 
-    if (!job) {
-      return res.status(404).json({ message: 'Job not found' });
+    if (!job || (job.employerId && job.employerId.isActive === false)) {
+      return res.status(404).json({ message: 'Job not found or employer is locked' });
     }
 
     const applicationCount = await Application.countDocuments({ jobId: job._id });
+
+    const inactiveEmployers = await User.find({ role: 'employer', isActive: false }).select('_id');
+    const inactiveIds = inactiveEmployers.map(emp => emp._id);
 
     // Fetch related jobs by same location (excluding current job)
     const relatedJobs = await Job.find({
       location: job.location,
       _id: { $ne: job._id },
       status: 'open',
+      employerId: { $nin: inactiveIds }
     })
       .populate('employerId', 'name companyLogo')
       .limit(4)

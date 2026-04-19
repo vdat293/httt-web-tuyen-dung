@@ -49,6 +49,19 @@ export const AuthProvider = ({ children }) => {
     return data;
   };
 
+  // ─── Verify Email & Auto Login ──────────────────────────────────────────
+  const verifyEmailLogin = async (email, otp) => {
+    const { data } = await authAPI.verifyEmail({ email, otp });
+    if (data.accessToken && data.user) {
+      localStorage.setItem('accessToken', data.accessToken);
+      localStorage.setItem('refreshToken', data.refreshToken);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      setUser(data.user);
+      setSessionExpired(false);
+    }
+    return data;
+  };
+
   // ─── Logout ───────────────────────────────────────────────────────────────
   const logout = useCallback(async () => {
     const refreshToken = localStorage.getItem('refreshToken');
@@ -83,6 +96,7 @@ export const AuthProvider = ({ children }) => {
         sessionExpired,
         login,
         register,
+        verifyEmailLogin,
         logout,
         updateUser,
       }}
