@@ -36,6 +36,19 @@ export default function EmployerApplications() {
     catch (err) { addToast(err.response?.data?.message || 'Lỗi', 'error'); }
   };
 
+  const handleViewCV = async (app) => {
+    if (app.status === 'pending') {
+      try {
+        await applicationsAPI.updateStatus(app._id, 'reviewed');
+        setApplications((prev) => 
+          prev.map((a) => a._id === app._id ? { ...a, status: 'reviewed' } : a)
+        );
+      } catch (err) {
+        console.error('Failed to auto-update status to reviewed:', err);
+      }
+    }
+  };
+
   const handleInterview = async (appId, e) => {
     e.preventDefault();
     const f = e.target;
@@ -78,7 +91,17 @@ export default function EmployerApplications() {
                   </div>
                   <p className="text-xs text-meta">{app.candidateId?.email} · {app.candidateId?.phone}</p>
                   <p className="text-xs text-brand-500 font-medium mt-0.5">{app.jobId?.title} — {app.jobId?.location}</p>
-                  {app.cvUrl && <a href={app.cvUrl} target="_blank" rel="noreferrer" className="text-xs text-blue-500 hover:underline mt-1 inline-block">Xem CV</a>}
+                  {app.cvUrl && (
+                    <a 
+                      href={app.cvUrl} 
+                      target="_blank" 
+                      rel="noreferrer" 
+                      onClick={() => handleViewCV(app)}
+                      className="text-xs text-blue-500 hover:underline mt-1 inline-block"
+                    >
+                      Xem CV
+                    </a>
+                  )}
                 </div>
               </div>
 

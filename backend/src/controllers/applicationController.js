@@ -96,14 +96,16 @@ const createApplication = async (req, res, next) => {
     if (req.file) {
       cvUrl = `/uploads/${req.file.filename}`;
 
-      // Read the CV file and parse with LLM
-      const cvPath = path.join(__dirname, '../../uploads', req.file.filename);
-      try {
-        const cvText = fs.readFileSync(cvPath, 'utf-8');
-        parsedCV = await parseCVWithLLM(cvText);
-      } catch (err) {
-        console.error('Error reading CV file:', err.message);
-        // Continue without parsed CV data
+      // Only attempt LLM parsing for text-based files for now
+      const ext = path.extname(req.file.originalname).toLowerCase();
+      if (['.txt', '.md', '.rtf'].includes(ext)) {
+        const cvPath = path.join(__dirname, '../../uploads', req.file.filename);
+        try {
+          const cvText = fs.readFileSync(cvPath, 'utf-8');
+          parsedCV = await parseCVWithLLM(cvText);
+        } catch (err) {
+          console.error('Error reading CV file:', err.message);
+        }
       }
     } else if (req.user.resumeUrl) {
       // Use CV from user profile if no file uploaded

@@ -4,6 +4,7 @@ import { ToastProvider } from './components/Toast';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ProtectedRoute from './components/ProtectedRoute';
+import { SocketProvider } from './contexts/SocketContext';
 
 // Pages
 import Login from './pages/Login';
@@ -34,43 +35,45 @@ import AdminOTPs from './pages/Admin/OTPManagement';
 function App() {
   return (
     <AuthProvider>
-      <ToastProvider>
-        <BrowserRouter>
-          <Routes>
-            {/* Public routes */}
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/verify-email" element={<VerifyEmail />} />
-            <Route path="/forgot-password" element={<ForgotPassword />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/" element={<><Navbar /><Home /><Footer /></>} />
-            <Route path="/jobs" element={<><Navbar /><Jobs /><Footer /></>} />
-            <Route path="/jobs/:id" element={<><Navbar /><JobDetail /><Footer /></>} />
+      <SocketProvider>
+        <ToastProvider>
+          <BrowserRouter>
+            <Routes>
+              {/* Public routes */}
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/verify-email" element={<VerifyEmail />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
+              <Route path="/" element={<><Navbar /><Home /><Footer /></>} />
+              <Route path="/jobs" element={<><Navbar /><Jobs /><Footer /></>} />
+              <Route path="/jobs/:id" element={<><Navbar /><JobDetail /><Footer /></>} />
 
-            {/* Employer routes */}
-            <Route path="/employer/dashboard" element={<ProtectedRoute roles={['employer']}><Navbar /><EmployerDashboard /><Footer /></ProtectedRoute>} />
-            <Route path="/employer/jobs" element={<ProtectedRoute roles={['employer']}><Navbar /><EmployerJobs /><Footer /></ProtectedRoute>} />
-            <Route path="/employer/applications" element={<ProtectedRoute roles={['employer']}><Navbar /><EmployerApplications /><Footer /></ProtectedRoute>} />
-            <Route path="/employer/interviews" element={<ProtectedRoute roles={['employer']}><Navbar /><EmployerInterviews /><Footer /></ProtectedRoute>} />
-            <Route path="/employer/reports" element={<ProtectedRoute roles={['employer']}><Navbar /><EmployerReports /><Footer /></ProtectedRoute>} />
-            <Route path="/employer/company-profile" element={<ProtectedRoute roles={['employer']}><Navbar /><CompanyProfile /><Footer /></ProtectedRoute>} />
+              {/* Employer routes */}
+              <Route path="/employer/dashboard" element={<ProtectedRoute roles={['employer']}><Navbar /><EmployerDashboard /><Footer /></ProtectedRoute>} />
+              <Route path="/employer/jobs" element={<ProtectedRoute roles={['employer']}><Navbar /><EmployerJobs /><Footer /></ProtectedRoute>} />
+              <Route path="/employer/applications" element={<ProtectedRoute roles={['employer']}><Navbar /><EmployerApplications /><Footer /></ProtectedRoute>} />
+              <Route path="/employer/interviews" element={<ProtectedRoute roles={['employer']}><Navbar /><EmployerInterviews /><Footer /></ProtectedRoute>} />
+              <Route path="/employer/reports" element={<ProtectedRoute roles={['employer']}><Navbar /><EmployerReports /><Footer /></ProtectedRoute>} />
+              <Route path="/employer/company-profile" element={<ProtectedRoute roles={['employer']}><Navbar /><CompanyProfile /><Footer /></ProtectedRoute>} />
 
-            {/* Candidate routes */}
-            <Route path="/candidate/applications" element={<ProtectedRoute roles={['candidate']}><Navbar /><CandidateApplications /><Footer /></ProtectedRoute>} />
-            <Route path="/candidate/interviews" element={<ProtectedRoute roles={['candidate']}><Navbar /><CandidateInterviews /><Footer /></ProtectedRoute>} />
-            <Route path="/candidate/saved-jobs" element={<ProtectedRoute roles={['candidate']}><Navbar /><CandidateSavedJobs /><Footer /></ProtectedRoute>} />
-            <Route path="/candidate/profile" element={<ProtectedRoute roles={['candidate']}><Navbar /><CandidateProfile /><Footer /></ProtectedRoute>} />
-            <Route path="/notifications" element={<ProtectedRoute><Navbar /><Notifications /><Footer /></ProtectedRoute>} />
+              {/* Candidate routes */}
+              <Route path="/candidate/applications" element={<ProtectedRoute roles={['candidate']}><Navbar /><CandidateApplications /><Footer /></ProtectedRoute>} />
+              <Route path="/candidate/interviews" element={<ProtectedRoute roles={['candidate']}><Navbar /><CandidateInterviews /><Footer /></ProtectedRoute>} />
+              <Route path="/candidate/saved-jobs" element={<ProtectedRoute roles={['candidate']}><Navbar /><CandidateSavedJobs /><Footer /></ProtectedRoute>} />
+              <Route path="/candidate/profile" element={<ProtectedRoute roles={['candidate']}><Navbar /><CandidateProfile /><Footer /></ProtectedRoute>} />
+              <Route path="/notifications" element={<ProtectedRoute><Navbar /><Notifications /><Footer /></ProtectedRoute>} />
 
-            {/* Admin routes */}
-            <Route path="/admin" element={<ProtectedRoute roles={['admin']}><AdminDashboard /></ProtectedRoute>} />
-            <Route path="/admin/users" element={<ProtectedRoute roles={['admin']}><AdminUsers /></ProtectedRoute>} />
-            <Route path="/admin/jobs" element={<ProtectedRoute roles={['admin']}><AdminJobs /></ProtectedRoute>} />
-            <Route path="/admin/reports" element={<ProtectedRoute roles={['admin']}><AdminReports /></ProtectedRoute>} />
-            <Route path="/admin/otps" element={<ProtectedRoute roles={['admin']}><AdminOTPs /></ProtectedRoute>} />
-          </Routes>
-        </BrowserRouter>
-      </ToastProvider>
+              {/* Admin routes */}
+              <Route path="/admin" element={<ProtectedRoute roles={['admin']}><AdminDashboard /></ProtectedRoute>} />
+              <Route path="/admin/users" element={<ProtectedRoute roles={['admin']}><AdminUsers /></ProtectedRoute>} />
+              <Route path="/admin/jobs" element={<ProtectedRoute roles={['admin']}><AdminJobs /></ProtectedRoute>} />
+              <Route path="/admin/reports" element={<ProtectedRoute roles={['admin']}><AdminReports /></ProtectedRoute>} />
+              <Route path="/admin/otps" element={<ProtectedRoute roles={['admin']}><AdminOTPs /></ProtectedRoute>} />
+            </Routes>
+          </BrowserRouter>
+        </ToastProvider>
+      </SocketProvider>
     </AuthProvider>
   );
 }
