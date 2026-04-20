@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
+import logo from '../public/imgs/logo_genbygem.png';
 
 export default function Register() {
   const [form, setForm] = useState({ name: '', email: '', password: '', phone: '', role: 'candidate' });
@@ -15,7 +16,7 @@ export default function Register() {
     setError('');
     setLoading(true);
     try {
-      const data = await register(form);
+      await register(form);
       navigate('/verify-email', { state: { email: form.email } });
     } catch (err) {
       setError(err.response?.data?.message || 'Đăng ký thất bại');
@@ -25,120 +26,200 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen bg-bgLight flex items-center justify-center p-4">
-      <div className="w-full max-w-md animate-fade-in">
-        {/* Logo */}
-        <div className="text-center mb-6">
-          <Link to="/" className="inline-flex items-center gap-2">
-            <div className="w-10 h-10 bg-brand-500 rounded-lg flex items-center justify-center">
-              <span className="text-white font-bold text-lg">R</span>
-            </div>
-            <span className="text-2xl font-bold text-brand-500">8386recruit</span>
-          </Link>
+    <div className="min-h-screen flex">
+      {/* ═══ Left Brand Panel ═══ */}
+      <div className="hidden lg:flex lg:w-[45%] xl:w-[50%] relative overflow-hidden flex-col justify-between text-white p-10 xl:p-14"
+        style={{ background: 'linear-gradient(160deg, #063d1e 0%, #0a5c2f 30%, #00B14F 70%, #00c853 100%)' }}
+      >
+        {/* Decorative elements */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+          <div className="absolute w-[600px] h-[600px] rounded-full bg-white/[0.03] -top-60 -left-60" style={{ animation: 'float 20s ease-in-out infinite' }}></div>
+          <div className="absolute w-[400px] h-[400px] rounded-full bg-white/[0.05] top-1/2 -right-40" style={{ animation: 'float 15s ease-in-out infinite reverse' }}></div>
         </div>
 
-        <div className="card p-6 sm:p-8">
-          <h1 className="text-xl font-bold text-heading text-center mb-1">Tạo tài khoản</h1>
-          <p className="text-sm text-meta text-center mb-6">Đăng ký miễn phí và bắt đầu ngay</p>
+        <div className="relative z-10">
+          <Link to="/" className="inline-block mb-16">
+            <img src={logo} alt="8386recruit" className="h-12 w-auto brightness-0 invert drop-shadow-md" />
+          </Link>
+
+          <div className="max-w-md">
+            <h2 className="text-4xl font-bold leading-tight mb-6">
+              Xây dựng sự nghiệp<br />vững chắc cùng 8386.
+            </h2>
+            <div className="space-y-6">
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center shrink-0 border border-white/20">
+                  <svg className="w-5 h-5 text-brand-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-lg">Tìm việc nhanh chóng</h4>
+                  <p className="text-white/60 text-sm mt-1">Hệ thống gợi ý thông minh dựa trên kỹ năng của bạn.</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-4">
+                <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center shrink-0 border border-white/20">
+                  <svg className="w-5 h-5 text-brand-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                  </svg>
+                </div>
+                <div>
+                  <h4 className="font-semibold text-lg">Ứng tuyển một chạm</h4>
+                  <p className="text-white/60 text-sm mt-1">Gửi hồ sơ trực tiếp đến nhà tuyển dụng chỉ với 1 click.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="relative z-10 pt-10 border-t border-white/10 flex justify-between items-center text-sm text-white/50">
+          <p>© 2026 8386recruit. All rights reserved.</p>
+          <div className="flex gap-4">
+            <a href="#" className="hover:text-white transition-colors">Trợ giúp</a>
+            <a href="#" className="hover:text-white transition-colors">Điều khoản</a>
+          </div>
+        </div>
+      </div>
+
+      {/* ═══ Right Form Panel ═══ */}
+      <div className="flex-1 flex items-center justify-center p-6 sm:p-10 bg-gray-50/70">
+        <div className="w-full max-w-[450px] animate-fade-in py-10">
+          
+          {/* Mobile Logo */}
+          <div className="lg:hidden text-center mb-10">
+            <Link to="/">
+              <img src={logo} alt="8386recruit" className="h-12 w-auto mx-auto object-contain" />
+            </Link>
+          </div>
+
+          <div className="mb-8">
+            <h1 className="text-2xl font-bold text-gray-900 mb-2">Tạo tài khoản mới</h1>
+            <p className="text-sm text-gray-500">Bắt đầu hành trình tìm kiếm sự nghiệp của bạn ngay hôm nay.</p>
+          </div>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-2.5 rounded-lg mb-4 text-sm">
+            <div className="bg-red-50 border border-red-100 text-red-600 px-4 py-3 rounded-xl mb-6 text-sm animate-fade-in">
               {error}
             </div>
           )}
 
-          {/* Role Selection */}
-          <div className="flex rounded-lg border border-line overflow-hidden mb-5">
+          {/* Role Selection Tabs */}
+          <div className="flex p-1 bg-gray-100 rounded-xl mb-6">
             <button
-              type="button"
               onClick={() => setForm({ ...form, role: 'candidate' })}
-              className={`flex-1 py-2.5 text-sm font-semibold transition-colors ${
-                form.role === 'candidate'
-                  ? 'bg-brand-500 text-white'
-                  : 'bg-white text-body hover:bg-gray-50'
+              className={`flex-1 py-2.5 text-sm font-bold rounded-lg transition-all ${
+                form.role === 'candidate' ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'
               }`}
             >
-              Ứng viên
+              Tôi là ứng viên
             </button>
             <button
-              type="button"
               onClick={() => setForm({ ...form, role: 'employer' })}
-              className={`flex-1 py-2.5 text-sm font-semibold transition-colors border-l border-line ${
-                form.role === 'employer'
-                  ? 'bg-brand-500 text-white'
-                  : 'bg-white text-body hover:bg-gray-50'
+              className={`flex-1 py-2.5 text-sm font-bold rounded-lg transition-all ${
+                form.role === 'employer' ? 'bg-white text-brand-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'
               }`}
             >
-              Nhà tuyển dụng
+              Tôi là nhà tuyển dụng
             </button>
           </div>
 
-          <form onSubmit={handleSubmit}>
-            <div className="form-group">
-              <label>Họ tên</label>
-              <input
-                type="text"
-                value={form.name}
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="input-field"
-                placeholder="Nguyễn Văn A"
-                required
-              />
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Họ tên</label>
+                <input
+                  type="text"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none"
+                  placeholder="Nguyễn Văn A"
+                  required
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Số điện thoại</label>
+                <input
+                  type="text"
+                  value={form.phone}
+                  onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                  className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none"
+                  placeholder="09xx xxx xxx"
+                />
+              </div>
             </div>
-            <div className="form-group">
-              <label>Email</label>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Email</label>
               <input
                 type="email"
                 value={form.email}
                 onChange={(e) => setForm({ ...form, email: e.target.value })}
-                className="input-field"
-                placeholder="email@example.com"
+                className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none"
+                placeholder="example@email.com"
                 required
               />
             </div>
-            <div className="form-group">
-              <label>Mật khẩu</label>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Mật khẩu</label>
               <div className="relative">
                 <input
                   type={showPassword ? 'text' : 'password'}
                   value={form.password}
                   onChange={(e) => setForm({ ...form, password: e.target.value })}
-                  className="input-field pr-10"
-                  placeholder="Tối thiểu 6 ký tự"
+                  className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none pr-12"
+                  placeholder="••••••••"
                   minLength={6}
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-meta hover:text-heading text-sm"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-gray-400 hover:text-gray-600 transition-colors"
                 >
-                  {showPassword ? 'Ẩn' : 'Hiện'}
+                  {showPassword ? (
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" /></svg>
+                  ) : (
+                    <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" /><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" /></svg>
+                  )}
                 </button>
               </div>
             </div>
-            <div className="form-group">
-              <label>Số điện thoại <span className="text-meta font-normal">(tùy chọn)</span></label>
-              <input
-                type="text"
-                value={form.phone}
-                onChange={(e) => setForm({ ...form, phone: e.target.value })}
-                className="input-field"
-                placeholder="0123 456 789"
-              />
-            </div>
 
-            <button type="submit" disabled={loading} className="btn-primary w-full mt-2">
-              {loading ? 'Đang xử lý...' : 'Đăng ký'}
+            <p className="text-xs text-gray-400 leading-relaxed">
+              Bằng việc nhấn Đăng ký, bạn đồng ý với <a href="#" className="text-brand-600 font-semibold hover:underline">Điều khoản</a> và <a href="#" className="text-brand-600 font-semibold hover:underline">Chính sách bảo mật</a> của 8386recruit.
+            </p>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 px-4 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-70 mt-2"
+            >
+              {loading ? (
+                <>
+                  <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                  Đang xử lý...
+                </>
+              ) : (
+                'Đăng ký ngay'
+              )}
             </button>
           </form>
 
-          <p className="text-center mt-5 text-sm text-meta">
-            Đã có tài khoản?{' '}
-            <Link to="/login" className="text-brand-500 font-semibold hover:text-brand-600">
-              Đăng nhập
+          {/* Prompt to Login - VERY CLEAR NOW */}
+          <div className="mt-8 pt-8 border-t border-gray-100 text-center">
+            <p className="text-sm text-gray-600 mb-4">Bạn đã từng sử dụng 8386recruit?</p>
+            <Link
+              to="/login"
+              className="inline-flex items-center justify-center gap-2 w-full py-3 px-4 bg-white border-2 border-gray-200 text-brand-600 font-bold rounded-xl hover:border-brand-500 hover:bg-brand-50 transition-all shadow-sm"
+            >
+              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M11 16l-4-4m0 0l4-4m-4 4h14m-5 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+              </svg>
+              Quay lại Đăng nhập
             </Link>
-          </p>
+          </div>
         </div>
       </div>
     </div>
