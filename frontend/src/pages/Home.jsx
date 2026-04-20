@@ -186,7 +186,11 @@ export default function Home() {
   };
 
   const handleLocationSelect = (loc) => {
-    setFilters({ ...filters, location: loc === 'Tất cả địa điểm' ? '' : loc });
+    setFilters({ 
+      ...filters, 
+      location: loc === 'Tất cả địa điểm' || loc === 'Ngẫu Nhiên' ? '' : loc,
+      category: '', experience: '', salaryMin: 0, salaryMax: 0 
+    });
     setShowSearchLocDropdown(false);
     setShowFilterTypeDropdown(false);
   };
@@ -195,17 +199,26 @@ export default function Home() {
     setFilters({ 
       ...filters, 
       salaryMin: range.min, 
-      salaryMax: range.max 
+      salaryMax: range.max,
+      category: '', experience: '', location: ''
     });
   };
 
   const handleExperienceSelect = (exp) => {
-    setFilters({ ...filters, experience: exp.value });
+    setFilters({ 
+      ...filters, 
+      experience: exp.value,
+      category: '', salaryMin: 0, salaryMax: 0, location: ''
+    });
   };
 
   const handleCategorySelect = (cat) => {
     const newCategory = cat === 'Tất cả ngành nghề' ? '' : cat;
-    setFilters({ ...filters, category: newCategory });
+    setFilters({ 
+      ...filters, 
+      category: newCategory,
+      experience: '', salaryMin: 0, salaryMax: 0, location: ''
+    });
     setShowSearchCategoryDropdown(false);
     
     // Auto submit search like TopCV if using categories
@@ -624,7 +637,18 @@ export default function Home() {
                         <button
                           key={type.id}
                           onClick={() => {
-                            setActiveFilterType(type.id);
+                            if (activeFilterType !== type.id) {
+                              setActiveFilterType(type.id);
+                              setFilters(prev => ({
+                                ...prev,
+                                experience: '',
+                                salaryMin: 0,
+                                salaryMax: 0,
+                                category: '',
+                                // location is shared with search bar, but if we switch tabs, it usually means we start a new quick search dimension
+                                location: type.id === 'location' ? prev.location : ''
+                              }));
+                            }
                             setShowFilterTypeDropdown(false);
                           }}
                           className={`location-option ${activeFilterType === type.id ? 'active' : ''}`}
@@ -651,7 +675,7 @@ export default function Home() {
                 {activeFilterType === 'location' && (
                   <>
                     <button 
-                      onClick={() => setFilters({ ...filters, location: '' })}
+                      onClick={() => handleLocationSelect('Ngẫu Nhiên')}
                       className={`filter-tag ${!filters.location ? 'active' : ''}`}
                     >
                       Ngẫu Nhiên
@@ -659,7 +683,7 @@ export default function Home() {
                     {['Hà Nội', 'Hồ Chí Minh', 'Hải Phòng', 'Cần Thơ', 'Đà Nẵng', 'Bình Dương'].map(tag => (
                       <button 
                         key={tag}
-                        onClick={() => setFilters({ ...filters, location: tag })}
+                        onClick={() => handleLocationSelect(tag)}
                         className={`filter-tag ${filters.location === tag ? 'active' : ''}`}
                       >
                         {tag === 'Hồ Chí Minh' ? 'TP. Hồ Chí Minh' : tag}
@@ -695,7 +719,7 @@ export default function Home() {
                 {activeFilterType === 'category' && (
                   <>
                     <button 
-                      onClick={() => setFilters({ ...filters, category: '' })}
+                      onClick={() => handleCategorySelect('Tất cả ngành nghề')}
                       className={`filter-tag ${!filters.category ? 'active' : ''}`}
                     >
                       Tất cả

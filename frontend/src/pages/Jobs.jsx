@@ -65,32 +65,49 @@ export default function Jobs() {
     }
   }, []);
 
-  // Initial load only
+  // Sync filters with URL params whenever they change
   useEffect(() => {
-    fetchJobs(filters);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const newFilters = {
+      ...DEFAULT_FILTERS,
+      q: searchParams.get('q') || '',
+      location: searchParams.get('location') || '',
+      jobType: searchParams.get('jobType') || '',
+      experience: searchParams.get('experience') || '',
+      salaryMin: searchParams.get('salaryMin') || '',
+      salaryMax: searchParams.get('salaryMax') || '',
+      skills: searchParams.get('skills') || '',
+      sort: searchParams.get('sort') || 'createdAt',
+      order: searchParams.get('order') || 'desc',
+      page: Number(searchParams.get('page')) || 1,
+    };
+    setFilters(newFilters);
+    fetchJobs(newFilters);
+  }, [searchParams, fetchJobs]);
+
+  const updateURL = (newFilters) => {
+    const params = new URLSearchParams();
+    Object.keys(newFilters).forEach(key => {
+      if (newFilters[key] && newFilters[key] !== DEFAULT_FILTERS[key]) {
+        params.set(key, newFilters[key]);
+      }
+    });
+    navigate(`/jobs?${params.toString()}`, { replace: true });
+  };
 
   const handleSearch = () => {
-    const params = new URLSearchParams();
-    if (filters.q) params.set('q', filters.q);
-    if (filters.location) params.set('location', filters.location);
-    navigate(`/jobs?${params.toString()}`, { replace: true });
-    fetchJobs({ ...filters, page: 1 });
+    updateURL({ ...filters, page: 1 });
   };
 
   const handleFilterChange = (newFilters) => {
-    setFilters((prev) => ({ ...prev, ...newFilters, page: 1 }));
+    updateURL({ ...filters, ...newFilters, page: 1 });
   };
 
   const handleSort = ({ sort, order }) => {
-    fetchJobs({ ...filters, sort, order, page: 1 });
-    setFilters((prev) => ({ ...prev, sort, order, page: 1 }));
+    updateURL({ ...filters, sort, order, page: 1 });
   };
 
   const handlePageChange = (page) => {
-    fetchJobs({ ...filters, page });
-    setFilters((prev) => ({ ...prev, page }));
+    updateURL({ ...filters, page });
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
