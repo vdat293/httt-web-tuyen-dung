@@ -5,6 +5,9 @@ import Layout from '../components/Layout';
 import LoadingSkeleton from '../components/LoadingSkeleton';
 import EmptyState from '../components/EmptyState';
 import JobCard from '../components/JobCard';
+import bannerGreen from '../assets/banner-green.png';
+import bannerDark from '../assets/banner-dark.png';
+import bannerTop from '../assets/banner-top.png';
 
 // ─── Dữ liệu ngành nghề & từ khóa gợi ý (TopCV style) ────────────────────
 const JOB_CATEGORIES = [
@@ -272,81 +275,7 @@ export default function Home() {
             </form>
 
             {/* ═══════ Category Panel (Dropdown) ═══════ */}
-            {showCategoryPanel && (
-              <div
-                className="category-panel"
-                onMouseEnter={handlePanelMouseEnter}
-                onMouseLeave={handlePanelMouseLeave}
-              >
-                {/* Left - Category List */}
-                <div className="category-sidebar">
-                  {JOB_CATEGORIES.map((cat, idx) => (
-                    <button
-                      key={cat.name}
-                      type="button"
-                      onMouseEnter={() => setActiveCategory(idx)}
-                      onClick={() => handleKeywordClick(cat.name)}
-                      className={`category-item ${activeCategory === idx ? 'active' : ''}`}
-                    >
-                      <span>{cat.name}</span>
-                      <svg className="w-3.5 h-3.5 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                      </svg>
-                    </button>
-                  ))}
-                </div>
-
-                {/* Right - Keywords */}
-                <div className="category-keywords">
-                  <div className="keywords-section">
-                    <p className="keywords-label">
-                      <svg className="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                      </svg>
-                      Được tìm kiếm nhiều
-                    </p>
-                    <div className="keywords-tags">
-                      {POPULAR_KEYWORDS.map((kw) => (
-                        <button
-                          key={kw}
-                          type="button"
-                          onClick={() => handleKeywordClick(kw)}
-                          className="keyword-tag popular"
-                        >
-                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
-                          </svg>
-                          {kw}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="keywords-divider"></div>
-
-                  <div className="keywords-section">
-                    <p className="keywords-label">
-                      <svg className="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                      </svg>
-                      {JOB_CATEGORIES[activeCategory].name}
-                    </p>
-                    <div className="keywords-tags">
-                      {JOB_CATEGORIES[activeCategory].keywords.map((kw) => (
-                        <button
-                          key={kw}
-                          type="button"
-                          onClick={() => handleKeywordClick(kw)}
-                          className="keyword-tag"
-                        >
-                          {kw}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
+            {/* Suggestion panel removed upon request */}
           </div>
 
             {/* ═══════ Hero Content (Sidebar + Banners) ═══════ */}
@@ -391,24 +320,13 @@ export default function Home() {
               {/* Right Banners Area */}
               <div className="col-span-1 lg:col-span-3 flex flex-col gap-4 h-[300px]">
                 {/* Main Dark Banner */}
-                <div className="flex-1 bg-gradient-to-r from-[#17252A] to-[#1F373E] rounded-xl overflow-hidden relative border border-white/10 shadow-sm flex items-center p-6 lg:p-8">
-                  {/* Play Button Overlay */}
-                  <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
-                    <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30">
-                      <svg className="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
-                    </div>
-                  </div>
-                  
-                  {/* Content */}
-                  <div className="relative z-10 max-w-[60%]">
-                    <h2 className="text-2xl lg:text-3xl font-bold text-white mb-2 leading-tight">Tiếp lợi thế,<br/>nối thành công</h2>
-                    <p className="text-[14px] text-white/70">TopCV - Hệ sinh thái nhân sự<br/>tiên phong ứng dụng công nghệ<br/>tại Việt Nam</p>
-                  </div>
-                  
-                  {/* Decorative / Background effect */}
-                  <div className="absolute right-0 top-0 bottom-0 w-1/2 flex items-center justify-end overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1573164713988-8665fc963095?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Banner" className="w-full h-full object-cover mix-blend-overlay opacity-30 mask-image-gradient" style={{ WebkitMaskImage: 'linear-gradient(to right, transparent, black)' }} />
-                  </div>
+                <div className="flex-1 rounded-xl overflow-hidden relative shadow-sm cursor-pointer group">
+                  <img 
+                    src={bannerTop} 
+                    alt="Tiếp lợi thế, nối thành công" 
+                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                  />
+                  <div className="absolute inset-0 bg-black/10 group-hover:bg-transparent transition-colors duration-300"></div>
                 </div>
 
                 {/* Market Stats Banner */}
@@ -435,9 +353,6 @@ export default function Home() {
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="hidden md:flex shrink-0 items-end -my-4 h-[72px]">
-                    <img src="https://static.topcv.vn/v4/image/welcome/toppy-ai.png" alt="Toppy AI" className="h-full object-contain drop-shadow-md pb-1" />
                   </div>
                 </div>
               </div>
