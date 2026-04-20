@@ -168,6 +168,10 @@ export const profileAPI = {
     api.post('/profile/avatar', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     }),
+  uploadResume: (formData) =>
+    api.post('/profile/resume', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    }),
   updatePassword: (currentPassword, newPassword) =>
     api.put('/profile/password', { currentPassword, newPassword }),
 };

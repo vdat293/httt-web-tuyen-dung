@@ -105,6 +105,12 @@ const createApplication = async (req, res, next) => {
         console.error('Error reading CV file:', err.message);
         // Continue without parsed CV data
       }
+    } else if (req.user.resumeUrl) {
+      // Use CV from user profile if no file uploaded
+      cvUrl = req.user.resumeUrl;
+    } else {
+      // No CV provided at all
+      return res.status(400).json({ message: 'Vui lòng đính kèm file CV hoặc cập nhật CV trong hồ sơ để ứng tuyển.' });
     }
 
     const application = await Application.create({

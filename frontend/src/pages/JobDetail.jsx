@@ -222,17 +222,72 @@ export default function JobDetail() {
                 ) : (
                   <form onSubmit={handleApply}>
                     <h3 className="font-semibold text-heading mb-3">Ứng tuyển ngay</h3>
-                    <div className="mb-3">
-                      <label className="block text-xs font-medium text-meta mb-1.5">Upload CV (PDF, DOC) — tối đa 5MB</label>
+                    
+                    {user?.resumeUrl && !file && (
+                      <div className="mb-4 p-3 bg-brand-50 rounded-lg border border-brand-100">
+                        <div className="flex items-center gap-2 text-brand-700 mb-1">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                          </svg>
+                          <span className="text-xs font-semibold">Sẵn sàng ứng tuyển</span>
+                        </div>
+                        <p className="text-[11px] text-brand-600 leading-tight">
+                          Hệ thống sẽ sử dụng CV từ hồ sơ của bạn. Bạn vẫn có thể tải lên file mới bên dưới nếu muốn thay đổi.
+                        </p>
+                      </div>
+                    )}
+
+                    {!user?.resumeUrl && !file && (
+                      <div className="mb-4 p-3 bg-red-50 rounded-lg border border-red-100">
+                        <div className="flex items-center gap-2 text-red-700 mb-1">
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                          </svg>
+                          <span className="text-xs font-semibold">Thiếu thông tin</span>
+                        </div>
+                        <p className="text-[11px] text-red-600 leading-tight">
+                          Vui lòng chọn file CV hoặc cập nhật hồ sơ cá nhân để nộp đơn ứng tuyển.
+                        </p>
+                      </div>
+                    )}
+
+                    <div className="mb-4">
+                      <label className="block text-xs font-medium text-meta mb-1.5">
+                        {file ? 'File đã chọn' : 'Tải lên CV mới (Ưu tiên)'}
+                      </label>
                       <input
                         type="file"
+                        id="cv-upload"
                         accept=".pdf,.doc,.docx"
                         onChange={(e) => setFile(e.target.files[0])}
-                        className="w-full text-sm text-body file:mr-3 file:py-2 file:px-4 file:rounded-md file:border file:border-line file:text-sm file:font-medium file:bg-bgSection file:text-heading hover:file:bg-gray-200 file:cursor-pointer file:transition-colors"
+                        className="hidden"
                       />
-                      {file && <p className="text-xs text-meta mt-1">{file.name} ({(file.size/1024/1024).toFixed(1)} MB)</p>}
+                      <label 
+                        htmlFor="cv-upload"
+                        className="flex flex-col items-center justify-center w-full p-4 border-2 border-dashed border-line rounded-lg cursor-pointer hover:bg-bgLight transition-colors"
+                      >
+                        {file ? (
+                          <div className="text-center">
+                            <p className="text-xs font-medium text-brand-600 truncate max-w-[200px]">{file.name}</p>
+                            <p className="text-[10px] text-meta">{(file.size/1024/1024).toFixed(1)} MB • Nhấp để thay đổi</p>
+                          </div>
+                        ) : (
+                          <div className="text-center">
+                            <svg className="w-8 h-8 text-meta mb-2 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                            </svg>
+                            <p className="text-xs font-medium text-heading">Chọn tệp CV</p>
+                            <p className="text-[10px] text-meta">PDF, DOC, DOCX (Tối đa 5MB)</p>
+                          </div>
+                        )}
+                      </label>
                     </div>
-                    <button type="submit" disabled={applying} className="btn-primary w-full">
+
+                    <button 
+                      type="submit" 
+                      disabled={applying || (!file && !user?.resumeUrl)} 
+                      className={`btn-primary w-full ${(!file && !user?.resumeUrl) ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    >
                       {applying ? 'Đang gửi...' : 'Nộp đơn ứng tuyển'}
                     </button>
                   </form>

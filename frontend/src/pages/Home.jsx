@@ -75,6 +75,15 @@ const FILTER_TYPES = [
   { id: 'category', label: 'Ngành nghề' },
 ];
 
+function formatSalary(salary) {
+  if (!salary) return 'Thỏa thuận';
+  if (typeof salary === 'string') return salary;
+  if (salary.min === 0 && salary.max === 0) return 'Thỏa thuận';
+  const fmt = (n) => (n >= 1000000 ? `${(n / 1000000).toFixed(0)}M` : n);
+  if (salary.max > 0) return `${fmt(salary.min)} - ${fmt(salary.max)}`;
+  return `Từ ${fmt(salary.min)}`;
+}
+
 export default function Home() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -321,80 +330,171 @@ export default function Home() {
               </div>
             </form>
 
-            {/* ═══════ Category Panel (Dropdown) ═══════ */}
+            {/* ═══════ Search Suggestion Panel (Dropdown) ═══════ */}
             {showCategoryPanel && (
               <div
-                className="category-panel"
+                className={`search-suggestion-panel ${filters.title ? 'autocomplete-mode' : ''}`}
                 onMouseEnter={handlePanelMouseEnter}
                 onMouseLeave={handlePanelMouseLeave}
               >
-                {/* Left - Category List */}
-                <div className="category-sidebar">
-                  {JOB_CATEGORIES.map((cat, idx) => (
-                    <button
-                      key={cat.name}
-                      type="button"
-                      onMouseEnter={() => setActiveCategory(idx)}
-                      onClick={() => handleKeywordClick(cat.name)}
-                      className={`category-item ${activeCategory === idx ? 'active' : ''}`}
-                    >
-                      <span>{cat.name}</span>
-                      <svg className="w-3.5 h-3.5 opacity-40" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
-                      </svg>
-                    </button>
-                  ))}
-                </div>
-
-                {/* Right - Keywords */}
-                <div className="category-keywords">
-                  <div className="keywords-section">
-                    <p className="keywords-label">
-                      <svg className="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
-                      </svg>
-                      Được tìm kiếm nhiều
-                    </p>
-                    <div className="keywords-tags">
-                      {POPULAR_KEYWORDS.map((kw) => (
-                        <button
-                          key={kw}
-                          type="button"
-                          onClick={() => handleKeywordClick(kw)}
-                          className="keyword-tag popular"
-                        >
-                          <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
-                          </svg>
-                          {kw}
-                        </button>
-                      ))}
+                {!filters.title ? (
+                  <>
+                    {/* Left - Popular Keywords */}
+                    <div className="suggestion-keywords">
+                      <p className="keywords-label">
+                        <svg className="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                        </svg>
+                        Từ khóa phổ biến
+                      </p>
+                      <div className="keywords-tags">
+                        {POPULAR_KEYWORDS.map((kw) => (
+                          <button
+                            key={kw}
+                            type="button"
+                            onClick={() => handleKeywordClick(kw)}
+                            className="keyword-tag popular"
+                          >
+                            <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M17.657 18.657A8 8 0 016.343 7.343S7 9 9 10c0-2 .5-5 2.986-7C14 5 16.09 5.777 17.656 7.343A7.975 7.975 0 0120 13a7.975 7.975 0 01-2.343 5.657z" />
+                            </svg>
+                            {kw}
+                          </button>
+                        ))}
+                      </div>
                     </div>
-                  </div>
 
-                  <div className="keywords-divider"></div>
-
-                  <div className="keywords-section">
-                    <p className="keywords-label">
-                      <svg className="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                      </svg>
-                      {JOB_CATEGORIES[activeCategory].name}
-                    </p>
-                    <div className="keywords-tags">
-                      {JOB_CATEGORIES[activeCategory].keywords.map((kw) => (
-                        <button
-                          key={kw}
-                          type="button"
-                          onClick={() => handleKeywordClick(kw)}
-                          className="keyword-tag"
-                        >
-                          {kw}
-                        </button>
-                      ))}
+                    {/* Right - Suggested Jobs */}
+                    <div className="suggestion-jobs">
+                      <p className="keywords-label">
+                        <svg className="w-4 h-4 text-brand-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                        </svg>
+                        Việc làm có thể bạn quan tâm
+                      </p>
+                      <div className="suggestion-jobs-list mt-3">
+                        {jobs.slice(0, 5).map(job => (
+                          <div
+                            key={job._id}
+                            className="suggestion-job-card"
+                            onClick={() => navigate(`/jobs/${job._id}`)}
+                          >
+                            <div className="suggestion-job-logo">
+                              {job.employerId?.companyLogo ? (
+                                <img src={job.employerId.companyLogo} alt={job.employerId?.name || 'Company'} />
+                              ) : (
+                                <div className="w-full h-full flex items-center justify-center font-bold text-brand-500 bg-brand-50 rounded text-lg">
+                                  {job.employerId?.name?.charAt(0) || 'C'}
+                                </div>
+                              )}
+                            </div>
+                            <div className="suggestion-job-info">
+                              <h4 className="suggestion-job-title">{job.title}</h4>
+                              <p className="suggestion-job-company">{job.employerId?.name}</p>
+                              <div className="suggestion-job-salary">{formatSalary(job.salary)}</div>
+                            </div>
+                          </div>
+                        ))}
+                        {jobs.length === 0 && !loading && (
+                          <p className="text-sm text-meta italic">Không có đề xuất nào</p>
+                        )}
+                      </div>
                     </div>
+                  </>
+                ) : (
+                  <div className="autocomplete-list">
+                    {/* Autocomplete Results matching filters.title */}
+                    {(() => {
+                      const lowerTitle = filters.title.toLowerCase();
+                      
+                      // 1. Find matching categories/keywords
+                      const matchingKeywords = [];
+                      JOB_CATEGORIES.forEach(cat => {
+                        if (cat.name.toLowerCase().includes(lowerTitle) && !matchingKeywords.includes(cat.name)) matchingKeywords.push(cat.name);
+                        cat.keywords.forEach(kw => {
+                          if (kw.toLowerCase().includes(lowerTitle) && !matchingKeywords.includes(kw)) matchingKeywords.push(kw);
+                        });
+                      });
+
+                      // 2. Find matching jobs
+                      const matchingJobs = jobs.filter(job => 
+                        job.title.toLowerCase().includes(lowerTitle) || 
+                        job.employerId?.name?.toLowerCase().includes(lowerTitle)
+                      );
+
+                      if (matchingKeywords.length === 0 && matchingJobs.length === 0) {
+                        return (
+                          <div className="px-5 py-4 text-sm text-meta text-center border-t border-line">
+                            Tìm việc làm liên quan tới "{filters.title}"
+                          </div>
+                        );
+                      }
+
+                      return (
+                        <>
+                          {matchingKeywords.length > 0 && (
+                            <div className="px-5 py-2 text-[11px] font-semibold text-meta uppercase tracking-wider bg-gray-50">
+                              Tìm kiếm phổ biến
+                            </div>
+                          )}
+                          {matchingKeywords.slice(0, 3).map(kw => (
+                            <div 
+                              key={kw} 
+                              className="autocomplete-item"
+                              onClick={() => handleKeywordClick(kw)}
+                            >
+                              <div className="autocomplete-icon">
+                                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg>
+                              </div>
+                              <div className="autocomplete-content">
+                                <div className="autocomplete-title">{kw}</div>
+                              </div>
+                            </div>
+                          ))}
+
+                          {matchingJobs.length > 0 && (
+                            <div className="px-5 py-2 text-[11px] font-semibold text-meta uppercase tracking-wider bg-gray-50 mt-2 border-t border-line">
+                              Việc làm & Công ty
+                            </div>
+                          )}
+                          {matchingJobs.slice(0, 5).map(job => (
+                            <div 
+                              key={job._id} 
+                              className="autocomplete-item"
+                              onClick={() => {
+                                setShowCategoryPanel(false);
+                                navigate(`/jobs/${job._id}`);
+                              }}
+                            >
+                              <div className="autocomplete-icon">
+                                {job.employerId?.companyLogo ? (
+                                  <img src={job.employerId.companyLogo} alt={job.employerId?.name || 'Company'} />
+                                ) : (
+                                  <span className="font-bold">{job.employerId?.name?.charAt(0) || 'C'}</span>
+                                )}
+                              </div>
+                              <div className="autocomplete-content">
+                                <div className="autocomplete-title">{job.title}</div>
+                                <div className="autocomplete-meta">
+                                  <span>{job.employerId?.name}</span>
+                                  <span>•</span>
+                                  <span className="text-brand-600 font-medium">{formatSalary(job.salary)}</span>
+                                </div>
+                              </div>
+                            </div>
+                          ))}
+
+                          <div 
+                            className="px-5 py-3 text-brand-500 font-medium text-sm text-center border-t border-line hover:bg-brand-50 cursor-pointer mt-2 transition-colors"
+                            onClick={() => handleKeywordClick(filters.title)}
+                          >
+                            Xem tất cả kết quả cho "{filters.title}" →
+                          </div>
+                        </>
+                      );
+                    })()}
                   </div>
-                </div>
+                )}
               </div>
             )}
           </div>

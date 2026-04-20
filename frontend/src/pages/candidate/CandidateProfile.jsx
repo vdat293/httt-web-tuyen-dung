@@ -18,9 +18,12 @@ export default function CandidateProfile() {
   const { addToast } = useToast();
   const fileInputRef = useRef(null);
 
+  const resumeInputRef = useRef(null);
+
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
+  const [uploadingResume, setUploadingResume] = useState(false);
 
   const [form, setForm] = useState({
     name: '',
@@ -70,6 +73,34 @@ export default function CandidateProfile() {
       addToast(err.response?.data?.message || 'Upload avatar thất bại', 'error');
     } finally {
       setUploadingAvatar(false);
+    }
+  };
+
+  const handleResumeChange = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+
+    // Validate file type and size
+    const allowed = ['.pdf', '.doc', '.docx'];
+    const ext = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+    if (!allowed.includes(ext)) {
+      return addToast('Chỉ chấp nhận file PDF hoặc Word (.doc, .docx)', 'error');
+    }
+    if (file.size > 5 * 1024 * 1024) {
+      return addToast('Kích thước file tối đa là 5MB', 'error');
+    }
+
+    setUploadingResume(true);
+    try {
+      const fd = new FormData();
+      fd.append('resume', file);
+      const { data } = await profileAPI.uploadResume(fd);
+      setForm((prev) => ({ ...prev, resumeUrl: data.resumeUrl }));
+      addToast('Tải lên CV thành công!', 'success');
+    } catch (err) {
+      addToast(err.response?.data?.message || 'Tải lên CV thất bại', 'error');
+    } finally {
+      setUploadingResume(false);
     }
   };
 
@@ -269,24 +300,59 @@ export default function CandidateProfile() {
         {/* Resume */}
         <div className="card p-5">
           <h2 className="text-sm font-semibold text-heading mb-4">CV / Sơ yếu lý lịch</h2>
-          <div>
-            <label className="block text-xs font-medium text-meta mb-1.5">Link CV (Google Drive, Dropbox...)</label>
-            <input
-              name="resumeUrl"
-              value={form.resumeUrl}
-              onChange={handleChange}
-              className="input"
-              placeholder="https://drive.google.com/..."
-            />
-            {form.resumeUrl && (
-              <a
-                href={form.resumeUrl}
-                target="_blank"
-                rel="noreferrer"
-                className="text-xs text-blue-500 hover:underline mt-1.5 inline-block"
+          <div className="space-y-4">
+            <div className="flex items-center gap-4">
+              <input
+                ref={resumeInputRef}
+                type="file"
+                accept=".pdf,.doc,.docx"
+                onChange={handleResumeChange}
+                className="hidden"
+              />
+              <button
+                type="button"
+                onClick={() => resumeInputRef.current?.click()}
+                disabled={uploadingResume}
+                className="btn-primary !py-2 !px-5 text-sm flex items-center gap-2"
               >
-                Xem CV hiện tại →
-              </a>
+                {uploadingResume ? (
+                  <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                ) : (
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                  </svg>
+                )}
+                {form.resumeUrl ? 'Tải lên bản CV khác' : 'Tải lên CV (PDF, DOC)'}
+              </button>
+              <p className="text-xs text-meta">Định dạng PDF, Word — tối đa 5MB</p>
+            </div>
+
+            {form.resumeUrl && (
+              <div className="flex items-center gap-3 p-3 bg-bgSection rounded-lg border border-line">
+                <div className="w-10 h-10 rounded bg-white border border-line flex items-center justify-center text-brand-500">
+                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                  </svg>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-semibold text-heading truncate">CV hiện tại</p>
+                  <p className="text-[11px] text-meta truncate">{form.resumeUrl.split('-').pop()}</p>
+                </div>
+                <a
+                  href={form.resumeUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn-ghost !py-1 !px-3 text-[11px]"
+                >
+                  Xem chi tiết
+                </a>
+              </div>
+            )}
+
+            {!form.resumeUrl && (
+              <div className="p-4 border-2 border-dashed border-line rounded-lg text-center bg-bgLight">
+                <p className="text-xs text-meta">Bạn chưa có CV trong hồ sơ. Hãy tải lên để có thể ứng tuyển nhanh chóng.</p>
+              </div>
             )}
           </div>
         </div>

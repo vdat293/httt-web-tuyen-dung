@@ -57,6 +57,24 @@ const uploadAvatar = async (req, res, next) => {
   }
 };
 
+// POST /api/profile/resume — upload resume (CV)
+const uploadResume = async (req, res, next) => {
+  try {
+    if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
+
+    const resumeUrl = `/uploads/${req.file.filename}`;
+    const user = await User.findByIdAndUpdate(
+      req.user._id,
+      { resumeUrl: resumeUrl },
+      { new: true }
+    ).select('-password');
+
+    res.json(user);
+  } catch (error) {
+    next(error);
+  }
+};
+
 // PUT /api/profile/password — change password
 const updatePassword = async (req, res, next) => {
   try {
@@ -82,4 +100,4 @@ const updatePassword = async (req, res, next) => {
   }
 };
 
-module.exports = { getProfile, updateProfile, uploadAvatar, updatePassword };
+module.exports = { getProfile, updateProfile, uploadAvatar, uploadResume, updatePassword };
