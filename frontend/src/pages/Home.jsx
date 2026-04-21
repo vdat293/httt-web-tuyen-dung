@@ -564,32 +564,6 @@ export default function Home() {
                   {/* Optional: Overlay content if needed, but the image already has text */}
                 </div>
 
-                {/* Market Stats Banner */}
-                <div className="shrink-0 bg-gradient-to-r from-brand-600 to-brand-500 rounded-xl px-5 py-4 border border-white/20 shadow-sm text-white flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="bg-black/10 p-2.5 rounded-lg shrink-0">
-                      <svg className="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
-                    </div>
-                    <div>
-                      <div className="flex items-center gap-2 mb-1.5">
-                        <h3 className="font-semibold text-[15px]">Thị trường việc làm hôm nay</h3>
-                        <span className="text-[12px] text-white/80 bg-black/10 px-2 py-0.5 rounded-full">17/04/2026</span>
-                      </div>
-                      <div className="flex flex-wrap items-center gap-4 text-[13.5px]">
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-white/90">Việc làm đang tuyển</span>
-                          <span className="font-bold text-[15px]">{totalJobs > 0 ? (totalJobs * 15).toLocaleString() : '64.876'}</span>
-                          <svg className="w-3.5 h-3.5 text-green-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg>
-                        </div>
-                        <div className="w-px h-3.5 bg-white/30 hidden sm:block"></div>
-                        <div className="flex items-center gap-1.5">
-                          <span className="text-white/90">Việc làm mới hôm nay</span>
-                          <span className="font-bold text-[15px]">5.078</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
         </div>
