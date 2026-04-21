@@ -112,8 +112,8 @@ const updateInterview = async (req, res, next) => {
 
     await interview.save();
 
-    // If interview is completed, update application status based on result
-    if (status === 'completed' && result) {
+    // If interview is completed or being completed now, update application status based on result
+    if ((status === 'completed' || interview.status === 'completed') && result) {
       const application = await Application.findById(interview.applicationId._id);
       application.status = result === 'passed' ? 'accepted' : 'rejected';
       await application.save();

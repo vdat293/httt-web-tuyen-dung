@@ -65,8 +65,8 @@ export default function EmployerInterviews() {
                 )}
                 {iv.status === 'completed' && !iv.result && (
                   <>
-                    <button onClick={() => handleUpdate(iv._id, { result: 'passed' })} className="btn-primary text-sm !py-1.5 !bg-green-500 hover:!bg-green-600">Đạt</button>
-                    <button onClick={() => handleUpdate(iv._id, { result: 'failed' })} className="text-sm font-medium px-4 py-1.5 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors">Không đạt</button>
+                    <button onClick={() => handleUpdate(iv._id, { status: 'completed', result: 'passed' })} className="btn-primary text-sm !py-1.5 !bg-green-500 hover:!bg-green-600">Đạt</button>
+                    <button onClick={() => handleUpdate(iv._id, { status: 'completed', result: 'failed' })} className="text-sm font-medium px-4 py-1.5 rounded-lg bg-red-500 text-white hover:bg-red-600 transition-colors">Không đạt</button>
                   </>
                 )}
               </div>
