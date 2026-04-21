@@ -5,6 +5,7 @@ import Layout from '../components/Layout';
 import LoadingSkeleton from '../components/LoadingSkeleton';
 import EmptyState from '../components/EmptyState';
 import JobCard from '../components/JobCard';
+import bannerImg from '../public/imgs/tiep-loi-the-banner.png';
 
 // ─── Dữ liệu ngành nghề & từ khóa gợi ý (TopCV style) ────────────────────
 const JOB_CATEGORIES = [
@@ -553,25 +554,14 @@ export default function Home() {
 
               {/* Right Banners Area */}
               <div className="col-span-1 lg:col-span-3 flex flex-col gap-4 h-[300px]">
-                {/* Main Dark Banner */}
-                <div className="flex-1 bg-gradient-to-r from-[#17252A] to-[#1F373E] rounded-xl overflow-hidden relative border border-white/10 shadow-sm flex items-center p-6 lg:p-8">
-                  {/* Play Button Overlay */}
-                  <div className="absolute inset-0 z-20 flex items-center justify-center pointer-events-none">
-                    <div className="w-16 h-16 bg-white/20 backdrop-blur-sm rounded-full flex items-center justify-center border border-white/30">
-                      <svg className="w-6 h-6 text-white ml-1" fill="currentColor" viewBox="0 0 24 24"><path d="M8 5v14l11-7z" /></svg>
-                    </div>
-                  </div>
-                  
-                  {/* Content */}
-                  <div className="relative z-10 max-w-[60%]">
-                    <h2 className="text-2xl lg:text-3xl font-bold text-white mb-2 leading-tight">Tiếp lợi thế,<br/>nối thành công</h2>
-                    <p className="text-[14px] text-white/70">TopCV - Hệ sinh thái nhân sự<br/>tiên phong ứng dụng công nghệ<br/>tại Việt Nam</p>
-                  </div>
-                  
-                  {/* Decorative / Background effect */}
-                  <div className="absolute right-0 top-0 bottom-0 w-1/2 flex items-center justify-end overflow-hidden">
-                    <img src="https://images.unsplash.com/photo-1573164713988-8665fc963095?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" alt="Banner" className="w-full h-full object-cover mix-blend-overlay opacity-30 mask-image-gradient" style={{ WebkitMaskImage: 'linear-gradient(to right, transparent, black)' }} />
-                  </div>
+                {/* Main Image Banner */}
+                <div className="flex-1 rounded-xl overflow-hidden relative border border-line shadow-sm">
+                  <img 
+                    src={bannerImg} 
+                    alt="Tiếp lợi thế, Nối thành công" 
+                    className="w-full h-full object-cover"
+                  />
+                  {/* Optional: Overlay content if needed, but the image already has text */}
                 </div>
 
                 {/* Market Stats Banner */}
@@ -598,9 +588,6 @@ export default function Home() {
                         </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="hidden md:flex shrink-0 items-end -my-4 h-[72px]">
-                    <img src="https://static.topcv.vn/v4/image/welcome/toppy-ai.png" alt="Toppy AI" className="h-full object-contain drop-shadow-md pb-1" />
                   </div>
                 </div>
               </div>
@@ -754,12 +741,6 @@ export default function Home() {
       <Layout>
         <div className="best-jobs-header">
           <h2 className="best-jobs-title">Việc làm tốt nhất</h2>
-          <div className="best-jobs-badge">
-            <svg className="w-3.5 h-3.5" viewBox="0 0 24 24" fill="currentColor">
-              <path d="M13 10V3L4 14H11V21L20 10H13Z" />
-            </svg>
-            <span>Đề xuất bởi TOPPY AI</span>
-          </div>
         </div>
         
         <p className="text-sm text-meta -mt-3 mb-6">
