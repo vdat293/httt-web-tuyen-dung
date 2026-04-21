@@ -22,7 +22,14 @@ const getInterviews = async (req, res, next) => {
       .populate({
         path: 'applicationId',
         populate: [
-          { path: 'jobId', select: 'title' },
+          {
+            path: 'jobId',
+            select: 'title employerId',
+            populate: {
+              path: 'employerId',
+              select: 'name companyLogo'
+            }
+          },
           { path: 'candidateId', select: 'name email phone' },
         ],
       })

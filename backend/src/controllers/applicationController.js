@@ -23,7 +23,14 @@ const getApplications = async (req, res, next) => {
     if (status) filter.status = status;
 
     let applications = await Application.find(filter)
-      .populate('jobId', 'title location salary jobType')
+      .populate({
+        path: 'jobId',
+        select: 'title location salary jobType employerId',
+        populate: {
+          path: 'employerId',
+          select: 'name companyLogo'
+        }
+      })
       .populate('candidateId', 'name email phone')
       .sort({ appliedAt: -1 });
 

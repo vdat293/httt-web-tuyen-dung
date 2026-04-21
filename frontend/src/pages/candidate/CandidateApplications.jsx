@@ -34,8 +34,18 @@ export default function CandidateApplications() {
               <div key={app._id} className="card p-5">
                 <div className="flex justify-between items-start gap-3">
                   <div className="flex gap-3 min-w-0">
-                    <div className="w-10 h-10 rounded-lg border border-line bg-bgSection flex items-center justify-center flex-shrink-0 text-brand-500 font-bold text-sm">
-                      {app.jobId?.title?.charAt(0)?.toUpperCase() || '?'}
+                    <div className="w-10 h-10 rounded-lg border border-line bg-white flex items-center justify-center flex-shrink-0 overflow-hidden">
+                      {app.jobId?.employerId?.companyLogo ? (
+                        <img 
+                          src={app.jobId.employerId.companyLogo} 
+                          alt={app.jobId.employerId.name || 'Company'} 
+                          className="w-full h-full object-contain p-1"
+                        />
+                      ) : (
+                        <span className="text-brand-500 font-bold text-sm">
+                          {app.jobId?.title?.charAt(0)?.toUpperCase() || '?'}
+                        </span>
+                      )}
                     </div>
                     <div className="min-w-0">
                       <h3 className="text-sm font-semibold text-heading truncate">

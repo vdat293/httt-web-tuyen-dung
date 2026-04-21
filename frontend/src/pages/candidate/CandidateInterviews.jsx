@@ -38,12 +38,26 @@ export default function CandidateInterviews() {
             const countdown = iv.status === 'scheduled' ? getCountdown(iv.scheduledAt) : null;
             return (
               <div key={iv._id} className={`card p-5 ${countdown ? 'border-brand-200' : ''}`}>
-                <div className="flex justify-between items-start gap-3">
-                  <div>
+                <div className="flex gap-4">
+                  <div className="w-12 h-12 rounded-lg border border-line bg-white flex items-center justify-center flex-shrink-0 overflow-hidden">
+                    {iv.applicationId?.jobId?.employerId?.companyLogo ? (
+                      <img 
+                        src={iv.applicationId.jobId.employerId.companyLogo} 
+                        alt={iv.applicationId.jobId.employerId.name || 'Company'} 
+                        className="w-full h-full object-contain p-1"
+                      />
+                    ) : (
+                      <span className="text-brand-500 font-bold text-sm">
+                        {iv.applicationId?.jobId?.title?.charAt(0)?.toUpperCase() || '?'}
+                      </span>
+                    )}
+                  </div>
+                  <div className="flex-1">
                     <div className="flex items-center gap-2 mb-0.5 flex-wrap">
                       <h3 className="text-sm font-semibold text-heading">{iv.applicationId?.jobId?.title}</h3>
                       <StatusBadge status={iv.status} />
                     </div>
+                    <p className="text-xs text-brand-600 font-medium mb-1">{iv.applicationId?.jobId?.employerId?.name}</p>
                     <p className="text-xs text-body mt-1.5">📅 {fmtDate(iv.scheduledAt)}</p>
                     {iv.location && <p className="text-xs text-meta mt-0.5">📍 {iv.location}</p>}
                     {countdown && (
@@ -54,7 +68,7 @@ export default function CandidateInterviews() {
                     {iv.note && <p className="text-xs text-meta mt-1.5 bg-bgSection p-2 rounded">📝 {iv.note}</p>}
                   </div>
                   {iv.result && (
-                    <div className={`text-center px-3 py-2 rounded-lg ${iv.result === 'passed' ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
+                    <div className={`text-center px-3 py-2 rounded-lg h-fit ${iv.result === 'passed' ? 'bg-green-50 border border-green-200' : 'bg-red-50 border border-red-200'}`}>
                       <span className={`text-xs font-bold ${iv.result === 'passed' ? 'text-green-600' : 'text-red-600'}`}>
                         {iv.result === 'passed' ? 'ĐẠT' : 'KHÔNG ĐẠT'}
                       </span>
