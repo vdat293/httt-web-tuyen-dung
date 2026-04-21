@@ -24,6 +24,7 @@ const companyLogos = [
   { name: 'Công ty Cổ phần Dịch vụ Di Động Trực tuyến (Momo)', logo: 'https://careerviet.vn/_next/image?url=https%3A%2F%2Fimages.careerviet.vn%2Femployer_folders%2Flot9%2F221789%2F95340imgpsh_fullsize.jpg&w=3840&q=75' },
   { name: 'H&M Việt Nam', logo: 'https://upload.wikimedia.org/wikipedia/commons/5/53/H%26M-Logo.svg' },
   { name: 'Công ty Cổ phần Kids Plaza', logo: 'https://www.kidsplaza.vn/blog/wp-content/uploads/2016/02/viber-image-2019-05-16-08.59.35.jpg' },
+  { name: 'Uniqlo Việt Nam', logo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStW_pjJEzmmxSmqP1r5le-exJZ_e36cG2WVA&s' },
 ];
 
 const updateLogos = async () => {

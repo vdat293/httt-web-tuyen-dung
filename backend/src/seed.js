@@ -37,7 +37,7 @@ const seed = async () => {
       { email: 'highlands@example.com', name: 'Highlands Coffee', phone: '0912345683', companyLogo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTWfJUWKecfedJtsuTOPzmzy51L7szK8FDYfw&s' },
       { email: 'vnairlines@example.com', name: 'Vietnam Airlines', phone: '0912345684', companyLogo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ6Pr5d6ccwsiBLzRCDv8MoRsUllArfWhdJ_4kqFJ0bHqwqq4JufmOGWvulVmypiVkFlT68TqCUkEWVacHvu0P9Q5XVhCRoTIk&s&ec=121644734' },
       { email: 'vietcombank@example.com', name: 'Ngân hàng TMCP Ngoại Thương VN (Vietcombank)', phone: '0912345685', companyLogo: 'https://upload.wikimedia.org/wikipedia/vi/thumb/9/9d/Vietcombank_Logo.svg/1280px-Vietcombank_Logo.svg.png' },
-      { email: 'uniqlo@example.com', name: 'Uniqlo Việt Nam', phone: '0912345686', companyLogo: 'https://upload.wikimedia.org/wikipedia/commons/thumb/9/92/UNIQLO_logo.svg/1024px-UNIQLO_logo.svg.png' },
+      { email: 'uniqlo@example.com', name: 'Uniqlo Việt Nam', phone: '0912345686', companyLogo: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcStW_pjJEzmmxSmqP1r5le-exJZ_e36cG2WVA&s' },
       { email: 'cgv@example.com', name: 'CGV Cinemas Việt Nam', phone: '0912345687', companyLogo: 'https://upload.wikimedia.org/wikipedia/commons/6/6c/CGV_Cinemas.svg' },
       { email: 'momo@example.com', name: 'Công ty Cổ phần Dịch vụ Di Động Trực tuyến (Momo)', phone: '0912345688', companyLogo: 'https://careerviet.vn/_next/image?url=https%3A%2F%2Fimages.careerviet.vn%2Femployer_folders%2Flot9%2F221789%2F95340imgpsh_fullsize.jpg&w=3840&q=75' },
       { email: 'bitis@example.com', name: 'Biti\'s Việt Nam', phone: '0912345689', companyLogo: 'https://upload.wikimedia.org/wikipedia/vi/3/37/Bitis_logo.svg' },
