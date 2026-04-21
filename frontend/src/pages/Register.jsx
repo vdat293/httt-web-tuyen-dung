@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import logo from '../public/imgs/logo_genbygem.png';
+import loginBanner from '../public/imgs/login-banner.png';
 
 export default function Register() {
   const [form, setForm] = useState({ name: '', email: '', password: '', phone: '', role: 'candidate' });
@@ -26,64 +27,29 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex flex-col lg:flex-row">
       {/* ═══ Left Brand Panel ═══ */}
-      <div className="hidden lg:flex lg:w-[45%] xl:w-[50%] relative overflow-hidden flex-col justify-between text-white p-10 xl:p-14"
-        style={{ background: 'linear-gradient(160deg, #063d1e 0%, #0a5c2f 30%, #00B14F 70%, #00c853 100%)' }}
+      <div className="hidden lg:flex lg:w-[33%] xl:w-[33%] h-screen sticky top-0 relative overflow-hidden flex-col justify-between"
+        style={{ 
+          backgroundImage: `url(${loginBanner})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundColor: '#00b14f'
+        }}
       >
-        {/* Decorative elements */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute w-[600px] h-[600px] rounded-full bg-white/[0.03] -top-60 -left-60" style={{ animation: 'float 20s ease-in-out infinite' }}></div>
-          <div className="absolute w-[400px] h-[400px] rounded-full bg-white/[0.05] top-1/2 -right-40" style={{ animation: 'float 15s ease-in-out infinite reverse' }}></div>
-        </div>
 
-        <div className="relative z-10">
-          <Link to="/" className="inline-block mb-16">
-            <img src={logo} alt="8386recruit" className="h-12 w-auto brightness-0 invert drop-shadow-md" />
-          </Link>
+        {/* Subtle overlay for better contrast */}
+        <div className="absolute inset-0 bg-black/10 pointer-events-none"></div>
 
-          <div className="max-w-md">
-            <h2 className="text-4xl font-bold leading-tight mb-6">
-              Xây dựng sự nghiệp<br />vững chắc cùng 8386.
-            </h2>
-            <div className="space-y-6">
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center shrink-0 border border-white/20">
-                  <svg className="w-5 h-5 text-brand-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                  </svg>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-lg">Tìm việc nhanh chóng</h4>
-                  <p className="text-white/60 text-sm mt-1">Hệ thống gợi ý thông minh dựa trên kỹ năng của bạn.</p>
-                </div>
-              </div>
-              <div className="flex items-start gap-4">
-                <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center shrink-0 border border-white/20">
-                  <svg className="w-5 h-5 text-brand-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
-                  </svg>
-                </div>
-                <div>
-                  <h4 className="font-semibold text-lg">Ứng tuyển một chạm</h4>
-                  <p className="text-white/60 text-sm mt-1">Gửi hồ sơ trực tiếp đến nhà tuyển dụng chỉ với 1 click.</p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="relative z-10 pt-10 border-t border-white/10 flex justify-between items-center text-sm text-white/50">
-          <p>© 2026 8386recruit. All rights reserved.</p>
-          <div className="flex gap-4">
-            <a href="#" className="hover:text-white transition-colors">Trợ giúp</a>
-            <a href="#" className="hover:text-white transition-colors">Điều khoản</a>
-          </div>
+        {/* Content - Simple and inconsistent with login */}
+        <div className="relative z-10 flex flex-col h-full">
+          {/* Logo and text removed based on user request to match login style */}
         </div>
       </div>
 
       {/* ═══ Right Form Panel ═══ */}
-      <div className="flex-1 flex items-center justify-center p-6 sm:p-10 bg-gray-50/70">
+      <div className="flex-1 flex items-center justify-center p-6 sm:p-10 bg-white">
+
         <div className="w-full max-w-[450px] animate-fade-in py-10">
           
           {/* Mobile Logo */}

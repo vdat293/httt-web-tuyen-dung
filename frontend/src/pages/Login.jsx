@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import logo from '../public/imgs/logo_genbygem.png';
+import loginBanner from '../public/imgs/login-banner.png';
 
 export default function Login() {
   const [searchParams] = useSearchParams();
@@ -42,57 +43,34 @@ export default function Login() {
   return (
     <div className="min-h-screen flex">
       {/* ═══ Left Brand Panel ═══ */}
-      <div className="hidden lg:flex lg:w-[45%] xl:w-[50%] relative overflow-hidden flex-col justify-between"
-        style={{ background: 'linear-gradient(160deg, #063d1e 0%, #0a5c2f 30%, #00B14F 70%, #00c853 100%)' }}
+      <div className="hidden lg:flex lg:w-[33%] xl:w-[33%] relative overflow-hidden flex-col justify-between"
+        style={{ 
+          backgroundImage: `url(${loginBanner})`,
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+          backgroundColor: '#00b14f'
+        }}
       >
-        {/* Decorative circles */}
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
-          <div className="absolute w-[500px] h-[500px] rounded-full bg-white/[0.04] -top-40 -right-40" style={{ animation: 'float 14s ease-in-out infinite' }}></div>
-          <div className="absolute w-[300px] h-[300px] rounded-full bg-white/[0.06] bottom-20 -left-20" style={{ animation: 'float 10s ease-in-out infinite reverse' }}></div>
-          <div className="absolute w-[200px] h-[200px] rounded-full bg-white/[0.03] top-1/3 left-1/3" style={{ animation: 'float 16s ease-in-out infinite 3s' }}></div>
-        </div>
+
+
+
+
+        {/* Subtle overlay for better contrast */}
+        <div className="absolute inset-0 bg-black/10 pointer-events-none"></div>
 
         {/* Content */}
-        <div className="relative z-10 p-10 xl:p-14 flex flex-col h-full justify-center">
-          {/* Logo */}
-          <Link to="/" className="mb-12 inline-block self-start">
-            <img src={logo} alt="8386recruit" className="h-12 w-auto object-contain brightness-0 invert drop-shadow-lg" />
-          </Link>
-
-          {/* Hero text */}
-          <div className="max-w-md">
-            <h2 className="text-3xl xl:text-4xl font-bold text-white leading-tight mb-5">
-              Tìm việc mơ ước,<br />
-              Bắt đầu từ đây.
-            </h2>
-            <p className="text-white/70 text-base leading-relaxed mb-10">
-              Kết nối hàng ngàn ứng viên với nhà tuyển dụng hàng đầu. Đăng nhập để khám phá cơ hội nghề nghiệp phù hợp với bạn.
-            </p>
-          </div>
-
-          {/* Stats */}
-          <div className="flex gap-10 mt-auto pb-4">
-            <div>
-              <div className="text-2xl font-bold text-white">1,000+</div>
-              <div className="text-white/60 text-sm mt-1">Việc làm</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-white">500+</div>
-              <div className="text-white/60 text-sm mt-1">Công ty</div>
-            </div>
-            <div>
-              <div className="text-2xl font-bold text-white">10,000+</div>
-              <div className="text-white/60 text-sm mt-1">Ứng viên</div>
-            </div>
-          </div>
+        <div className="relative z-10 flex flex-col h-full">
+          {/* Stats and Logo removed based on user request */}
         </div>
       </div>
 
+
+
       {/* ═══ Right Form Panel ═══ */}
-      <div className="flex-1 flex items-center justify-center p-6 sm:p-8 bg-gray-50/70">
+      <div className="flex-1 flex items-center justify-center p-6 sm:p-8 bg-white">
         <div className="w-full max-w-[400px] animate-fade-in">
-          
-          {/* Mobile-only logo (visible on small screens where left panel is hidden) */}
+
+          {/* Mobile-only logo */}
           <div className="lg:hidden text-center mb-8">
             <Link to="/" className="inline-block">
               <img src={logo} alt="8386recruit" className="h-12 w-auto object-contain" />
@@ -123,7 +101,6 @@ export default function Login() {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-5">
-            {/* Email */}
             <div>
               <label htmlFor="login-email" className="block text-sm font-semibold text-gray-700 mb-1.5">Email</label>
               <div className="relative group">
@@ -137,14 +114,13 @@ export default function Login() {
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none hover:border-gray-300"
+                  className="w-full pl-10 pr-4 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none"
                   placeholder="name@company.com"
                   required
                 />
               </div>
             </div>
 
-            {/* Password */}
             <div>
               <label htmlFor="login-password" className="block text-sm font-semibold text-gray-700 mb-1.5">Mật khẩu</label>
               <div className="relative group">
@@ -158,15 +134,14 @@ export default function Login() {
                   type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full pl-10 pr-12 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none hover:border-gray-300"
+                  className="w-full pl-10 pr-12 py-3 bg-white border border-gray-200 rounded-xl text-gray-900 text-sm placeholder:text-gray-400 focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none"
                   placeholder="••••••••"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1 rounded-md hover:bg-gray-100 transition-colors"
-                  aria-label={showPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu'}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-gray-600 p-1"
                 >
                   {showPassword ? (
                     <svg className="w-[18px] h-[18px]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -181,52 +156,35 @@ export default function Login() {
                 </button>
               </div>
               <div className="flex justify-end mt-2">
-                <Link to="/forgot-password" className="text-xs font-medium text-brand-600 hover:text-brand-700 hover:underline transition-colors">
+                <Link to="/forgot-password" self-start className="text-xs font-medium text-brand-600 hover:text-brand-700">
                   Quên mật khẩu?
                 </Link>
               </div>
             </div>
 
-            {/* Submit */}
-            <button 
-              type="submit" 
-              disabled={loading} 
-              className="w-full py-3 px-4 bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white text-sm font-semibold rounded-xl shadow-sm hover:shadow-md transition-all duration-200 flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed mt-1"
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full py-3 px-4 bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white text-sm font-semibold rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 disabled:opacity-70 mt-1"
             >
-              {loading ? (
-                <>
-                  <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                  </svg>
-                  Đang xử lý...
-                </>
-              ) : (
-                <>
-                  Đăng nhập
-                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
-                  </svg>
-                </>
-              )}
+              {loading ? 'Đang xử lý...' : 'Đăng nhập'}
             </button>
           </form>
 
-          {/* Divider + Register link */}
           <div className="relative mt-8 mb-6">
             <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-200"></div></div>
-            <div className="relative flex justify-center"><span className="bg-gray-50/70 px-3 text-xs text-gray-400 uppercase tracking-wider font-medium">hoặc</span></div>
+            <div className="relative flex justify-center"><span className="bg-white px-3 text-xs text-gray-400 uppercase font-medium">hoặc</span></div>
           </div>
 
-          <Link 
-            to="/register" 
-            className="flex items-center justify-center gap-2 w-full py-3 px-4 bg-white border-2 border-gray-200 text-gray-700 text-sm font-semibold rounded-xl hover:border-brand-500 hover:text-brand-600 hover:bg-brand-50/30 transition-all duration-200"
+          <Link
+            to="/register"
+            className="flex items-center justify-center gap-2 w-full py-3 px-4 bg-white border-2 border-gray-200 text-gray-700 text-sm font-semibold rounded-xl hover:border-brand-500 hover:text-brand-600 transition-all"
           >
             Tạo tài khoản mới
           </Link>
 
           <p className="text-center text-xs text-gray-400 mt-8">
-            Bằng việc đăng nhập, bạn đồng ý với <a href="#" className="underline hover:text-gray-500">Điều khoản</a> và <a href="#" className="underline hover:text-gray-500">Chính sách bảo mật</a> của chúng tôi.
+            Bằng việc đăng nhập, bạn đồng ý với Điều khoản và Chính sách của chúng tôi.
           </p>
         </div>
       </div>
