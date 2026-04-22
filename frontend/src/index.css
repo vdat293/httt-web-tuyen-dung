@@ -256,7 +256,7 @@
 
 /* ── Search Bar ─────────────────────────────────────────────────────────── */
 
-.search-bar-wrapper {
+.search-bar-wrapper { width: 100% !important; max-width: 100% !important; box-sizing: border-box;
   background: white;
   border-radius: 8px;
   padding: 5px;
@@ -267,7 +267,7 @@
 }
 
 @media (min-width: 640px) {
-  .search-bar-wrapper {
+  .search-bar-wrapper { width: 100% !important; max-width: 100% !important; box-sizing: border-box;
     flex-direction: row;
     align-items: center;
   }
@@ -375,7 +375,7 @@
   position: absolute;
   top: calc(100% + 6px);
   left: 0;
-  right: 0;
+  width: 100%;
   background: white;
   border-radius: 10px;
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
@@ -423,19 +423,19 @@
 
 .search-suggestion-panel {
   position: absolute;
-  top: calc(100% + 6px);
+  top: calc(100% + 12px);
   left: 0;
-  right: 0;
+  width: 100%;
   background: white;
-  border-radius: 12px;
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.15);
-  border: 1px solid #E9EAEE;
+  border-radius: 16px;
+  box-shadow: 0 20px 60px -12px rgba(0, 0, 0, 0.25), 0 0 1px rgba(0, 0, 0, 0.1);
+  border: 1px solid rgba(233, 234, 238, 0.8);
   z-index: 40;
   display: flex;
   flex-direction: column;
   overflow: hidden;
-  animation: dropdownSlide 0.2s ease-out;
-  max-height: 500px;
+  animation: dropdownSlide 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+  max-height: calc(100vh - 200px);
 }
 
 @media (min-width: 768px) {
@@ -460,17 +460,19 @@
 
 @media (min-width: 768px) {
   .suggestion-keywords {
-    width: 35%;
+    width: 320px;
     border-bottom: none;
-    border-right: 1px solid #E9EAEE;
+    border-right: 1px solid #F1F2F4;
+    padding: 24px;
   }
 }
 
 /* Right side (Suggested jobs) */
 .suggestion-jobs {
   flex: 1;
-  padding: 16px 20px;
+  padding: 24px;
   overflow-y: auto;
+  background: white;
 }
 
 /* Autocomplete mode items */
@@ -537,29 +539,35 @@
 
 .suggestion-job-card {
   display: flex;
-  gap: 12px;
-  padding: 12px;
-  border: 1px solid #E9EAEE;
-  border-radius: 8px;
-  margin-bottom: 10px;
-  transition: all 0.2s ease;
+  gap: 16px;
+  padding: 14px;
+  border: 1px solid #F1F2F4;
+  border-radius: 12px;
+  margin-bottom: 12px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
   cursor: pointer;
   background: #fff;
+  position: relative;
 }
 
 .suggestion-job-card:hover {
   border-color: #00B14F;
-  box-shadow: 0 2px 8px rgba(0, 177, 79, 0.1);
-  transform: translateY(-1px);
+  box-shadow: 0 4px 20px rgba(0, 177, 79, 0.08);
+  transform: translateX(4px);
+  background: #fdfdfd;
 }
 
 .suggestion-job-logo {
-  width: 48px;
-  height: 48px;
-  border-radius: 6px;
-  border: 1px solid #E9EAEE;
-  padding: 2px;
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  background: #F8F9FA;
+  border: 1px solid #F1F2F4;
+  padding: 4px;
   flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .suggestion-job-logo img {
@@ -622,15 +630,15 @@
 .keyword-tag {
   display: inline-flex;
   align-items: center;
-  gap: 5px;
-  padding: 6px 14px;
-  font-size: 12.5px;
+  gap: 6px;
+  padding: 8px 16px;
+  font-size: 13px;
   color: #4D5965;
-  background: #F3F5F7;
+  background: white;
   border: 1px solid #E9EAEE;
-  border-radius: 20px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
   white-space: nowrap;
 }
 
@@ -643,9 +651,9 @@
 }
 
 .keyword-tag.popular {
-  background: #FFF7ED;
-  border-color: #FDE5C8;
-  color: #B45309;
+  background: #FFFBF5;
+  border-color: #FEEBC8;
+  color: #92400E;
 }
 
 .keyword-tag.popular:hover {
@@ -1181,3 +1189,45 @@
   .pf-exp-grid { grid-template-columns: repeat(2, 1fr); }
 }
 
+/* ═══════════════════════════════════════════════════════════════════════════
+   Login Banner Design (8386recruit)
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* Nền tối sâu với Gradient */
+.background {
+  background: linear-gradient(135deg, #0f172a 0%, #0d2137 100%);
+}
+
+/* Tạo lưới (Grid) bằng background-image */
+.grid-pattern {
+  background-image: 
+    linear-gradient(90deg, rgba(0, 177, 79, 0.1) 1px, transparent 1px),
+    linear-gradient(0deg, rgba(0, 177, 79, 0.1) 1px, transparent 1px);
+  background-size: 20px 20px; /* Độ rộng của ô lưới */
+}
+
+/* Glassmorphism (Hiệu ứng kính mờ) */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.03); /* Độ trong suốt rất thấp */
+  backdrop-filter: blur(10px);          /* Quan trọng: Làm mờ hậu cảnh */
+  border: 1px solid rgba(255, 255, 255, 0.1); /* Viền mảnh để tách lớp */
+  border-radius: 20px;
+}
+
+/* Visual Glow (Điểm sáng tập trung) */
+.glow-node {
+  width: 40px;
+  height: 40px;
+  background: #00b14f;
+  border-radius: 50%;
+  /* Tạo quầng sáng lan tỏa xung quanh */
+  box-shadow: 0 0 25px rgba(0, 177, 79, 0.6); 
+}
+
+/* Skeleton Loading (Thanh nội dung trừu tượng) */
+.skeleton-line {
+  height: 10px;
+  background: rgba(230, 247, 237, 0.2); /* Màu nhạt, tiệp với nền */
+  border-radius: 99px;
+  margin-bottom: 12px;
+}

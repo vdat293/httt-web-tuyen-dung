@@ -275,7 +275,7 @@ export default function Jobs() {
           <div className="hero-circle hero-circle-3"></div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14 relative z-50">
           <h1 className="text-2xl sm:text-3xl font-bold text-white text-center mb-2">
             Tìm việc làm, Tuyển dụng hiệu quả
           </h1>
@@ -284,9 +284,9 @@ export default function Jobs() {
           </p>
 
           {/* ═══════ Search Bar & Content ═══════ */}
-          <div className="max-w-5xl lg:max-w-6xl mx-auto relative" ref={searchBoxRef}>
-            <form onSubmit={(e) => { e.preventDefault(); handleSearch(); }}>
-              <div className="search-bar-wrapper">
+          <div className="max-w-5xl lg:max-w-6xl w-full mx-auto relative" ref={searchBoxRef}>
+            <form onSubmit={(e) => { e.preventDefault(); handleSearch(); }} style={{ width: '100%' }}>
+              <div className="search-bar-wrapper" style={{ width: '100%', display: 'flex' }}>
                 {/* Keyword Input */}
                 <div className="search-input-group search-input-keyword">
                   <svg className="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">

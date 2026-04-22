@@ -43,25 +43,29 @@ export default function Login() {
   return (
     <div className="min-h-screen flex">
       {/* ═══ Left Brand Panel ═══ */}
-      <div className="hidden lg:flex lg:w-[33%] xl:w-[33%] relative overflow-hidden flex-col justify-between"
-        style={{ 
-          backgroundImage: `url(${loginBanner})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundColor: '#00b14f'
-        }}
-      >
+      <div className="hidden lg:flex lg:w-[33%] xl:w-[33%] relative overflow-hidden flex-col justify-center items-center background">
+        
+        {/* Layer 2: Grid */}
+        <div className="absolute inset-0 grid-pattern pointer-events-none opacity-50"></div>
 
+        {/* Layer 3: Glass Panel */}
+        <div className="relative z-10 w-[80%] max-w-[340px] p-10 glass-panel flex flex-col justify-center shadow-2xl">
+          
+          {/* Layer 4: Glow Elements & Identifier */}
+          <div className="flex items-center gap-4 mb-8">
+            <div className="glow-node flex-shrink-0"></div>
+            <span className="text-white font-bold text-lg tracking-wide">Ứng viên #8386</span>
+          </div>
 
-
-
-        {/* Subtle overlay for better contrast */}
-        <div className="absolute inset-0 bg-black/10 pointer-events-none"></div>
-
-        {/* Content */}
-        <div className="relative z-10 flex flex-col h-full">
-          {/* Stats and Logo removed based on user request */}
+          {/* Skeleton Loaders */}
+          <div className="w-full flex flex-col gap-4">
+            <div className="skeleton-line !mb-0 w-full"></div>
+            <div className="skeleton-line !mb-0 w-[70%]"></div>
+            <div className="skeleton-line !mb-0 w-[40%]"></div>
+          </div>
+          
         </div>
+        
       </div>
 
 

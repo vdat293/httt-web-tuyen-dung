@@ -29,22 +29,29 @@ export default function Register() {
   return (
     <div className="min-h-screen flex flex-col lg:flex-row">
       {/* ═══ Left Brand Panel ═══ */}
-      <div className="hidden lg:flex lg:w-[33%] xl:w-[33%] h-screen sticky top-0 relative overflow-hidden flex-col justify-between"
-        style={{ 
-          backgroundImage: `url(${loginBanner})`,
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-          backgroundColor: '#00b14f'
-        }}
-      >
+      <div className="hidden lg:flex lg:w-[33%] xl:w-[33%] h-screen sticky top-0 relative overflow-hidden flex-col justify-center items-center background">
+        
+        {/* Layer 2: Grid */}
+        <div className="absolute inset-0 grid-pattern pointer-events-none opacity-50"></div>
 
-        {/* Subtle overlay for better contrast */}
-        <div className="absolute inset-0 bg-black/10 pointer-events-none"></div>
+        {/* Layer 3: Glass Panel */}
+        <div className="relative z-10 w-[80%] max-w-[340px] p-10 glass-panel flex flex-col justify-center shadow-2xl">
+          
+          {/* Layer 4: Glow Elements & Identifier */}
+          <div className="flex items-center gap-4 mb-8">
+            <div className="glow-node flex-shrink-0"></div>
+            <span className="text-white font-bold text-lg tracking-wide">Ứng viên #8386</span>
+          </div>
 
-        {/* Content - Simple and inconsistent with login */}
-        <div className="relative z-10 flex flex-col h-full">
-          {/* Logo and text removed based on user request to match login style */}
+          {/* Skeleton Loaders */}
+          <div className="w-full flex flex-col gap-4">
+            <div className="skeleton-line !mb-0 w-full"></div>
+            <div className="skeleton-line !mb-0 w-[70%]"></div>
+            <div className="skeleton-line !mb-0 w-[40%]"></div>
+          </div>
+          
         </div>
+        
       </div>
 
       {/* ═══ Right Form Panel ═══ */}
@@ -91,18 +98,35 @@ export default function Register() {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-1.5">Họ tên</label>
+            <div className={`grid grid-cols-1 ${form.role === 'employer' ? 'gap-0' : 'sm:grid-cols-2 gap-4'}`}>
+              <div className={form.role === 'employer' ? 'mb-4' : ''}>
+                <label className="block text-sm font-semibold text-gray-700 mb-1.5">
+                  {form.role === 'employer' ? 'Họ tên người liên hệ' : 'Họ tên'}
+                </label>
                 <input
                   type="text"
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none"
-                  placeholder="Nguyễn Văn A"
+                  placeholder={form.role === 'employer' ? "VD: Nguyễn Văn A" : "Nguyễn Văn A"}
                   required
                 />
               </div>
+
+              {form.role === 'employer' && (
+                <div className="mb-4">
+                  <label className="block text-sm font-semibold text-gray-700 mb-1.5">Tên công ty</label>
+                  <input
+                    type="text"
+                    value={form.companyName || ''}
+                    onChange={(e) => setForm({ ...form, companyName: e.target.value })}
+                    className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none"
+                    placeholder="VD: Cty TNHH Giải Pháp Công Nghệ"
+                    required
+                  />
+                </div>
+              )}
+
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-1.5">Số điện thoại</label>
                 <input

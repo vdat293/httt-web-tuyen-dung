@@ -20,14 +20,14 @@ const generateOTP = () => Math.floor(100000 + Math.random() * 900000).toString()
 
 const register = async (req, res, next) => {
   try {
-    const { email, password, role, name, phone } = req.body;
+    const { email, password, role, name, phone, companyName } = req.body;
 
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ message: 'Email already registered' });
     }
 
-    const user = await User.create({ email, password, role, name, phone });
+    const user = await User.create({ email, password, role, name, phone, companyName });
     
     // Tạo OTP và gửi email
     const otp = generateOTP();

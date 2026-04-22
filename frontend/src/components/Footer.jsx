@@ -42,7 +42,6 @@ export default function Footer() {
           <div>
             <h4 className="text-sm font-bold text-gray-800 uppercase tracking-wide mb-4">Ứng viên</h4>
             <ul className="space-y-2.5">
-              <li><Link to="/" className="text-sm text-gray-500 hover:text-brand-500 transition-colors">Tìm việc làm</Link></li>
               <li><a href="#" className="text-sm text-gray-500 hover:text-brand-500 transition-colors">Tạo CV Online</a></li>
               <li><a href="#" className="text-sm text-gray-500 hover:text-brand-500 transition-colors">Cẩm nang nghề nghiệp</a></li>
               <li><a href="#" className="text-sm text-gray-500 hover:text-brand-500 transition-colors">Tính lương Gross - Net</a></li>

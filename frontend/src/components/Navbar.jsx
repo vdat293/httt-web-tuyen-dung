@@ -49,7 +49,7 @@ export default function Navbar() {
 
   return (
     <nav 
-      className={`sticky top-0 z-50 transition-all duration-300 border-b border-gray-100 ${
+      className={`sticky top-0 z-[100] transition-all duration-300 border-b border-gray-100 ${
         scrolled ? 'bg-[#F9FAFB]/95 backdrop-blur-md shadow-sm py-0' : 'bg-[#F9FAFB] py-1'
       }`}
     >
@@ -68,7 +68,6 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-1.5 h-full">
             {!user ? (
               <>
-                <Link to="/jobs" className={linkClass('/jobs')}>Tìm việc</Link>
                 <Link to="/employer/jobs/new" className="ml-2 px-4 py-2 text-sm font-semibold text-brand-600 bg-brand-50 hover:bg-brand-100 rounded-lg transition-colors border border-brand-200">
                   Đăng tin tuyển dụng
                 </Link>
@@ -90,7 +89,6 @@ export default function Navbar() {
                 )}
                 {user.role === 'candidate' && (
                   <div className="flex space-x-1">
-                    <Link to="/jobs" className={linkClass('/jobs')}>Tìm việc</Link>
                     <Link to="/candidate/applications" className={linkClass('/candidate/applications')}>Đã ứng tuyển</Link>
                     <Link to="/candidate/interviews" className={linkClass('/candidate/interviews')}>Phỏng vấn</Link>
                     <Link to="/candidate/saved-jobs" className={linkClass('/candidate/saved-jobs')}>Đã lưu</Link>
@@ -203,7 +201,6 @@ export default function Navbar() {
           <div className="pt-4 pb-2 border-t border-gray-100 flex flex-col gap-1.5">
             {!user ? (
               <>
-                <Link to="/jobs" className={linkClass('/jobs')} onClick={() => setMenuOpen(false)}>Tìm việc</Link>
                 <Link to="/employer/jobs/new" className={linkClass('/employer/jobs/new')} onClick={() => setMenuOpen(false)}>Đăng tin tuyển dụng</Link>
                 <div className="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-gray-100">
                   <Link to="/login" className="btn-outline !py-2.5 text-sm text-center" onClick={() => setMenuOpen(false)}>Đăng nhập</Link>
@@ -224,7 +221,6 @@ export default function Navbar() {
                 )}
                 {user.role === 'candidate' && (
                   <div className="flex flex-col gap-1">
-                    <Link to="/jobs" className={linkClass('/jobs')} onClick={() => setMenuOpen(false)}>Tìm việc</Link>
                     <Link to="/candidate/applications" className={linkClass('/candidate/applications')} onClick={() => setMenuOpen(false)}>Đơn ứng tuyển</Link>
                     <Link to="/candidate/interviews" className={linkClass('/candidate/interviews')} onClick={() => setMenuOpen(false)}>Phỏng vấn</Link>
                     <Link to="/candidate/saved-jobs" className={linkClass('/candidate/saved-jobs')} onClick={() => setMenuOpen(false)}>Việc đã lưu</Link>

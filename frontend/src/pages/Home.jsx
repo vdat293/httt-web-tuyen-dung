@@ -265,7 +265,7 @@ export default function Home() {
           <div className="hero-circle hero-circle-3"></div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14 relative z-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10 sm:py-14 relative z-50">
           <h1 className="text-2xl sm:text-3xl font-bold text-white text-center mb-2">
             Tìm việc làm, Tuyển dụng hiệu quả
           </h1>
@@ -274,9 +274,9 @@ export default function Home() {
           </p>
 
           {/* ═══════ Search Bar & Content ═══════ */}
-          <div className="max-w-5xl lg:max-w-6xl mx-auto relative" ref={searchBoxRef}>
-            <form onSubmit={handleSearch}>
-              <div className="search-bar-wrapper">
+          <div className="max-w-5xl lg:max-w-6xl w-full mx-auto relative" ref={searchBoxRef}>
+            <form onSubmit={handleSearch} style={{ width: '100%' }}>
+              <div className="search-bar-wrapper" style={{ width: '100%', display: 'flex' }}>
                 {/* Keyword Input */}
                 <div className="search-input-group search-input-keyword">
                   <svg className="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -710,45 +710,6 @@ export default function Home() {
           </div>
         </div>
       </div>
-
-      {/* ═══════════ Employer CTA Section ═══════════ */}
-      <div className="bg-white border-y border-line py-12 sm:py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6">
-          <div className="bg-gradient-to-br from-brand-600 to-brand-700 rounded-2xl overflow-hidden shadow-xl shadow-brand-100 flex flex-col md:flex-row items-center">
-            <div className="p-8 sm:p-12 md:w-3/5 text-center md:text-left">
-              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
-                Bạn là Nhà tuyển dụng?
-              </h2>
-              <p className="text-white/80 text-base sm:text-lg mb-8 max-w-lg">
-                Đăng tin ngay để tiếp cận hàng nghìn ứng viên tiềm năng và tìm kiếm nhân tài phù hợp nhất cho doanh nghiệp của bạn.
-              </p>
-              <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
-                <Link 
-                  to="/employer/jobs/new" 
-                  className="px-8 py-3 bg-white text-brand-600 font-bold rounded-xl hover:bg-brand-50 transition-all shadow-md active:scale-95"
-                >
-                  Đăng tin tuyển dụng ngay
-                </Link>
-                <Link 
-                  to="/employer/dashboard" 
-                  className="px-8 py-3 bg-brand-500/20 text-white font-bold rounded-xl border border-white/30 hover:bg-white/10 transition-all active:scale-95"
-                >
-                  Quản lý tin đăng
-                </Link>
-              </div>
-            </div>
-            <div className="md:w-2/5 p-8 flex justify-center">
-              <div className="relative group">
-                <div className="absolute inset-0 bg-white/20 rounded-full blur-3xl group-hover:bg-white/30 transition-all"></div>
-                <svg className="w-40 h-40 sm:w-56 sm:h-56 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
-                </svg>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
       {/* ═══════════ Job Listings ═══════════ */}
       <Layout>
         <div className="best-jobs-header">
@@ -821,6 +782,44 @@ export default function Home() {
           </>
         )}
       </Layout>
+
+      {/* ═══════════ Employer CTA Section ═══════════ */}
+      <div className="bg-white border-y border-line py-12 sm:py-16">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6">
+          <div className="bg-gradient-to-br from-brand-600 to-brand-700 rounded-2xl overflow-hidden shadow-xl shadow-brand-100 flex flex-col md:flex-row items-center">
+            <div className="p-8 sm:p-12 md:w-3/5 text-center md:text-left">
+              <h2 className="text-2xl sm:text-3xl font-bold text-white mb-4">
+                Bạn là Nhà tuyển dụng?
+              </h2>
+              <p className="text-white/80 text-base sm:text-lg mb-8 max-w-lg">
+                Đăng tin ngay để tiếp cận hàng nghìn ứng viên tiềm năng và tìm kiếm nhân tài phù hợp nhất cho doanh nghiệp của bạn.
+              </p>
+              <div className="flex flex-col sm:flex-row gap-4 justify-center md:justify-start">
+                <Link 
+                  to="/employer/jobs/new" 
+                  className="px-8 py-3 bg-white text-brand-600 font-bold rounded-xl hover:bg-brand-50 transition-all shadow-md active:scale-95"
+                >
+                  Đăng tin tuyển dụng ngay
+                </Link>
+                <Link 
+                  to="/employer/dashboard" 
+                  className="px-8 py-3 bg-brand-500/20 text-white font-bold rounded-xl border border-white/30 hover:bg-white/10 transition-all active:scale-95"
+                >
+                  Quản lý tin đăng
+                </Link>
+              </div>
+            </div>
+            <div className="md:w-2/5 p-8 flex justify-center">
+              <div className="relative group">
+                <div className="absolute inset-0 bg-white/20 rounded-full blur-3xl group-hover:bg-white/30 transition-all"></div>
+                <svg className="w-40 h-40 sm:w-56 sm:h-56 text-white relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="1" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                </svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </>
   );
 }
