@@ -134,20 +134,6 @@ export default function JobFilters({ filters, onChange, onSort }) {
         </select>
       </div>
 
-      {/* Skills */}
-      <div className="card p-4">
-        <label className="block text-xs font-semibold text-heading uppercase tracking-wide mb-2">
-          Kỹ năng
-        </label>
-        <input
-          type="text"
-          value={filters.skills || ''}
-          onChange={(e) => handleChange('skills', e.target.value)}
-          placeholder="VD: React, Node.js (phân cách bằng dấu phẩy)"
-          className="input-field !text-sm !py-2"
-        />
-      </div>
-
       {/* Sort */}
       <div className="card p-4">
         <label className="block text-xs font-semibold text-heading uppercase tracking-wide mb-2">

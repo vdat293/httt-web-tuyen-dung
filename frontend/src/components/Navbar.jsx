@@ -68,7 +68,10 @@ export default function Navbar() {
           <div className="hidden md:flex items-center gap-1.5 h-full">
             {!user ? (
               <>
-                <Link to="/jobs" className={linkClass('/jobs')}>Việc làm</Link>
+                <Link to="/jobs" className={linkClass('/jobs')}>Tìm việc</Link>
+                <Link to="/employer/jobs/new" className="ml-2 px-4 py-2 text-sm font-semibold text-brand-600 bg-brand-50 hover:bg-brand-100 rounded-lg transition-colors border border-brand-200">
+                  Đăng tin tuyển dụng
+                </Link>
                 <div className="w-px h-6 bg-gray-200 mx-3"></div>
                 <Link to="/login" className="btn-ghost !py-2 !px-4 text-sm font-semibold hover:bg-gray-50 text-gray-700">Đăng nhập</Link>
                 <Link to="/register" className="btn-primary !py-2 !px-5 text-sm shadow-sm hover:shadow-md transition-all ml-1">Đăng ký</Link>
@@ -200,7 +203,8 @@ export default function Navbar() {
           <div className="pt-4 pb-2 border-t border-gray-100 flex flex-col gap-1.5">
             {!user ? (
               <>
-                <Link to="/jobs" className={linkClass('/jobs')} onClick={() => setMenuOpen(false)}>Việc làm</Link>
+                <Link to="/jobs" className={linkClass('/jobs')} onClick={() => setMenuOpen(false)}>Tìm việc</Link>
+                <Link to="/employer/jobs/new" className={linkClass('/employer/jobs/new')} onClick={() => setMenuOpen(false)}>Đăng tin tuyển dụng</Link>
                 <div className="grid grid-cols-2 gap-3 mt-4 pt-4 border-t border-gray-100">
                   <Link to="/login" className="btn-outline !py-2.5 text-sm text-center" onClick={() => setMenuOpen(false)}>Đăng nhập</Link>
                   <Link to="/register" className="btn-primary !py-2.5 text-sm text-center shadow-sm" onClick={() => setMenuOpen(false)}>Đăng ký</Link>

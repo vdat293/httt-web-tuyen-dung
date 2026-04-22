@@ -64,6 +64,10 @@ const jobSchema = new mongoose.Schema(
       type: String,
       default: '',
     },
+    deadline: {
+      type: Date,
+      required: false,
+    },
     rejectReason: {
       type: String,
       default: '',

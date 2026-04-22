@@ -131,7 +131,7 @@ const getJob = async (req, res, next) => {
 
 const createJob = async (req, res, next) => {
   try {
-    const { title, description, requirements, benefits, salary, location, jobType, experience, level, skills } = req.body;
+    const { title, description, requirements, benefits, salary, location, jobType, experience, level, skills, category, deadline } = req.body;
 
     // Support both old string salary and new {min,max} format
     let salaryData = salary;
@@ -153,6 +153,8 @@ const createJob = async (req, res, next) => {
       experience: experience || 'fresher',
       level: level || '',
       skills: skills || [],
+      category: category || '',
+      deadline: deadline || null,
     });
 
     res.status(201).json(job);

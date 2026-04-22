@@ -88,11 +88,25 @@ export default function JobCard({ job }) {
       )}
 
       <div className="flex items-center justify-between mt-3 pt-3 border-t border-line">
-        {job.experience && (
-          <span className="text-xs text-meta">
-            {EXPERIENCE_LABELS[job.experience] || job.experience}
-          </span>
-        )}
+        <div className="flex items-center gap-3">
+          {job.experience && (
+            <span className="text-xs text-meta flex items-center gap-1">
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+              {EXPERIENCE_LABELS[job.experience] || job.experience}
+            </span>
+          )}
+          {job.deadline ? (
+            <span className="text-xs text-meta flex items-center gap-1">
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              Hạn: {new Date(job.deadline).toLocaleDateString('vi-VN')}
+            </span>
+          ) : (
+            <span className="text-xs text-brand-600 font-medium flex items-center gap-1">
+              <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+              Không thời hạn
+            </span>
+          )}
+        </div>
         {job.views != null && (
           <span className="text-xs text-meta ml-auto flex items-center gap-1">
             <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">

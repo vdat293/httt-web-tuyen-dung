@@ -18,12 +18,18 @@ const getStats = async (req, res, next) => {
       Application.find({ jobId: { $in: employerJobIds } }),
     ]);
 
+    const reviewed = applications.filter((a) => a.status === 'reviewed').length;
     const accepted = applications.filter((a) => a.status === 'accepted').length;
     const rejected = applications.filter((a) => a.status === 'rejected').length;
     const pending = applications.filter((a) => a.status === 'pending').length;
     const interview = applications.filter((a) => a.status === 'interview').length;
 
     const acceptedRate = totalApplications > 0 ? ((accepted / totalApplications) * 100).toFixed(1) : 0;
+
+    // Count interviews
+    const totalInterviews = await Interview.countDocuments({
+      applicationId: { $in: applications.map(a => a._id) }
+    });
 
     // Jobs by location
     const jobs = await Job.find({ employerId: req.user._id });
@@ -51,8 +57,9 @@ const getStats = async (req, res, next) => {
       totalJobs,
       totalApplications,
       totalCandidates: candidates,
+      totalInterviews,
       acceptedRate,
-      statusBreakdown: { pending, reviewed: 0, interview, accepted, rejected },
+      statusBreakdown: { pending, reviewed, interview, accepted, rejected },
       jobsByLocation: locationMap,
       topSkills,
     });

@@ -17,6 +17,7 @@ import Jobs from './pages/Jobs';
 import JobDetail from './pages/JobDetail';
 import EmployerDashboard from './pages/employer/EmployerDashboard';
 import EmployerJobs from './pages/employer/EmployerJobs';
+import PostJob from './pages/employer/PostJob';
 import EmployerApplications from './pages/employer/EmployerApplications';
 import EmployerInterviews from './pages/employer/EmployerInterviews';
 import EmployerReports from './pages/employer/EmployerReports';
@@ -52,6 +53,8 @@ function App() {
               {/* Employer routes */}
               <Route path="/employer/dashboard" element={<ProtectedRoute roles={['employer']}><Navbar /><EmployerDashboard /><Footer /></ProtectedRoute>} />
               <Route path="/employer/jobs" element={<ProtectedRoute roles={['employer']}><Navbar /><EmployerJobs /><Footer /></ProtectedRoute>} />
+              <Route path="/employer/jobs/new" element={<ProtectedRoute roles={['employer']}><Navbar /><PostJob /><Footer /></ProtectedRoute>} />
+              <Route path="/employer/jobs/edit/:id" element={<ProtectedRoute roles={['employer']}><Navbar /><PostJob /><Footer /></ProtectedRoute>} />
               <Route path="/employer/applications" element={<ProtectedRoute roles={['employer']}><Navbar /><EmployerApplications /><Footer /></ProtectedRoute>} />
               <Route path="/employer/interviews" element={<ProtectedRoute roles={['employer']}><Navbar /><EmployerInterviews /><Footer /></ProtectedRoute>} />
               <Route path="/employer/reports" element={<ProtectedRoute roles={['employer']}><Navbar /><EmployerReports /><Footer /></ProtectedRoute>} />

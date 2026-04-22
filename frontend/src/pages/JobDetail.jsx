@@ -314,6 +314,12 @@ export default function JobDetail() {
                   <span className="text-heading font-medium">{job.jobType}</span>
                 </div>
                 <div className="flex justify-between">
+                  <span className="text-meta">Hạn nộp hồ sơ</span>
+                  <span className="text-heading font-medium">
+                    {job.deadline ? new Date(job.deadline).toLocaleDateString('vi-VN') : 'Không thời hạn'}
+                  </span>
+                </div>
+                <div className="flex justify-between">
                   <span className="text-meta">Trạng thái</span>
                   <StatusBadge status={job.status} />
                 </div>
