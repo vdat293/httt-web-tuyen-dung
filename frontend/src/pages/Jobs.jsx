@@ -99,17 +99,50 @@ export default function Jobs() {
   };
 
   const handleFilterChange = (newFilters) => {
-    updateURL({ ...filters, ...newFilters, page: 1 });
+    // Determine what changed by comparing with current filters
+    const isTextChange = 
+      (newFilters.q !== undefined && newFilters.q !== filters.q) || 
+      (newFilters.location !== undefined && newFilters.location !== filters.location) || 
+      (newFilters.skills !== undefined && newFilters.skills !== filters.skills);
+
+    setFilters(newFilters);
+    
+    if (!isTextChange) {
+      updateURL({ ...newFilters, page: 1 });
+    }
   };
 
   const handleSort = ({ sort, order }) => {
-    updateURL({ ...filters, sort, order, page: 1 });
+    const updated = { ...filters, sort, order, page: 1 };
+    setFilters(updated);
+    updateURL(updated);
   };
 
   const handlePageChange = (page) => {
-    updateURL({ ...filters, page });
+    const updated = { ...filters, page };
+    setFilters(updated);
+    updateURL(updated);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  // Debounce real-time search for text inputs
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      const currentQ = searchParams.get('q') || '';
+      const currentLoc = searchParams.get('location') || '';
+      const currentSkills = searchParams.get('skills') || '';
+      
+      if (
+        filters.q !== currentQ || 
+        filters.location !== currentLoc || 
+        filters.skills !== currentSkills
+      ) {
+        updateURL({ ...filters, page: 1 });
+      }
+    }, 400); // Giảm xuống 400ms để cảm giác nhanh hơn
+
+    return () => clearTimeout(timer);
+  }, [filters.q, filters.location, filters.skills]);
 
   const pageNumbers = [];
   for (let i = 1; i <= totalPages; i++) {
