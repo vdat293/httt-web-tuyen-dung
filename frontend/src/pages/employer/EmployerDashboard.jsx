@@ -58,8 +58,8 @@ export default function EmployerDashboard() {
     <Layout>
       <div className="space-y-6">
 
-        {/* ═══ Welcome Banner ═══ */}
-        <div className="bg-gradient-to-r from-brand-600 to-brand-500 rounded-2xl p-6 sm:p-8 text-white relative overflow-hidden shadow-lg shadow-brand-100">
+        {/* ═══ Welcome Banner - Hidden on Mobile ═══ */}
+        <div className="hidden sm:block bg-gradient-to-r from-brand-600 to-brand-500 rounded-2xl p-6 sm:p-8 text-white relative overflow-hidden shadow-lg shadow-brand-100">
           <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-1/2 translate-x-1/4"></div>
           <div className="absolute bottom-0 left-1/2 w-40 h-40 bg-white/5 rounded-full translate-y-1/2"></div>
           <div className="relative z-10">
@@ -87,7 +87,7 @@ export default function EmployerDashboard() {
         </div>
 
         {/* ═══ KPI Cards ═══ */}
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {[
             {
               label: 'Tin tuyển dụng',

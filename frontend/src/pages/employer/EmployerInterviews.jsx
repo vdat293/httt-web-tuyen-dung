@@ -221,13 +221,14 @@ export default function EmployerInterviews() {
         <h1 className="text-2xl font-black text-heading">Lịch phỏng vấn</h1>
       </div>
 
+      {/* ═══ Tabs: Horizontal Scroll on Mobile ═══ */}
       {!loading && interviews.length > 0 && (
-        <div className="flex flex-wrap gap-4 mb-8 border-b border-line pb-6 px-1">
+        <div className="flex items-center gap-3 mb-8 border-b border-line pb-4 overflow-x-auto scrollbar-hide px-2">
           {TABS.map((tab) => (
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`flex items-center gap-2.5 px-4 py-2 rounded-xl text-sm font-bold transition-all ${
+              className={`flex-shrink-0 flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all ${
                 activeTab === tab.key ? 'bg-brand-600 text-white shadow-lg shadow-brand-100' : 'text-meta hover:bg-brand-50'
               }`}
             >
@@ -243,65 +244,85 @@ export default function EmployerInterviews() {
       {loading ? <LoadingSkeleton type="list" count={3} /> : filtered.length === 0 ? (
         <EmptyState title="Không có dữ liệu" description="Danh sách phỏng vấn đang trống ở mục này." />
       ) : (
-        <div className="grid gap-6">
+        <div className="grid gap-6 px-1 sm:px-0">
           {filtered.map((iv) => {
             const countdown = iv.status === 'scheduled' ? getCountdown(iv.scheduledAt) : null;
             const candidate = iv.applicationId?.candidateId;
             const job = iv.applicationId?.jobId;
 
             return (
-              <div key={iv._id} className="bg-white rounded-3xl p-6 border border-line/60 shadow-sm relative transition-all hover:shadow-md">
-                <div className="flex gap-4">
-                  {/* Left: Avatar */}
-                  <div className="w-12 h-12 rounded-xl bg-brand-50 text-brand-600 flex items-center justify-center text-lg font-black flex-shrink-0">
-                    {candidate?.name?.charAt(0)?.toUpperCase()}
+              <div key={iv._id} className="bg-white rounded-3xl p-5 sm:p-6 border border-line/60 shadow-sm relative transition-all hover:shadow-md overflow-hidden">
+                <div className="flex flex-col sm:flex-row gap-5 sm:gap-6">
+                  
+                  {/* Avatar + Top Info (Mobile Header) */}
+                  <div className="flex items-center gap-4 sm:items-start sm:flex-col sm:gap-4 flex-shrink-0">
+                    <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-2xl bg-brand-50 text-brand-600 flex items-center justify-center text-xl font-black flex-shrink-0">
+                      {candidate?.name?.charAt(0)?.toUpperCase()}
+                    </div>
+                    <div className="sm:hidden flex-1 min-w-0">
+                      <h3 className="text-base font-bold text-heading truncate">{candidate?.name}</h3>
+                      <p className="text-[11px] font-black text-brand-600 uppercase tracking-widest truncate">{job?.title}</p>
+                    </div>
                   </div>
 
-                  {/* Middle: Content */}
+                  {/* Body Content */}
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between mb-1">
-                      <div className="flex items-center gap-3">
+                    <div className="hidden sm:block mb-4">
+                      <div className="flex flex-wrap items-center gap-3 mb-1">
                         <h3 className="text-base font-bold text-heading">{candidate?.name}</h3>
-                        <StatusBadge status={iv.status} />
-                        {iv.result && <StatusBadge status={iv.result} />}
+                        <div className="flex gap-2">
+                          <StatusBadge status={iv.status} />
+                          {iv.result && <StatusBadge status={iv.result} />}
+                        </div>
                       </div>
-                      <div className="flex items-center gap-4 text-[11px] text-meta font-bold uppercase tracking-wider">
+                      <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-meta font-bold uppercase tracking-wider">
                         <div className="flex items-center gap-1.5"><Icons.Mail /> {candidate?.email}</div>
                         {candidate?.phone && <div className="flex items-center gap-1.5"><Icons.Phone /> {candidate.phone}</div>}
                       </div>
                     </div>
 
-                    <p className="text-sm font-black text-brand-600 uppercase tracking-widest mb-2">{job?.title}</p>
+                    <div className="sm:hidden flex flex-wrap gap-2 mb-4">
+                       <StatusBadge status={iv.status} />
+                       {iv.result && <StatusBadge status={iv.result} />}
+                       <div className="w-full flex flex-col gap-1 mt-1 text-[10px] text-meta font-bold uppercase tracking-tight">
+                         <div className="flex items-center gap-1.5 truncate"><Icons.Mail /> {candidate?.email}</div>
+                         {candidate?.phone && <div className="flex items-center gap-1.5"><Icons.Phone /> {candidate.phone}</div>}
+                       </div>
+                    </div>
 
-                    {/* Quick Info (Time & Location) right below Job Title */}
-                    <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mb-6 text-xs font-bold text-body">
-                      <div className="flex items-center gap-2">
-                        <span className="p-1.5 bg-bgSection rounded-lg text-meta"><Icons.Calendar /></span>
-                        <span>{fmtDateShort(iv.scheduledAt)}</span>
-                        <span className="text-line">|</span>
-                        <span>{fmtTime(iv.scheduledAt)}</span>
+                    <p className="hidden sm:block text-xs font-black text-brand-600 uppercase tracking-widest mb-4">{job?.title}</p>
+
+                    {/* Interview Details */}
+                    <div className="flex flex-col md:flex-row md:items-center gap-y-3 gap-x-6 mb-5 text-xs font-bold text-body">
+                      <div className="flex items-center gap-2 group">
+                        <span className="p-2 bg-gray-50 rounded-xl text-meta group-hover:bg-brand-50 transition-colors"><Icons.Calendar /></span>
+                        <div className="flex items-center gap-2">
+                          <span>{fmtDateShort(iv.scheduledAt)}</span>
+                          <span className="text-line">|</span>
+                          <span>{fmtTime(iv.scheduledAt)}</span>
+                        </div>
                         {countdown && (
-                          <span className={`ml-1 text-[10px] uppercase px-2 py-0.5 rounded-full ${countdown.type === 'overdue' ? 'bg-red-100 text-red-600' : 'bg-green-100 text-green-600'}`}>
+                          <span className={`text-[10px] uppercase px-2 py-0.5 rounded-full ${countdown.type === 'overdue' ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}`}>
                             {countdown.text}
                           </span>
                         )}
                       </div>
-                      <div className="flex items-center gap-2">
-                        <span className="p-1.5 bg-bgSection rounded-lg text-meta"><Icons.Location /></span>
+                      <div className="flex items-center gap-2 group">
+                        <span className="p-2 bg-gray-50 rounded-xl text-meta group-hover:bg-blue-50 transition-colors"><Icons.Location /></span>
                         <span className="line-clamp-1">{iv.location || 'Chưa cập nhật địa điểm'}</span>
                       </div>
                     </div>
 
-                    {/* Large Space for Message/Evaluation */}
-                    <div className="bg-bgSection/40 rounded-2xl p-5 space-y-4">
+                    {/* Message / Evaluation Area */}
+                    <div className="bg-gray-50/70 rounded-2xl p-4 sm:p-5 space-y-4">
                       {iv.note && (
                         <div>
                           <p className="text-[10px] font-black text-meta uppercase tracking-widest mb-1.5 opacity-60">Tin nhắn đã gửi:</p>
-                          <p className="text-sm font-medium text-body italic">"{iv.note}"</p>
+                          <p className="text-[13px] font-medium text-body italic leading-relaxed">"{iv.note}"</p>
                         </div>
                       )}
                       {iv.evaluation && (
-                        <div className="pt-3 border-t border-line/20">
+                        <div className="pt-3 border-t border-gray-200/50">
                           <p className="text-[10px] font-black text-purple-600 uppercase tracking-widest mb-1.5 opacity-70 flex items-center gap-1.5">
                             <Icons.Chat /> Nhận xét phỏng vấn:
                           </p>
@@ -309,28 +330,30 @@ export default function EmployerInterviews() {
                         </div>
                       )}
                       {!iv.note && !iv.evaluation && (
-                        <p className="text-xs text-meta py-2">Không có tin nhắn kèm theo.</p>
+                        <p className="text-[11px] text-meta italic">Không có tin nhắn kèm theo.</p>
                       )}
                     </div>
                   </div>
 
-                  {/* Right: Actions */}
-                  <div className="w-48 flex flex-col gap-2 pt-1 border-l border-line/40 pl-4">
+                  {/* Actions Column/Row */}
+                  <div className="w-full sm:w-48 flex flex-col sm:pt-1 sm:border-l border-gray-100 sm:pl-6 gap-3">
                     {iv.status === 'scheduled' && (
-                      <>
-                        <button onClick={() => setConfirm({ title: 'Hoàn thành PV', message: `Xác nhận buổi phỏng vấn này đã kết thúc?`, confirmLabel: 'Hoàn thành', onConfirm: () => handleUpdate(iv._id, { status: 'completed' }) })} className="py-2.5 bg-green-600 text-white rounded-xl font-bold text-xs uppercase transition-all hover:bg-green-700 flex items-center justify-center gap-2">
+                      <div className="grid grid-cols-1 gap-2">
+                        <button onClick={() => setConfirm({ title: 'Hoàn thành PV', message: `Xác nhận buổi phỏng vấn này đã kết thúc?`, confirmLabel: 'Hoàn thành', onConfirm: () => handleUpdate(iv._id, { status: 'completed' }) })} className="w-full py-3 bg-green-600 text-white rounded-xl font-black text-[10px] uppercase transition-all hover:bg-green-700 flex items-center justify-center gap-2 shadow-sm">
                           <Icons.Check /> Hoàn thành
                         </button>
-                        <button onClick={() => setEditingId(editingId === iv._id ? null : iv._id)} className="py-2.5 bg-bgSection text-body rounded-xl font-bold text-xs uppercase hover:bg-brand-50 hover:text-brand-600 flex items-center justify-center gap-2">
-                          <Icons.Edit /> Dời lịch
-                        </button>
-                        <button onClick={() => setConfirm({ title: 'Hủy lịch hẹn', message: 'Bạn chắc chắn muốn hủy lịch này?', confirmLabel: 'Hủy lịch', confirmClass: 'bg-red-600', onConfirm: () => handleUpdate(iv._id, { status: 'cancelled' }) })} className="py-2 text-red-600 font-bold text-[11px] uppercase hover:underline">
-                          Hủy lịch
-                        </button>
-                      </>
+                        <div className="grid grid-cols-2 sm:grid-cols-1 gap-2">
+                          <button onClick={() => setEditingId(editingId === iv._id ? null : iv._id)} className="py-2.5 bg-white border border-line text-body rounded-xl font-bold text-[10px] uppercase hover:bg-brand-50 hover:text-brand-600 hover:border-brand-200 transition-all flex items-center justify-center gap-2">
+                            <Icons.Edit /> Dời lịch
+                          </button>
+                          <button onClick={() => setConfirm({ title: 'Hủy lịch hẹn', message: 'Bạn chắc chắn muốn hủy lịch này?', confirmLabel: 'Hủy lịch', confirmClass: 'bg-red-600', onConfirm: () => handleUpdate(iv._id, { status: 'cancelled' }) })} className="py-2.5 bg-red-50 text-red-600 border border-red-100 rounded-xl font-bold text-[10px] uppercase hover:bg-red-100 transition-all flex items-center justify-center gap-2">
+                            <Icons.Cancel /> Hủy lịch
+                          </button>
+                        </div>
+                      </div>
                     )}
                     {iv.status === 'completed' && !iv.result && (
-                      <button onClick={() => setEvaluatingIv(iv)} className="py-3 bg-brand-600 text-white rounded-xl font-bold text-xs uppercase shadow-lg shadow-brand-100 flex items-center justify-center gap-2">
+                      <button onClick={() => setEvaluatingIv(iv)} className="w-full py-3.5 bg-brand-600 text-white rounded-xl font-black text-[10px] uppercase shadow-lg shadow-brand-100 flex items-center justify-center gap-2 active:scale-95 transition-all">
                          <Icons.Edit /> Đánh giá kết quả
                       </button>
                     )}
@@ -338,7 +361,9 @@ export default function EmployerInterviews() {
                 </div>
 
                 {editingId === iv._id && (
-                  <div className="animate-slide-up"><EditForm iv={iv} onSave={handleUpdate} onCancel={() => setEditingId(null)} /></div>
+                  <div className="animate-slide-up bg-bgSection/30 rounded-2xl mt-6 p-4 sm:p-6 border border-line/40">
+                    <EditForm iv={iv} onSave={handleUpdate} onCancel={() => setEditingId(null)} />
+                  </div>
                 )}
               </div>
             );

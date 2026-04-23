@@ -285,8 +285,8 @@ export default function Jobs() {
 
           {/* ═══════ Search Bar & Content ═══════ */}
           <div className="max-w-5xl lg:max-w-6xl w-full mx-auto relative" ref={searchBoxRef}>
-            <form onSubmit={(e) => { e.preventDefault(); handleSearch(); }} style={{ width: '100%' }}>
-              <div className="search-bar-wrapper" style={{ width: '100%', display: 'flex' }}>
+            <form onSubmit={(e) => { e.preventDefault(); handleSearch(); }} className="w-full">
+              <div className="search-bar-wrapper">
                 {/* Keyword Input */}
                 <div className="search-input-group search-input-keyword">
                   <svg className="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">

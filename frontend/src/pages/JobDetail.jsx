@@ -152,7 +152,7 @@ export default function JobDetail() {
 
   return (
     <Layout>
-      <div className="grid lg:grid-cols-3 gap-6">
+      <div className="grid lg:grid-cols-3 gap-6 pb-24 lg:pb-0">
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-4">
           {/* Header Card */}
@@ -404,6 +404,23 @@ export default function JobDetail() {
           </div>
         </div>
       </div>
+
+      {/* Floating Action Bar for Mobile candidates */}
+      {user?.role === 'candidate' && job.status === 'open' && !applied && (
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-line p-4 z-50 flex gap-3 shadow-[0_-8px_30px_rgb(0,0,0,0.12)]">
+          <div className="flex-1">
+             <button 
+               onClick={() => document.getElementById('cv-upload')?.click()}
+               className="btn-primary w-full h-12 text-sm font-bold shadow-lg shadow-brand-100"
+             >
+               Ứng tuyển ngay
+             </button>
+          </div>
+          <div className="flex-shrink-0">
+             <SaveJobButton jobId={job._id} className="h-12 w-12 flex items-center justify-center rounded-xl bg-gray-50 border border-line" />
+          </div>
+        </div>
+      )}
     </Layout>
   );
 }

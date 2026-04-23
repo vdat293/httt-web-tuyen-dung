@@ -275,8 +275,8 @@ export default function Home() {
 
           {/* ═══════ Search Bar & Content ═══════ */}
           <div className="max-w-5xl lg:max-w-6xl w-full mx-auto relative" ref={searchBoxRef}>
-            <form onSubmit={handleSearch} style={{ width: '100%' }}>
-              <div className="search-bar-wrapper" style={{ width: '100%', display: 'flex' }}>
+            <form onSubmit={handleSearch} className="w-full">
+              <div className="search-bar-wrapper">
                 {/* Keyword Input */}
                 <div className="search-input-group search-input-keyword">
                   <svg className="search-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -552,8 +552,8 @@ export default function Home() {
                 </div>
               </div>
 
-              {/* Right Banners Area */}
-              <div className="col-span-1 lg:col-span-3 flex flex-col gap-4 h-[300px]">
+              {/* Right Banners Area - Hidden on Mobile */}
+              <div className="hidden lg:flex col-span-1 lg:col-span-3 flex-col gap-4 h-[300px]">
                 {/* Main Image Banner */}
                 <div className="flex-1 rounded-xl overflow-hidden relative border border-line shadow-sm">
                   <img 
@@ -563,7 +563,6 @@ export default function Home() {
                   />
                   {/* Optional: Overlay content if needed, but the image already has text */}
                 </div>
-
               </div>
             </div>
         </div>

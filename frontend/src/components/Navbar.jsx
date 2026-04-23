@@ -195,7 +195,7 @@ export default function Navbar() {
         {/* Mobile Menu Panel */}
         <div 
           className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${
-            menuOpen ? 'max-h-[500px] opacity-100 mb-4' : 'max-h-0 opacity-0'
+            menuOpen ? 'max-h-screen opacity-100 mb-4' : 'max-h-0 opacity-0'
           }`}
         >
           <div className="pt-4 pb-2 border-t border-gray-100 flex flex-col gap-1.5">

@@ -197,7 +197,7 @@ export default function PostJob() {
               <div className="grid sm:grid-cols-2 gap-6">
                 <div className="form-group">
                   <label className="label">Mức lương (VNĐ)</label>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-col sm:flex-row items-center gap-2">
                     <input 
                       type="number" 
                       value={form.salaryMin}
@@ -205,7 +205,7 @@ export default function PostJob() {
                       className="input-field"
                       placeholder="VD: 10,000,000"
                     />
-                    <span className="text-meta">−</span>
+                    <span className="text-meta hidden sm:inline">−</span>
                     <input 
                       type="number" 
                       value={form.salaryMax}
