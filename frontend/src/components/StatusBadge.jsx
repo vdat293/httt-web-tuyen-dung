@@ -11,6 +11,8 @@ const BADGE_MAP = {
   failed: { label: 'Không đạt', cls: 'tag-red' },
   open: { label: 'Đang tuyển', cls: 'tag-green' },
   closed: { label: 'Đã đóng', cls: 'tag-gray' },
+  overdue: { label: 'Quá hạn', cls: 'tag-red' },
+  today: { label: 'Hôm nay', cls: 'tag-green' },
 };
 
 export default function StatusBadge({ status, label }) {

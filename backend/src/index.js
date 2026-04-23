@@ -45,32 +45,58 @@ app.use((req, res, next) => {
 io.use(async (socket, next) => {
   try {
     const token = socket.handshake.auth?.token;
-    if (!token) return next(new Error('Authentication error'));
+    if (!token) {
+      // Allow guest connections
+      socket.user = null;
+      return next();
+    }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded.id).select('-password');
-    if (!user) return next(new Error('User not found'));
+    if (!user) {
+      socket.user = null;
+      return next();
+    }
 
     socket.user = user;
     next();
   } catch (err) {
-    next(new Error('Authentication error'));
+    // On token error, treat as guest or fail? Let's treat as guest for stability
+    socket.user = null;
+    next();
   }
 });
 
 io.on('connection', (socket) => {
-  const userId = socket.user._id.toString();
-  console.log(`🔌 [Socket] User connected: ${userId}`);
+  if (socket.user) {
+    const userId = socket.user._id.toString();
+    console.log(`🔌 [Socket] User connected: ${userId}`);
+    socket.join(userId);
 
-  // Join personal room keyed by userId for targeted emits
-  socket.join(userId);
-
-  if (socket.user.role === 'admin') {
-    socket.join('admin_room');
+    if (socket.user.role === 'admin') {
+      socket.join('admin_room');
+    }
+  } else {
+    console.log('🔌 [Socket] Guest connected');
   }
 
+  // Job-specific rooms (for real-time status updates)
+  socket.on('join_job', (jobId) => {
+    if (jobId) {
+      socket.join(`job_${jobId}`);
+      console.log(`🔌 [Socket] Socket joined job room: job_${jobId}`);
+    }
+  });
+
+  socket.on('leave_job', (jobId) => {
+    if (jobId) {
+      socket.leave(`job_${jobId}`);
+      console.log(`🔌 [Socket] Socket left job room: job_${jobId}`);
+    }
+  });
+
   socket.on('disconnect', () => {
-    console.log(`🔌 [Socket] User disconnected: ${userId}`);
+    console.log(`🔌 [Socket] Disconnected: ${socket.user?._id || 'guest'}`);
   });
 });
 

@@ -98,7 +98,10 @@ const updateInterview = async (req, res, next) => {
   try {
     const interview = await Interview.findById(req.params.id).populate({
       path: 'applicationId',
-      populate: { path: 'jobId', select: 'employerId' },
+      populate: [
+        { path: 'jobId', select: 'title employerId' },
+        { path: 'candidateId', select: 'name email' }
+      ]
     });
 
     if (!interview) {
@@ -109,31 +112,44 @@ const updateInterview = async (req, res, next) => {
       return res.status(403).json({ message: 'Not authorized' });
     }
 
-    const { scheduledAt, location, note, status, result } = req.body;
+    const { scheduledAt, location, note, status, result, evaluation } = req.body;
 
     if (scheduledAt) interview.scheduledAt = scheduledAt;
     if (location) interview.location = location;
     if (note !== undefined) interview.note = note;
     if (status) interview.status = status;
     if (result) interview.result = result;
+    if (evaluation !== undefined) interview.evaluation = evaluation;
 
     await interview.save();
 
-    // If interview is completed or being completed now, update application status based on result
-    if ((status === 'completed' || interview.status === 'completed') && result) {
-      const application = await Application.findById(interview.applicationId._id);
-      application.status = result === 'passed' ? 'accepted' : 'rejected';
-      await application.save();
+    // Sync application status based on interview outcome
+    const appId = interview.applicationId._id || interview.applicationId;
+    if (appId) {
+      const application = await Application.findById(appId);
+      if (application) {
+        if (status === 'completed' && result) {
+          application.status = result === 'passed' ? 'accepted' : 'rejected';
+          await application.save();
+        } else if (status === 'cancelled') {
+          // If cancelled, reset back to reviewed so they can be rescheduled or manually handled
+          application.status = 'reviewed';
+          await application.save();
+        }
+      }
+    }
 
+    // If interview is completed or being completed now and has result, notify candidate
+    if ((status === 'completed' || interview.status === 'completed') && result) {
       // Notify candidate of final result
       await createNotification({
-        user: interview.applicationId.candidateId,
+        user: interview.applicationId.candidateId._id || interview.applicationId.candidateId,
         type: 'application_status_changed',
         title: result === 'passed' ? 'Chúc mừng! Bạn đã vượt qua phỏng vấn' : 'Kết quả phỏng vấn',
         message: result === 'passed'
-          ? `Chúc mừng bạn đã vượt qua phỏng vấn vị trí "${interview.applicationId.jobId.title}"`
-          : `Kết quả phỏng vấn vị trí "${interview.applicationId.jobId.title}" đã được cập nhật`,
-        data: { applicationId: interview.applicationId._id },
+          ? `Chúc mừng bạn đã vượt qua phỏng vấn vị trí "${interview.applicationId.jobId?.title || 'đã đăng'}"`
+          : `Kết quả phỏng vấn vị trí "${interview.applicationId.jobId?.title || 'đã đăng'}" đã được cập nhật`,
+        data: { applicationId: appId },
         io: req.io,
       });
     }
@@ -141,10 +157,10 @@ const updateInterview = async (req, res, next) => {
     // If time/location changed, notify candidate
     if ((scheduledAt && status !== 'completed') || location) {
       await createNotification({
-        user: interview.applicationId.candidateId,
+        user: interview.applicationId.candidateId._id || interview.applicationId.candidateId,
         type: 'interview_scheduled',
         title: 'Cập nhật lịch phỏng vấn',
-        message: `Lịch phỏng vấn vị trí "${interview.applicationId.jobId.title}" vừa được cập nhật`,
+        message: `Lịch phỏng vấn vị trí "${interview.applicationId.jobId?.title || 'đã đăng'}" vừa được cập nhật`,
         data: { interviewId: interview._id },
         io: req.io,
       });

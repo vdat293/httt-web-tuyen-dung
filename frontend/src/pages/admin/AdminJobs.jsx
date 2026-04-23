@@ -2,11 +2,14 @@ import { useState, useEffect } from 'react';
 import { adminAPI } from '../../api';
 import AdminLayout from '../../components/AdminLayout';
 import { useToast } from '../../components/Toast';
+import { useSocket } from '../../contexts/SocketContext';
 
 const STATUS_CONFIG = {
+  pending: { label: 'Chờ duyệt', tag: 'tag-yellow' },
   open: { label: 'Đã duyệt', tag: 'tag-green' },
   closed: { label: 'Đã đóng', tag: 'tag-gray' },
   rejected: { label: 'Bị từ chối', tag: 'tag-red' },
+  suspended: { label: 'Đã bị khóa', tag: 'tag-blue' },
 };
 
 function formatSalary(salary) {
@@ -19,6 +22,7 @@ function formatSalary(salary) {
 
 export default function AdminJobs() {
   const { addToast } = useToast();
+  const { socket } = useSocket();
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [total, setTotal] = useState(0);
@@ -28,8 +32,23 @@ export default function AdminJobs() {
   const [search, setSearch] = useState('');
   const [actionLoading, setActionLoading] = useState(null);
   const [rejectModal, setRejectModal] = useState(null); // job id being rejected
+  const [lockModal, setLockModal] = useState(null); // job being locked
 
   const limit = 15;
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleJobUpdate = () => {
+      const params = { page, limit };
+      if (statusFilter) params.status = statusFilter;
+      if (search.trim()) params.search = search.trim();
+      loadJobs(params);
+    };
+
+    socket.on('job_status_updated', handleJobUpdate);
+    return () => socket.off('job_status_updated', handleJobUpdate);
+  }, [socket, page, statusFilter, search]);
 
   useEffect(() => {
     const params = { page, limit };
@@ -72,6 +91,31 @@ export default function AdminJobs() {
     } finally { setActionLoading(null); }
   };
 
+  const handleLock = async (jobId, reason) => {
+    setActionLoading(jobId);
+    try {
+      await adminAPI.lockJob(jobId, reason);
+      const isCurrentlySuspended = jobs.find(j => j._id === jobId)?.status === 'suspended';
+      setJobs((prev) => prev.map((j) => j._id === jobId ? { ...j, status: isCurrentlySuspended ? 'open' : 'suspended' } : j));
+      setLockModal(null);
+      addToast(isCurrentlySuspended ? 'Đã mở khóa tin tuyển dụng' : 'Đã khóa tin tuyển dụng', 'success');
+    } catch (err) {
+      addToast(err.response?.data?.message || 'Thất bại', 'error');
+    } finally { setActionLoading(null); }
+  };
+
+  const handleDeleteJob = async (jobId) => {
+    if (!window.confirm('Bạn có chắc chắn muốn XÓA bài đăng này? Hành động này không thể hoàn tác.')) return;
+    setActionLoading(jobId);
+    try {
+      await adminAPI.deleteJob(jobId);
+      setJobs((prev) => prev.filter((j) => j._id !== jobId));
+      addToast('Đã xóa tin tuyển dụng thành công', 'success');
+    } catch (err) {
+      addToast(err.response?.data?.message || 'Thất bại', 'error');
+    } finally { setActionLoading(null); }
+  };
+
   return (
     <AdminLayout currentPage="jobs">
       <div className="flex items-center justify-between mb-5">
@@ -79,28 +123,42 @@ export default function AdminJobs() {
         <span className="text-sm text-meta">{total} tin tuyển dụng</span>
       </div>
 
-      {/* Filters */}
-      <div className="flex flex-wrap gap-3 mb-5">
-        <div className="flex-1 min-w-[200px]">
-          <input
-            type="text"
-            value={search}
-            onChange={(e) => { setSearch(e.target.value); setPage(1); }}
-            placeholder="Tìm theo tiêu đề, địa điểm..."
-            className="input"
-          />
+      {/* Tabs & Filters */}
+      <div className="flex flex-col gap-4 mb-5">
+        <div className="flex items-center gap-1 border-b border-gray-200">
+          {[
+            { id: '', label: 'Tất cả' },
+            { id: 'pending', label: 'Chờ duyệt' },
+            { id: 'open', label: 'Đã duyệt' },
+            { id: 'rejected', label: 'Bị từ chối' },
+            { id: 'closed', label: 'Đã đóng' },
+            { id: 'suspended', label: 'Bị khóa' },
+          ].map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => { setStatusFilter(tab.id); setPage(1); }}
+              className={`px-4 py-2 text-sm font-medium transition-colors border-b-2 -mb-px ${
+                statusFilter === tab.id
+                  ? 'border-brand-500 text-brand-600'
+                  : 'border-transparent text-meta hover:text-body hover:border-gray-300'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
         </div>
-        <select
-          value={statusFilter}
-          onChange={(e) => { setStatusFilter(e.target.value); setPage(1); }}
-          className="input w-auto"
-        >
-          <option value="">Tất cả trạng thái</option>
-          <option value="pending">Chờ duyệt</option>
-          <option value="open">Đã duyệt</option>
-          <option value="closed">Đã đóng</option>
-          <option value="rejected">Bị từ chối</option>
-        </select>
+        
+        <div className="flex flex-wrap gap-3">
+          <div className="flex-1 min-w-[200px]">
+            <input
+              type="text"
+              value={search}
+              onChange={(e) => { setSearch(e.target.value); setPage(1); }}
+              placeholder="Tìm theo tiêu đề, địa điểm..."
+              className="input"
+            />
+          </div>
+        </div>
       </div>
 
       {/* Table */}
@@ -195,6 +253,40 @@ export default function AdminJobs() {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                         </svg>
                       </a>
+                      
+                      {job.status === 'open' && (
+                        <button
+                          onClick={() => setLockModal(job._id)}
+                          className="p-1.5 rounded-md text-orange-500 hover:bg-orange-50 transition-colors"
+                          title="Khóa bài đăng"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                          </svg>
+                        </button>
+                      )}
+
+                      {job.status === 'suspended' && (
+                        <button
+                          onClick={() => handleLock(job._id, '')}
+                          className="p-1.5 rounded-md text-green-500 hover:bg-green-50 transition-colors"
+                          title="Mở khóa bài đăng"
+                        >
+                          <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 11V7a4 4 0 118 0m-4 8v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                          </svg>
+                        </button>
+                      )}
+
+                      <button
+                        onClick={() => handleDeleteJob(job._id)}
+                        className="p-1.5 rounded-md text-red-500 hover:bg-red-50 transition-colors"
+                        title="Xóa bài đăng"
+                      >
+                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                        </svg>
+                      </button>
                     </div>
                   </td>
                 </tr>
@@ -225,6 +317,13 @@ export default function AdminJobs() {
           onConfirm={handleReject}
         />
       )}
+      {lockModal && (
+        <LockModal
+          jobId={lockModal}
+          onClose={() => setLockModal(null)}
+          onConfirm={handleLock}
+        />
+      )}
     </AdminLayout>
   );
 }
@@ -246,6 +345,31 @@ function RejectModal({ jobId, onClose, onConfirm }) {
           <button onClick={onClose} className="btn-outline !py-2 !px-4 text-sm">Hủy</button>
           <button onClick={() => onConfirm(jobId, reason)} className="btn-primary !py-2 !px-4 text-sm bg-red-500 hover:bg-red-600">
             Từ chối
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function LockModal({ jobId, onClose, onConfirm }) {
+  const [reason, setReason] = useState('');
+  return (
+    <div className="fixed inset-0 bg-black/40 flex items-center justify-center z-50" onClick={onClose}>
+      <div className="bg-white rounded-xl shadow-2xl p-6 w-full max-w-md" onClick={(e) => e.stopPropagation()}>
+        <h3 className="font-semibold text-heading mb-4">Khóa bài đăng tuyển dụng</h3>
+        <p className="text-sm text-meta mb-4">Bài đăng này sẽ không được hiển thị công khai. Nhà tuyển dụng sẽ nhận được thông báo khóa.</p>
+        <textarea
+          value={reason}
+          onChange={(e) => setReason(e.target.value)}
+          placeholder="Lý do khóa (VD: Vi phạm nội dung, Spam...)"
+          rows={3}
+          className="input resize-none w-full mb-4"
+        />
+        <div className="flex justify-end gap-2">
+          <button onClick={onClose} className="btn-outline !py-2 !px-4 text-sm">Hủy</button>
+          <button onClick={() => onConfirm(jobId, reason)} className="btn-primary !py-2 !px-4 text-sm bg-orange-500 hover:bg-orange-600">
+            Khóa ngay
           </button>
         </div>
       </div>

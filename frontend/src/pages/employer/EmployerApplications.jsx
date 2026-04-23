@@ -52,8 +52,9 @@ export default function EmployerApplications() {
   const handleInterview = async (appId, e) => {
     e.preventDefault();
     const f = e.target;
+    const scheduledAt = `${f.date.value}T${f.time.value}`;
     try {
-      await interviewsAPI.create({ applicationId: appId, scheduledAt: f.scheduledAt.value, location: f.location.value, note: f.note.value });
+      await interviewsAPI.create({ applicationId: appId, scheduledAt, location: f.location.value, note: f.note.value });
       setShowInterviewForm(null); addToast('Đã lên lịch phỏng vấn'); loadData();
     } catch (err) { addToast(err.response?.data?.message || 'Lỗi', 'error'); }
   };
@@ -75,7 +76,7 @@ export default function EmployerApplications() {
       </div>
 
       {loading ? <LoadingSkeleton type="list" count={4} /> : applications.length === 0 ? (
-        <EmptyState icon="👥" title="Không có hồ sơ" description="Chưa có ứng viên nào hoặc không khớp bộ lọc." />
+        <EmptyState title="Không có hồ sơ" description="Chưa có ứng viên nào hoặc không khớp bộ lọc." />
       ) : (
         <div className="space-y-3">
           {applications.map(app => (
@@ -97,9 +98,10 @@ export default function EmployerApplications() {
                       target="_blank" 
                       rel="noreferrer" 
                       onClick={() => handleViewCV(app)}
-                      className="text-xs text-blue-500 hover:underline mt-1 inline-block"
+                      className="inline-flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-brand-600 hover:text-brand-700 bg-brand-50/80 hover:bg-brand-100 px-2.5 py-1 rounded transition-all mt-2 group"
                     >
-                      Xem CV
+                      <span>Xem CV</span>
+                      <svg className="w-3 h-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
                     </a>
                   )}
                 </div>
@@ -116,21 +118,54 @@ export default function EmployerApplications() {
                 </div>
               )}
 
-              <div className="flex flex-wrap items-center gap-2 mt-3 pt-3 border-t border-line">
-                <select value={app.status} onChange={e => handleStatus(app._id, e.target.value)} className="input-field !w-auto !py-1.5 text-sm">
-                  {Object.entries(STATUS_LABELS).map(([k,v]) => <option key={k} value={k}>{v}</option>)}
-                </select>
-                <button onClick={() => setShowInterviewForm(app._id)} className="btn-primary text-sm !py-1.5">Lên lịch PV</button>
+              <div className="flex flex-wrap items-center gap-3 mt-3 pt-3 border-t border-line">
+                <button 
+                  onClick={() => setShowInterviewForm(app._id)} 
+                  disabled={app.status === 'rejected' || app.status === 'accepted' || app.status === 'interview'}
+                  className={`text-sm py-1.5 px-5 rounded-lg font-semibold transition-all active:scale-95 ${
+                    app.status === 'interview' || app.status === 'rejected' || app.status === 'accepted'
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed border border-gray-200'
+                      : 'btn-primary'
+                  }`}
+                >
+                  {app.status === 'interview' ? 'Đã hẹn phỏng vấn' : 'Lên lịch PV'}
+                </button>
+                <button 
+                  onClick={() => handleStatus(app._id, 'rejected')}
+                  disabled={app.status === 'rejected' || app.status === 'accepted'}
+                  className={`px-4 py-1.5 border rounded-lg text-sm font-medium transition-all active:scale-95 ${
+                    app.status === 'rejected'
+                      ? 'border-gray-200 text-gray-400 cursor-not-allowed bg-gray-50'
+                      : 'border-red-200 text-red-600 hover:bg-red-50 hover:border-red-300'
+                  } ${(app.status === 'accepted' || app.status === 'interview') ? 'hidden' : ''}`}
+                >
+                  {app.status === 'rejected' ? 'Đã từ chối' : 'Từ chối'}
+                </button>
               </div>
 
               {showInterviewForm === app._id && (
                 <form onSubmit={e => handleInterview(app._id, e)} className="mt-3 p-4 bg-bgSection rounded-lg border border-line space-y-2 animate-fade-in">
                   <p className="text-sm font-semibold text-heading">Lên lịch phỏng vấn</p>
-                  <div className="grid sm:grid-cols-2 gap-2">
-                    <input type="datetime-local" name="scheduledAt" className="input-field text-sm" required />
-                    <input name="location" placeholder="Địa điểm / Link" className="input-field text-sm" />
+                  <div className="grid sm:grid-cols-3 gap-3">
+                    <div className="flex gap-3 sm:col-span-2">
+                      <div className="flex-[2]">
+                        <label className="block text-[11px] font-bold text-meta uppercase tracking-wider mb-1">Ngày phỏng vấn</label>
+                        <input type="date" name="date" className="input-field text-sm" required />
+                      </div>
+                      <div className="flex-[1]">
+                        <label className="block text-[11px] font-bold text-meta uppercase tracking-wider mb-1">Giờ hẹn</label>
+                        <input type="time" name="time" className="input-field text-sm" required />
+                      </div>
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-bold text-meta uppercase tracking-wider mb-1">Địa điểm / Link</label>
+                      <input name="location" placeholder="Số nhà, Tên đường... hoặc Link Meet" className="input-field text-sm" />
+                    </div>
                   </div>
-                  <textarea name="note" placeholder="Ghi chú" className="input-field text-sm h-14 resize-none"></textarea>
+                  <div className="mt-2">
+                    <label className="block text-[11px] font-bold text-meta uppercase tracking-wider mb-1">Lời nhắn ứng viên</label>
+                    <textarea name="note" placeholder="Nội dung cần chuẩn bị, trang phục..." className="input-field text-sm h-16 resize-none"></textarea>
+                  </div>
                   <div className="flex gap-2">
                     <button type="submit" className="btn-primary text-sm !py-1.5">Xác nhận</button>
                     <button type="button" onClick={() => setShowInterviewForm(null)} className="btn-ghost text-sm border border-line !py-1.5">Hủy</button>

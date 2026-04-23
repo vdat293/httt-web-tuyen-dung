@@ -52,23 +52,29 @@ export default function VerifyEmail() {
   return (
     <div className="min-h-screen flex">
       {/* ═══ Left Brand Panel ═══ */}
-      <div className="hidden lg:flex lg:w-[45%] xl:w-[50%] relative overflow-hidden flex-col justify-center text-white p-10 xl:p-14"
-        style={{ background: 'linear-gradient(160deg, #063d1e 0%, #0a5c2f 30%, #00B14F 70%, #00c853 100%)' }}
-      >
-        <div className="relative z-10">
-          <Link to="/" className="inline-block mb-10">
-            <img src={logo} alt="8386recruit" className="h-12 w-auto brightness-0 invert" />
-          </Link>
-          <div className="max-w-md">
-            <h2 className="text-4xl font-bold leading-tight mb-6">Xác thực tài khoản.</h2>
-            <p className="text-white/70 text-lg leading-relaxed">Một bước cuối cùng để kích hoạt tài khoản của bạn. Vui lòng nhập mã OTP chúng tôi vừa gửi qua email.</p>
+      <div className="hidden lg:flex lg:w-[33%] xl:w-[33%] relative overflow-hidden flex-col justify-center items-center background">
+        {/* Layer 2: Grid */}
+        <div className="absolute inset-0 grid-pattern pointer-events-none opacity-50"></div>
+
+        {/* Layer 3: Glass Panel */}
+        <div className="relative z-10 w-[80%] max-w-[340px] p-10 glass-panel flex flex-col justify-center shadow-2xl">
+          {/* Layer 4: Glow Elements & Identifier */}
+          <div className="flex items-center gap-4 mb-8">
+            <div className="glow-node flex-shrink-0"></div>
+            <span className="text-white font-bold text-lg tracking-wide">Xác thực tài khoản</span>
+          </div>
+
+          <div className="w-full flex flex-col gap-4">
+            <div className="skeleton-line !mb-0 w-full"></div>
+            <div className="skeleton-line !mb-0 w-[70%]"></div>
+            <div className="skeleton-line !mb-0 w-[40%]"></div>
           </div>
         </div>
       </div>
 
       {/* ═══ Right Form Panel ═══ */}
-      <div className="flex-1 flex items-center justify-center p-6 sm:p-10 bg-gray-50/70">
-        <div className="w-full max-w-[400px] animate-fade-in">
+      <div className="flex-1 flex items-center justify-center p-6 sm:p-10 bg-white">
+        <div className="w-full max-w-[400px] animate-fade-in py-10">
           
           <div className="lg:hidden text-center mb-8">
             <Link to="/">
@@ -77,27 +83,27 @@ export default function VerifyEmail() {
           </div>
 
           <div className="mb-8">
-            <Link to="/login" className="inline-flex items-center text-sm font-semibold text-brand-600 hover:text-brand-700 gap-1 mb-6 group">
+            <Link to="/login" className="inline-flex items-center text-sm font-semibold text-gray-500 hover:text-brand-600 gap-1 mb-6 group transition-colors">
               <svg className="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
               </svg>
               Quay lại đăng nhập
             </Link>
             <h1 className="text-2xl font-bold text-gray-900 mb-2">Nhập mã xác thực</h1>
-            <p className="text-sm text-gray-500">Mã OTP gồm 6 chữ số đã được gửi tới email <span className="font-bold text-gray-700">{email}</span></p>
+            <p className="text-sm text-gray-500">Chúng tôi đã gửi mã OTP 6 chữ số tới <span className="font-bold text-gray-700">{email}</span></p>
           </div>
 
           {error && (
-            <div className="bg-red-50 border border-red-100 text-red-600 px-4 py-3 rounded-xl mb-6 text-sm flex items-start gap-2 shadow-sm animate-fade-in">
+            <div className="bg-red-50/80 border border-red-100 text-red-600 px-4 py-3 rounded-xl mb-6 text-sm flex items-start gap-2.5 shadow-sm animate-fade-in">
               <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-              {error}
+              <span className="leading-relaxed">{error}</span>
             </div>
           )}
           
           {success && (
-            <div className="bg-green-50 border border-green-100 text-green-600 px-4 py-3 rounded-xl mb-6 text-sm flex items-start gap-2 shadow-sm animate-fade-in">
+            <div className="bg-green-50/80 border border-green-100 text-green-600 px-4 py-3 rounded-xl mb-6 text-sm flex items-start gap-2.5 shadow-sm animate-fade-in">
               <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-              {success}
+              <span className="leading-relaxed">{success}</span>
             </div>
           )}
 
@@ -108,7 +114,7 @@ export default function VerifyEmail() {
                 type="text"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
-                className="w-full px-4 py-4 bg-white border border-gray-200 rounded-2xl text-3xl text-center font-bold tracking-[0.5em] focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 transition-all outline-none"
+                className="w-full px-4 py-4 bg-white border border-gray-200 rounded-2xl text-4xl text-center font-black tracking-[0.4em] focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 transition-all outline-none"
                 placeholder="000000"
                 maxLength={6}
                 required
@@ -118,7 +124,7 @@ export default function VerifyEmail() {
             <button
               type="submit"
               disabled={loading || otp.length < 6}
-              className="w-full py-3 px-4 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+              className="w-full py-4 px-4 bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white text-sm font-bold rounded-xl shadow-sm hover:shadow-brand-100 transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
             >
               {loading ? (
                 <>
@@ -126,21 +132,25 @@ export default function VerifyEmail() {
                   Đang xác thực...
                 </>
               ) : (
-                'Xác thực ngay'
+                'Xác thực tài khoản'
               )}
             </button>
           </form>
 
-          <div className="mt-8 text-center text-sm">
-            <p className="text-gray-500">Bạn chưa nhận được mã?</p>
+          <div className="mt-8 text-center sm:mt-10">
+            <p className="text-sm text-gray-500 mb-2">Bạn chưa nhận được mã?</p>
             <button
               type="button"
               onClick={handleResend}
-              className="mt-2 text-brand-600 font-bold hover:underline py-1"
+              className="text-sm font-bold text-brand-600 hover:text-brand-700 transition-colors py-1"
             >
               Gửi lại mã OTP mới
             </button>
           </div>
+
+          <p className="text-center text-xs text-gray-400 mt-12">
+            Liên hệ bộ phận hỗ trợ nếu bạn gặp sự cố về mã xác thực.
+          </p>
         </div>
       </div>
     </div>

@@ -31,13 +31,13 @@ import AdminDashboard from './pages/admin/AdminDashboard';
 import AdminUsers from './pages/admin/AdminUsers';
 import AdminJobs from './pages/admin/AdminJobs';
 import AdminReports from './pages/admin/AdminReports';
-import AdminOTPs from './pages/Admin/OTPManagement';
+import AdminOTPs from './pages/admin/OTPManagement';
 
 function App() {
   return (
     <AuthProvider>
-      <SocketProvider>
-        <ToastProvider>
+      <ToastProvider>
+        <SocketProvider>
           <BrowserRouter>
             <Routes>
               {/* Public routes */}
@@ -75,8 +75,8 @@ function App() {
               <Route path="/admin/otps" element={<ProtectedRoute roles={['admin']}><AdminOTPs /></ProtectedRoute>} />
             </Routes>
           </BrowserRouter>
-        </ToastProvider>
-      </SocketProvider>
+        </SocketProvider>
+      </ToastProvider>
     </AuthProvider>
   );
 }

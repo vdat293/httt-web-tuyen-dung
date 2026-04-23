@@ -188,7 +188,7 @@ export default function PostJob() {
                     value={form.location}
                     onChange={e => setForm({...form, location: e.target.value})}
                     className="input-field"
-                    placeholder="Ví dụ: Hà Nội, TP. HCM..."
+                    placeholder="Số nhà, Tên đường, Quận/Huyện, Tỉnh/Thành"
                     required
                   />
                 </div>
@@ -203,7 +203,7 @@ export default function PostJob() {
                       value={form.salaryMin}
                       onChange={e => setForm({...form, salaryMin: e.target.value})}
                       className="input-field"
-                      placeholder="Tối thiểu"
+                      placeholder="VD: 10,000,000"
                     />
                     <span className="text-meta">−</span>
                     <input 
@@ -211,7 +211,7 @@ export default function PostJob() {
                       value={form.salaryMax}
                       onChange={e => setForm({...form, salaryMax: e.target.value})}
                       className="input-field"
-                      placeholder="Tối đa"
+                      placeholder="VD: 20,000,000"
                     />
                   </div>
                 </div>
@@ -303,7 +303,7 @@ export default function PostJob() {
                   value={form.skills}
                   onChange={e => setForm({...form, skills: e.target.value})}
                   className="input-field"
-                  placeholder="Ví dụ: ReactJS, Teamwork, English..."
+                  placeholder="VD: ReactJS, Figma, English... (phân cách bằng dấu phẩy)"
                 />
               </div>
             </div>

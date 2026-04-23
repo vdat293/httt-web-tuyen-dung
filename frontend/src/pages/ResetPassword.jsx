@@ -10,7 +10,7 @@ export default function ResetPassword() {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState(1);
+  const [step, setSubStep] = useState(1);
   const [showPassword, setShowPassword] = useState(false);
   
   const location = useLocation();
@@ -29,7 +29,7 @@ export default function ResetPassword() {
 
     if (step === 1) {
       if (otp.length < 6) return setError('Vui lòng nhập đủ 6 số OTP');
-      setStep(2);
+      setSubStep(2);
       return;
     }
     
@@ -37,7 +37,7 @@ export default function ResetPassword() {
       return setError('Mật khẩu nhập lại không khớp');
     }
     if (newPassword.length < 6) {
-      return setError('Mật khẩu mới phải có nhất 6 ký tự');
+      return setError('Mật khẩu mới phải có ít nhất 6 ký tự');
     }
     
     setLoading(true);
@@ -55,32 +55,40 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="min-h-screen flex">
+    <div className="min-h-screen flex text-heading font-sans">
       {/* ═══ Left Brand Panel ═══ */}
-      <div className="hidden lg:flex lg:w-[45%] xl:w-[50%] relative overflow-hidden flex-col justify-center text-white p-10 xl:p-14"
-        style={{ background: 'linear-gradient(160deg, #063d1e 0%, #0a5c2f 30%, #00B14F 70%, #00c853 100%)' }}
-      >
-        <div className="relative z-10 text-center lg:text-left">
-          <Link to="/" className="inline-block mb-10">
-            <img src={logo} alt="8386recruit" className="h-12 w-auto brightness-0 invert" />
-          </Link>
-          <h2 className="text-4xl font-bold leading-tight mb-4">Mật khẩu mới.</h2>
-          <p className="text-white/70 text-lg max-w-md">Vui lòng hoàn tất quá trình thiết lập mật khẩu mới để bảo mật tài khoản của bạn.</p>
+      <div className="hidden lg:flex lg:w-[33%] xl:w-[33%] relative overflow-hidden flex-col justify-center items-center background">
+        {/* Layer 2: Grid */}
+        <div className="absolute inset-0 grid-pattern pointer-events-none opacity-50"></div>
+
+        {/* Layer 3: Glass Panel */}
+        <div className="relative z-10 w-[80%] max-w-[340px] p-10 glass-panel flex flex-col justify-center shadow-2xl">
+          {/* Layer 4: Glow Elements & Identifier */}
+          <div className="flex items-center gap-4 mb-8">
+            <div className="glow-node flex-shrink-0"></div>
+            <span className="text-white font-bold text-lg tracking-wide">Đặt lại mật khẩu</span>
+          </div>
+
+          <div className="w-full flex flex-col gap-4">
+            <div className="skeleton-line !mb-0 w-full"></div>
+            <div className="skeleton-line !mb-0 w-[70%]"></div>
+            <div className="skeleton-line !mb-0 w-[40%]"></div>
+          </div>
         </div>
       </div>
 
       {/* ═══ Right Form Panel ═══ */}
-      <div className="flex-1 flex items-center justify-center p-6 sm:p-10 bg-gray-50/70">
+      <div className="flex-1 flex items-center justify-center p-6 sm:p-10 bg-white">
         <div className="w-full max-w-[400px] animate-fade-in py-10">
           
-          <div className="lg:hidden text-center mb-8">
+          <div className="lg:hidden text-center mb-10">
             <Link to="/">
               <img src={logo} alt="8386recruit" className="h-12 w-auto mx-auto object-contain" />
             </Link>
           </div>
 
           <div className="mb-8">
-            <Link to="/login" className="inline-flex items-center text-sm font-semibold text-brand-600 hover:text-brand-700 gap-1 mb-6 group">
+            <Link to="/login" className="inline-flex items-center text-sm font-semibold text-gray-500 hover:text-brand-600 gap-1 mb-6 group transition-colors">
               <svg className="w-4 h-4 transition-transform group-hover:-translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
               </svg>
@@ -88,21 +96,21 @@ export default function ResetPassword() {
             </Link>
             <h1 className="text-2xl font-bold text-gray-900 mb-2">{step === 1 ? 'Xác thực OTP' : 'Mật khẩu mới'}</h1>
             <p className="text-sm text-gray-500">
-              {step === 1 ? `Nhập mã 6 chữ số đã được gửi tới ${email}` : 'Vui lòng nhập và xác nhận mật khẩu mới của bạn.'}
+              {step === 1 ? `Mã OTP đã được gửi tới ${email}` : 'Vui lòng thiết lập mật khẩu mới cho tài khoản của bạn.'}
             </p>
           </div>
 
           {error && (
-            <div className="bg-red-50 border border-red-100 text-red-600 px-4 py-3 rounded-xl mb-6 text-sm flex items-start gap-2 shadow-sm animate-fade-in">
+            <div className="bg-red-50/80 border border-red-100 text-red-600 px-4 py-3 rounded-xl mb-6 text-sm flex items-start gap-2.5 shadow-sm animate-fade-in">
               <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-              {error}
+              <span className="leading-relaxed">{error}</span>
             </div>
           )}
           
           {success && (
-            <div className="bg-green-50 border border-green-100 text-green-600 px-4 py-3 rounded-xl mb-6 text-sm flex items-start gap-2 shadow-sm animate-fade-in">
+            <div className="bg-green-50/80 border border-green-100 text-green-600 px-4 py-3 rounded-xl mb-6 text-sm flex items-start gap-2.5 shadow-sm animate-fade-in">
               <svg className="w-5 h-5 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
-              {success}
+              <span className="leading-relaxed">{success}</span>
             </div>
           )}
 
@@ -114,7 +122,7 @@ export default function ResetPassword() {
                   type="text"
                   value={otp}
                   onChange={(e) => setOtp(e.target.value)}
-                  className="w-full px-4 py-4 bg-white border border-gray-200 rounded-2xl text-3xl text-center font-bold tracking-[0.5em] focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 transition-all outline-none"
+                  className="w-full px-4 py-4 bg-white border border-gray-200 rounded-2xl text-4xl text-center font-black tracking-[0.4em] focus:ring-4 focus:ring-brand-500/10 focus:border-brand-500 transition-all outline-none"
                   placeholder="000000"
                   maxLength={6}
                   required
@@ -128,7 +136,7 @@ export default function ResetPassword() {
                     type={showPassword ? 'text' : 'password'}
                     value={newPassword}
                     onChange={(e) => setNewPassword(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none"
                     placeholder="Tối thiểu 6 ký tự"
                     required
                   />
@@ -140,7 +148,7 @@ export default function ResetPassword() {
                     type={showPassword ? 'text' : 'password'}
                     value={confirmPassword}
                     onChange={(e) => setConfirmPassword(e.target.value)}
-                    className="w-full px-4 py-2.5 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none"
+                    className="w-full px-4 py-3 bg-white border border-gray-200 rounded-xl text-sm focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all outline-none"
                     placeholder="Nhập lại mật khẩu mới"
                     required
                   />
@@ -149,35 +157,37 @@ export default function ResetPassword() {
                 <div className="flex items-center gap-2">
                   <input 
                     type="checkbox" 
-                    id="show-pass" 
+                    id="show-pass-reset" 
                     className="rounded text-brand-500 focus:ring-brand-500 h-4 w-4" 
                     onChange={(e) => setShowPassword(e.target.checked)}
                   />
-                  <label htmlFor="show-pass" className="text-sm text-gray-600 cursor-pointer">Hiển thị mật khẩu</label>
+                  <label htmlFor="show-pass-reset" className="text-sm text-gray-600 cursor-pointer font-medium">Hiển thị mật khẩu</label>
                 </div>
               </div>
             )}
 
-            <button
-              type="submit"
-              disabled={loading || (step === 1 && otp.length < 6)}
-              className="w-full py-3 px-4 bg-brand-500 hover:bg-brand-600 text-white font-bold rounded-xl shadow-sm hover:shadow-md transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
-            >
-              {loading ? (
-                <>
-                  <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
-                  Đang xử lý...
-                </>
-              ) : (
-                step === 1 ? 'Tiếp tục' : 'Đặt lại mật khẩu'
-              )}
-            </button>
+            <div className="pt-2">
+              <button
+                type="submit"
+                disabled={loading || (step === 1 && otp.length < 6)}
+                className="w-full py-3.5 px-4 bg-brand-500 hover:bg-brand-600 active:bg-brand-700 text-white text-sm font-bold rounded-xl shadow-sm transition-all flex items-center justify-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed"
+              >
+                {loading ? (
+                  <>
+                    <svg className="animate-spin h-5 w-5 text-white" fill="none" viewBox="0 0 24 24"><circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle><path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
+                    Đang xử lý...
+                  </>
+                ) : (
+                  step === 1 ? 'Tiếp tục' : 'Đặt lại mật khẩu'
+                )}
+              </button>
+            </div>
             
             {step === 2 && (
               <button 
                 type="button" 
-                onClick={() => setStep(1)} 
-                className="w-full text-sm text-gray-500 hover:text-gray-700 font-semibold"
+                onClick={() => setSubStep(1)} 
+                className="w-full text-sm text-gray-400 hover:text-gray-600 font-semibold transition-colors"
               >
                 Quay lại bước nhập OTP
               </button>

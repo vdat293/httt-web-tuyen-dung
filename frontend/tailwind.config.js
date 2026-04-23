@@ -25,6 +25,7 @@ export default {
         line: '#E9EAEE',
         bgLight: '#F3F5F7',
         bgSection: '#F8F9FA',
+        bgCard: '#FFFFFF',
       },
       boxShadow: {
         'card': '0 1px 2px rgba(0,0,0,0.06)',
@@ -35,6 +36,7 @@ export default {
         'fade-in': 'fadeIn 0.3s ease-out',
         'slide-up': 'slideUp 0.3s ease-out',
         'shimmer': 'shimmer 2s infinite linear',
+        'pulse-subtle': 'pulseSubtle 2s ease-in-out infinite',
       },
       keyframes: {
         fadeIn: {
@@ -48,6 +50,10 @@ export default {
         shimmer: {
           '0%': { backgroundPosition: '-200% 0' },
           '100%': { backgroundPosition: '200% 0' },
+        },
+        pulseSubtle: {
+          '0%, 100%': { opacity: '1' },
+          '50%': { opacity: '0.85' },
         },
       },
     },

@@ -1,6 +1,7 @@
 const Job = require('../models/Job');
 const Application = require('../models/Application');
 const User = require('../models/User');
+const { createNotification } = require('./notificationController');
 
 const getJobs = async (req, res, next) => {
   try {
@@ -107,6 +108,29 @@ const getJob = async (req, res, next) => {
       return res.status(404).json({ message: 'Job not found or employer is locked' });
     }
 
+    // Nếu tin chưa được duyệt, chỉ cho phép admin hoặc chính chủ xem
+    if (job.status !== 'open') {
+      const authHeader = req.headers.authorization;
+      if (!authHeader || !authHeader.startsWith('Bearer ')) {
+        return res.status(404).json({ message: 'Job not found' });
+      }
+
+      const token = authHeader.split(' ')[1];
+      const jwt = require('jsonwebtoken');
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET);
+        const user = await User.findById(decoded.id);
+        const isAdmin = user && user.role === 'admin';
+        const isOwner = user && job.employerId._id.toString() === user._id.toString();
+
+        if (!isAdmin && !isOwner) {
+          return res.status(404).json({ message: 'Job not found' });
+        }
+      } catch (err) {
+        return res.status(404).json({ message: 'Job not found' });
+      }
+    }
+
     const applicationCount = await Application.countDocuments({ jobId: job._id });
 
     const inactiveEmployers = await User.find({ role: 'employer', isActive: false }).select('_id');
@@ -157,6 +181,23 @@ const createJob = async (req, res, next) => {
       deadline: deadline || null,
     });
 
+    // Thông báo cho admin có tin mới cần duyệt
+    const admins = await User.find({ role: 'admin' });
+    for (const admin of admins) {
+      await createNotification({
+        user: admin._id,
+        type: 'new_job_pending',
+        title: 'Tin tuyển dụng mới chờ duyệt',
+        message: `Nhà tuyển dụng ${req.user.name} vừa đăng tin "${job.title}"`,
+        data: { jobId: job._id },
+        io: req.io,
+      });
+    }
+    
+    if (req.io) {
+      req.io.to('admin_room').emit('job_status_updated', { jobId: job._id, status: 'pending' });
+    }
+
     res.status(201).json(job);
   } catch (error) {
     next(error);
@@ -170,15 +211,45 @@ const updateJob = async (req, res, next) => {
     if (!job) {
       return res.status(404).json({ message: 'Job not found' });
     }
-
     if (job.employerId.toString() !== req.user._id.toString()) {
       return res.status(403).json({ message: 'Not authorized to update this job' });
     }
 
-    const updatedJob = await Job.findByIdAndUpdate(req.params.id, req.body, {
+    // Khi chỉnh sửa tin, đưa trạng thái về 'pending' để duyệt lại nếu:
+    // 1. Tin đang bị từ chối
+    // 2. Chỉnh sửa các thông tin quan trọng (tiêu đề, mô tả, yêu cầu...) mà không phải chỉ thay đổi trạng thái
+    const criticalFields = ['title', 'description', 'requirements', 'benefits', 'salary', 'location', 'skills', 'category'];
+    const isEditingCritical = criticalFields.some(field => req.body[field] !== undefined);
+    
+    let updateData = { ...req.body };
+    if (job.status === 'rejected' || isEditingCritical) {
+      updateData.status = 'pending';
+    }
+
+    const updatedJob = await Job.findByIdAndUpdate(req.params.id, updateData, {
       new: true,
       runValidators: true,
     });
+
+    // Nếu tin bị reset về pending, thông báo cho admin
+    if (updateData.status === 'pending') {
+      const admins = await User.find({ role: 'admin' });
+      for (const admin of admins) {
+        await createNotification({
+          user: admin._id,
+          type: 'new_job_pending',
+          title: 'Tin tuyển dụng đã cập nhật & chờ duyệt',
+          message: `Tin "${updatedJob.title}" vừa được cập nhật và cần duyệt lại`,
+          data: { jobId: updatedJob._id },
+          io: req.io,
+        });
+      }
+    }
+
+    if (req.io) {
+      req.io.to('admin_room').emit('job_status_updated', { jobId: updatedJob._id, status: updatedJob.status });
+      req.io.to(updatedJob.employerId.toString()).emit('job_status_updated', { jobId: updatedJob._id, status: updatedJob.status });
+    }
 
     res.json(updatedJob);
   } catch (error) {

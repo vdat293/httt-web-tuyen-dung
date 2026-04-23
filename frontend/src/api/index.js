@@ -192,6 +192,8 @@ export const adminAPI = {
   getJobs: (params) => api.get('/admin/jobs', { params }),
   approveJob: (id) => api.put(`/admin/jobs/${id}/approve`),
   rejectJob: (id, reason) => api.put(`/admin/jobs/${id}/reject`, { reason }),
+  lockJob: (id, reason) => api.put(`/admin/jobs/${id}/lock`, { reason }),
+  deleteJob: (id) => api.delete(`/admin/jobs/${id}`),
   getReports: () => api.get('/admin/reports'),
   getOTPs: (params) => api.get('/admin/otps', { params }),
 };

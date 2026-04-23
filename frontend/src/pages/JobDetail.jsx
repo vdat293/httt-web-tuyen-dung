@@ -3,10 +3,12 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { jobsAPI, applicationsAPI } from '../api';
 import SaveJobButton from '../components/SaveJobButton';
 import { useAuth } from '../contexts/AuthContext';
+import { useSocket } from '../contexts/SocketContext';
 import { useToast } from '../components/Toast';
 import Layout from '../components/Layout';
 import LoadingSkeleton from '../components/LoadingSkeleton';
 import StatusBadge from '../components/StatusBadge';
+import EmptyState from '../components/EmptyState';
 
 function formatSalary(salary) {
   if (!salary) return 'Thỏa thuận';
@@ -21,17 +23,55 @@ export default function JobDetail() {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
+  const { socket } = useSocket();
   const { addToast } = useToast();
   const [job, setJob] = useState(null);
   const [applied, setApplied] = useState(false);
   const [loading, setLoading] = useState(true);
   const [applying, setApplying] = useState(false);
   const [file, setFile] = useState(null);
+  const [unavailable, setUnavailable] = useState(false);
+  const [unavailableReason, setUnavailableReason] = useState('');
 
   useEffect(() => { 
     window.scrollTo(0, 0);
     loadJob(); 
   }, [id]);
+
+  useEffect(() => {
+    if (socket && id) {
+      socket.emit('join_job', id);
+      
+      const handleUnavailable = (data) => {
+        if (data.jobId === id) {
+          setUnavailable(true);
+          setUnavailableReason(data.reason || 'Bài tuyển dụng này hiện không còn khả dụng');
+          addToast(data.reason || 'Bài tuyển dụng đã bị khóa bởi admin', 'warning');
+        }
+      };
+
+      const handleStatusUpdated = (data) => {
+        if (data.jobId === id) {
+          if (data.status === 'open') {
+            setUnavailable(false);
+            loadJob();
+          } else if (data.status === 'suspended' || data.status === 'rejected' || data.status === 'deleted') {
+            setUnavailable(true);
+            setUnavailableReason(data.reason || 'Bài tuyển dụng này hiện không còn khả dụng');
+          }
+        }
+      };
+
+      socket.on('job_unavailable', handleUnavailable);
+      socket.on('job_status_updated', handleStatusUpdated);
+
+      return () => {
+        socket.emit('leave_job', id);
+        socket.off('job_unavailable', handleUnavailable);
+        socket.off('job_status_updated', handleStatusUpdated);
+      };
+    }
+  }, [socket, id]);
 
   const loadJob = async () => {
     try {
@@ -65,11 +105,47 @@ export default function JobDetail() {
   };
 
   if (loading) return <Layout><LoadingSkeleton type="detail" /></Layout>;
-  if (!job) return (
+  
+  if (!job || unavailable) return (
     <Layout>
-      <div className="text-center py-16">
-        <p className="text-meta mb-4">Không tìm thấy tin tuyển dụng</p>
-        <button onClick={() => navigate('/')} className="btn-primary text-sm">← Quay lại</button>
+      <div className="max-w-2xl mx-auto py-16 px-4">
+        <div className="flex flex-col items-center">
+          <EmptyState 
+            title={unavailable ? "Bài tuyển dụng không khả dụng" : "Không tìm thấy tin tuyển dụng"}
+            description={unavailable ? unavailableReason : "Tin tuyển dụng này có thể đã bị gỡ hoặc không tồn tại trên hệ thống."}
+          />
+          <div className="flex flex-col sm:flex-row gap-3 mt-2">
+            <button 
+              onClick={() => navigate('/')} 
+              className="btn-ghost px-8 py-2.5 rounded-xl border border-line hover:bg-bgLight transition-all active:scale-95"
+            >
+              Về trang chủ
+            </button>
+            <button 
+              onClick={() => navigate('/jobs')} 
+              className="btn-primary px-8 py-2.5 rounded-xl shadow-lg shadow-brand-200 hover:shadow-brand-300 transition-all active:scale-95"
+            >
+              Xem việc làm khác
+            </button>
+          </div>
+        </div>
+
+        {unavailable && (
+          <div className="mt-12 p-5 bg-amber-50 border border-amber-100 rounded-2xl flex items-start gap-4">
+            <div className="w-10 h-10 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0 text-amber-600">
+              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+              </svg>
+            </div>
+            <div>
+              <h4 className="text-sm font-bold text-amber-900">Chi tiết trạng thái</h4>
+              <p className="text-sm text-amber-800 mt-0.5">
+                Vì lý do an toàn và tuân thủ quy định, bài đăng này đã được hệ thống tạm dừng hiển thị. 
+                Nếu bạn đã ứng tuyển, thông tin của bạn vẫn được lưu trữ an toàn.
+              </p>
+            </div>
+          </div>
+        )}
       </div>
     </Layout>
   );

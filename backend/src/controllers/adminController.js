@@ -263,6 +263,12 @@ const approveJob = async (req, res, next) => {
       data: { jobId: job._id },
       io: req.io,
     });
+    
+    if (req.io) {
+      req.io.to('admin_room').emit('job_status_updated', { jobId: job._id, status: 'open' });
+      req.io.to(job.employerId.toString()).emit('job_status_updated', { jobId: job._id, status: 'open' });
+      req.io.to(`job_${job._id}`).emit('job_status_updated', { jobId: job._id, status: 'open' });
+    }
 
     res.json({ message: 'Job approved', job });
   } catch (error) {
@@ -290,7 +296,89 @@ const rejectJob = async (req, res, next) => {
       io: req.io,
     });
 
+    if (req.io) {
+      req.io.to('admin_room').emit('job_status_updated', { jobId: job._id, status: 'rejected' });
+      req.io.to(job.employerId.toString()).emit('job_status_updated', { jobId: job._id, status: 'rejected' });
+      req.io.to(`job_${job._id}`).emit('job_unavailable', { jobId: job._id, status: 'rejected', reason: reason || 'Từ chối' });
+    }
+
     res.json({ message: 'Job rejected', job });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const lockJob = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const { reason } = req.body;
+    const job = await Job.findById(id);
+
+    if (!job) return res.status(404).json({ message: 'Job not found' });
+
+    // Toggle status between 'suspended' and its previous state (or just 'open')
+    const isLocking = job.status !== 'suspended';
+    job.status = isLocking ? 'suspended' : 'open';
+    await job.save();
+
+    // Thông báo cho nhà tuyển dụng
+    await createNotification({
+      user: job.employerId,
+      type: 'job_suspended',
+      title: isLocking ? 'Tin tuyển dụng đã bị khóa' : 'Tin tuyển dụng đã được mở lại',
+      message: isLocking 
+        ? `Tin tuyển dụng "${job.title}" của bạn đã bị khóa bởi quản trị viên. Lý do: ${reason || 'Vi phạm điều khoản'}`
+        : `Tin tuyển dụng "${job.title}" của bạn đã được mở lại`,
+      data: { jobId: job._id, status: job.status },
+      io: req.io,
+    });
+
+    if (req.io) {
+      req.io.to('admin_room').emit('job_status_updated', { jobId: job._id, status: job.status });
+      req.io.to(job.employerId.toString()).emit('job_status_updated', { jobId: job._id, status: job.status });
+      
+      if (isLocking) {
+        req.io.to(`job_${job._id}`).emit('job_unavailable', { jobId: job._id, status: 'suspended', reason: reason || 'Vi phạm điều khoản' });
+      } else {
+        req.io.to(`job_${job._id}`).emit('job_status_updated', { jobId: job._id, status: 'open' });
+      }
+    }
+
+    res.json({ message: isLocking ? 'Job suspended' : 'Job unlocked', job });
+  } catch (error) {
+    next(error);
+  }
+};
+
+const deleteJob = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const job = await Job.findById(id);
+
+    if (!job) return res.status(404).json({ message: 'Job not found' });
+
+    const employerId = job.employerId;
+    const jobTitle = job.title;
+
+    await job.deleteOne();
+
+    // Thông báo cho nhà tuyển dụng (cho họ biết tin đã bị xóa bởi admin)
+    await createNotification({
+      user: employerId,
+      type: 'job_deleted',
+      title: 'Tin tuyển dụng đã bị xóa bởi quản trị viên',
+      message: `Tin tuyển dụng "${jobTitle}" của bạn đã bị xóa khỏi hệ thống bởi quản trị viên.`,
+      data: { jobId: id },
+      io: req.io,
+    });
+
+    if (req.io) {
+      req.io.to('admin_room').emit('job_status_updated', { jobId: id, status: 'deleted' });
+      req.io.to(employerId.toString()).emit('job_status_updated', { jobId: id, status: 'deleted' });
+      req.io.to(`job_${id}`).emit('job_unavailable', { jobId: id, status: 'deleted', reason: 'Bài tuyển dụng đã bị xóa bởi quản trị viên' });
+    }
+
+    res.json({ message: 'Job deleted successfully' });
   } catch (error) {
     next(error);
   }
@@ -393,6 +481,8 @@ module.exports = {
   getAllJobs,
   approveJob,
   rejectJob,
+  lockJob,
+  deleteJob,
   getReports,
   getAllOTPs,
 };

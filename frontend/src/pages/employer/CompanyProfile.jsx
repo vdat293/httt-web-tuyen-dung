@@ -257,7 +257,7 @@ export default function CompanyProfile() {
                 </div>
                 <div>
                   <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#374151', marginBottom: '6px' }}>Số điện thoại</label>
-                  <input name="phone" value={form.phone} onChange={handleChange} className="input-field" placeholder="0xxx xxx xxx" />
+                  <input name="phone" value={form.phone} onChange={handleChange} className="input-field" placeholder="0xxx xxx xxx (Số điện thoại liên hệ)" />
                 </div>
               </div>
 
@@ -280,7 +280,7 @@ export default function CompanyProfile() {
 
               <div>
                 <label style={{ display: 'block', fontSize: '13px', fontWeight: 600, color: '#374151', marginBottom: '6px' }}>Website</label>
-                <input name="website" value={form.website} onChange={handleChange} className="input-field" placeholder="https://example.com" />
+                <input name="website" value={form.website} onChange={handleChange} className="input-field" placeholder="https://ten-cong-ty.com.vn" />
               </div>
 
               <div>
@@ -292,7 +292,7 @@ export default function CompanyProfile() {
                   rows={5}
                   className="input-field"
                   style={{ resize: 'none' }}
-                  placeholder="Mô tả về công ty, lĩnh vực hoạt động, văn hóa công ty..."
+                  placeholder="Mô tả về quy mô, lĩnh vực hoạt động, tầm nhìn, văn hóa công ty và các chế độ đãi ngộ hấp dẫn để thu hút ứng viên..."
                 />
                 <p style={{ fontSize: '11px', color: '#d1d5db', textAlign: 'right', marginTop: '4px' }}>{form.description.length}/1000 ký tự</p>
               </div>

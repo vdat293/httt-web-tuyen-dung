@@ -10,6 +10,8 @@ const {
   getAllJobs,
   approveJob,
   rejectJob,
+  lockJob,
+  deleteJob,
   getReports,
   getAllOTPs,
 } = require('../controllers/adminController');
@@ -29,6 +31,8 @@ router.delete('/users/:id', deleteUser);
 router.get('/jobs', getAllJobs);
 router.put('/jobs/:id/approve', approveJob);
 router.put('/jobs/:id/reject', rejectJob);
+router.put('/jobs/:id/lock', lockJob);
+router.delete('/jobs/:id', deleteJob);
 
 // Reports
 router.get('/reports', getReports);

@@ -6,12 +6,21 @@ import Layout from '../../components/Layout';
 import LoadingSkeleton from '../../components/LoadingSkeleton';
 import StatusBadge from '../../components/StatusBadge';
 import EmptyState from '../../components/EmptyState';
+import { useSocket } from '../../contexts/SocketContext';
 
 export default function EmployerJobs() {
   const [jobs, setJobs] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
   const { addToast } = useToast();
+  const { socket } = useSocket();
+
+  useEffect(() => {
+    if (!socket) return;
+    const handleJobUpdate = () => loadJobs();
+    socket.on('job_status_updated', handleJobUpdate);
+    return () => socket.off('job_status_updated', handleJobUpdate);
+  }, [socket]);
 
   useEffect(() => { loadJobs(); }, []);
   const loadJobs = async () => {
@@ -66,7 +75,6 @@ export default function EmployerJobs() {
 
       {loading ? <LoadingSkeleton type="list" count={4} /> : jobs.length === 0 ? (
         <EmptyState 
-          icon="📋" 
           title="Bạn chưa có tin tuyển dụng nào" 
           description="Hãy đăng tin tuyển dụng đầu tiên của bạn để bắt đầu tìm kiếm những ứng viên tiềm năng nhất." 
           action={() => navigate('/employer/jobs/new')} 
