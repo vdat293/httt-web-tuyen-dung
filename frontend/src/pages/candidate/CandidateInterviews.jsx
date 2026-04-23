@@ -4,12 +4,27 @@ import Layout from '../../components/Layout';
 import LoadingSkeleton from '../../components/LoadingSkeleton';
 import StatusBadge from '../../components/StatusBadge';
 import EmptyState from '../../components/EmptyState';
+import { useSocket } from '../../contexts/SocketContext';
 
 export default function CandidateInterviews() {
   const [interviews, setInterviews] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { socket } = useSocket();
 
   useEffect(() => { loadData(); }, []);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleNotification = (notif) => {
+      if (['interview_scheduled', 'application_status_changed'].includes(notif.type)) {
+        loadData();
+      }
+    };
+
+    socket.on('new_notification', handleNotification);
+    return () => socket.off('new_notification', handleNotification);
+  }, [socket]);
   const loadData = async () => {
     try { const { data } = await interviewsAPI.getAll(); setInterviews(data); }
     catch (err) { console.error(err); }

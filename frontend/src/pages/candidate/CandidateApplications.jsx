@@ -4,6 +4,7 @@ import Layout from '../../components/Layout';
 import LoadingSkeleton from '../../components/LoadingSkeleton';
 import StatusBadge from '../../components/StatusBadge';
 import EmptyState from '../../components/EmptyState';
+import { useSocket } from '../../contexts/SocketContext';
 
 const STEPS = ['pending', 'reviewed', 'interview', 'accepted'];
 const STEP_LABELS = { pending: 'Nộp đơn', reviewed: 'Đã xem', interview: 'Phỏng vấn', accepted: 'Nhận việc' };
@@ -11,8 +12,23 @@ const STEP_LABELS = { pending: 'Nộp đơn', reviewed: 'Đã xem', interview: '
 export default function CandidateApplications() {
   const [applications, setApplications] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { socket } = useSocket();
 
   useEffect(() => { loadData(); }, []);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    const handleNotification = (notif) => {
+      // Refresh list if it's an application or interview update
+      if (['application_status_changed', 'interview_scheduled'].includes(notif.type)) {
+        loadData();
+      }
+    };
+
+    socket.on('new_notification', handleNotification);
+    return () => socket.off('new_notification', handleNotification);
+  }, [socket]);
   const loadData = async () => {
     try { const { data } = await applicationsAPI.getAll(); setApplications(data); }
     catch (err) { console.error(err); }
